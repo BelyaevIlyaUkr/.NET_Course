@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Text;
 
 namespace GenericList
 {
@@ -70,33 +69,43 @@ namespace GenericList
             items = newItems;
         }
 
-        public T Remove(T item)
+        public bool Remove(T item)
         {
             T[] newItems = new T[items.Length - 1];
 
             int newItemsIndex = 0;
 
+            bool isItemRemoved = false;
+
             for (int i = 0; i < items.Length; i++)
             {
                 if (items[i].Equals(item))
                 {
+                    isItemRemoved = true;
                     continue;
                 }
 
                 newItems[newItemsIndex] = items[i];
-                newItemsIndex++;
+
+                if (newItemsIndex < items.Length - 2)
+                {
+                    newItemsIndex++;
+                }
             }
 
-            items = newItems;
+            if (isItemRemoved) {
+                items = newItems;
+            }
 
-            return item;
+            return isItemRemoved;
         }
 
-        public T RemoveAt(int removeIndex) 
+        public void RemoveAt(int removeIndex) 
         {
             if (removeIndex > items.Length - 1 || removeIndex < 0)
             {
-                throw new ArgumentOutOfRangeException(nameof(removeIndex), "Invalid index of element for removing");
+                Console.WriteLine("\nInvalid index of element for removing in RemoveAt");
+                return;
             }
             
             T[] newItems = new T[items.Length - 1];
@@ -111,23 +120,26 @@ namespace GenericList
                 }
 
                 newItems[newItemsIndex] = items[i];
-                newItemsIndex++;
+                if (newItemsIndex < items.Length - 2)
+                {
+                    newItemsIndex++;
+                }
             }
 
-            T itemForReturn = items[removeIndex];
-
             items = newItems;
-
-            return itemForReturn;
         }
 
-        public void RemoveAll()
+        public int RemoveAll()
         {
             T[] newItems = new T[] 
             {
             };
 
+            int numberOfRemovedItems = items.Length;
+
             items = newItems;
+
+            return numberOfRemovedItems;
         }
 
         public T Find(Predicate<T> predicate) 
@@ -161,7 +173,8 @@ namespace GenericList
         {
             if (index > items.Length || index < 0)
             {
-                throw new ArgumentOutOfRangeException(nameof(index), "Invalid index of element for removing");
+                Console.WriteLine("\nInvalid index of element for removing in Insert");
+                return;
             }
 
             T[] newItems = new T[items.Length + 1];
@@ -173,7 +186,7 @@ namespace GenericList
                 if (i == index)
                 {
                     newItems[newItemsIndex] = newItem;
-                    continue;
+                    newItemsIndex++;
                 }
 
                 newItems[newItemsIndex] = items[i];
