@@ -7,7 +7,7 @@ namespace HomeTask5
 {
     class Program
     {
-        class Student
+        public class Student
         {
             public int StudentID { get; set; }
             public string FirstName { get; set; }
@@ -149,6 +149,31 @@ namespace HomeTask5
             createCommand.ExecuteNonQuery();
             
             return student;
+        }
+
+
+        public void DeleteStudent(SqlConnection connection, int studentID)
+        {
+            var deleteCommand = new SqlCommand($"DELETE FROM Students WHERE StudentID = @studentID", connection);
+
+            deleteCommand.Parameters.AddWithValue("@studentID", studentID);
+            deleteCommand.ExecuteNonQuery();
+        }
+
+        public void UpdateStudent(SqlConnection connection, Student student)
+        {
+            var updateCommand = new SqlCommand("UPDATE Students SET FirstName = @firstName," +
+            "LastName = @lastName, PhoneNumber = @phoneNumber, Email = @email, Github = @github" +
+            "WHERE StudentID = @studentID",connection);
+
+            updateCommand.Parameters.AddWithValue("@studentID", student.StudentID);
+            updateCommand.Parameters.AddWithValue("@firstName", student.FirstName);
+            updateCommand.Parameters.AddWithValue("@lastName", student.LastName);
+            updateCommand.Parameters.AddWithValue("@phoneNumber", student.PhoneNumber);
+            updateCommand.Parameters.AddWithValue("@email", student.Email);
+            updateCommand.Parameters.AddWithValue("@github", student.Github);
+
+            updateCommand.ExecuteNonQuery();
         }
     }
 }
