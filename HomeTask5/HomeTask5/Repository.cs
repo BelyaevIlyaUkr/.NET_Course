@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Data.SqlClient;
 
 namespace HomeTask5
@@ -82,7 +83,16 @@ namespace HomeTask5
             updateCommand.Parameters.AddWithValue("@email", student.Email);
             updateCommand.Parameters.AddWithValue("@github", student.Github);
 
-            updateCommand.ExecuteNonQuery();
+            try
+            {
+                updateCommand.ExecuteNonQuery();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                Console.ReadKey();
+                Environment.Exit(1);
+            }
         }
 
         private static Course GetCourse(SqlDataReader reader)
@@ -142,7 +152,16 @@ namespace HomeTask5
             updateCommand.Parameters.AddWithValue("@endDate", course.EndDate);
             updateCommand.Parameters.AddWithValue("@passingScore", course.PassingScore);
 
-            updateCommand.ExecuteNonQuery();
+            try
+            {
+                updateCommand.ExecuteNonQuery();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                Console.ReadKey();
+                Environment.Exit(1);
+            }
         }
 
         public static void DeleteCourse(SqlConnection connection, int courseID)
@@ -210,7 +229,17 @@ namespace HomeTask5
             updateCommand.Parameters.AddWithValue("@name", lecturer.Name);
             updateCommand.Parameters.AddWithValue("@birthDate", lecturer.BirthDate);
 
-            updateCommand.ExecuteNonQuery();
+            try 
+            { 
+                updateCommand.ExecuteNonQuery(); 
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                Console.ReadKey();
+                Environment.Exit(1);
+            }
+
         }
 
         public static void DeleteLecturer(SqlConnection connection, int lecturerID)
@@ -279,7 +308,16 @@ namespace HomeTask5
             createCommand.Parameters.AddWithValue("@serialNumber", hometask.SerialNumber);
             createCommand.Parameters.AddWithValue("@courseID", hometask.CourseID);
 
-            createCommand.ExecuteNonQuery();
+            try
+            {
+                createCommand.ExecuteNonQuery();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                Console.ReadKey();
+                Environment.Exit(1);
+            }
 
             return hometask;
         }
@@ -297,7 +335,17 @@ namespace HomeTask5
             updateCommand.Parameters.AddWithValue("@serialNumber", hometask.SerialNumber);
             updateCommand.Parameters.AddWithValue("@courseID", hometask.CourseID);
 
-            updateCommand.ExecuteNonQuery();
+            try
+            {
+                updateCommand.ExecuteNonQuery();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                Console.ReadKey();
+                Environment.Exit(1);
+            }
+
         }
 
         public static void DeleteHomeTask(SqlConnection connection, int hometaskID)
@@ -363,7 +411,16 @@ namespace HomeTask5
             createCommand.Parameters.AddWithValue("@hometaskID", grade.HomeTaskID);
             createCommand.Parameters.AddWithValue("@studentID", grade.StudentID);
 
-            createCommand.ExecuteNonQuery();
+            try
+            {
+                createCommand.ExecuteNonQuery();
+            }
+            catch(Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                Console.ReadKey();
+                Environment.Exit(1);
+            }
 
             return grade;
         }
@@ -380,7 +437,16 @@ namespace HomeTask5
             updateCommand.Parameters.AddWithValue("@studentID", grade.StudentID);
             updateCommand.Parameters.AddWithValue("@gradeID", grade.GradeID);
 
-            updateCommand.ExecuteNonQuery();
+            try
+            {
+                updateCommand.ExecuteNonQuery();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                Console.ReadKey();
+                Environment.Exit(1);
+            }
         }
 
         public static void DeleteGrade(SqlConnection connection, int gradeID)
@@ -426,7 +492,16 @@ namespace HomeTask5
             createCommand.Parameters.AddWithValue("@studentID", studentCourse.studentID);
             createCommand.Parameters.AddWithValue("@courseID", studentCourse.courseID);
 
-            createCommand.ExecuteNonQuery();
+            try
+            {
+                createCommand.ExecuteNonQuery();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                Console.ReadKey();
+                Environment.Exit(1);
+            }
 
             return studentCourse;
         }
@@ -536,7 +611,16 @@ namespace HomeTask5
             createCommand.Parameters.AddWithValue("@courseID", courseLecturer.courseID);
             createCommand.Parameters.AddWithValue("@lecturerID", courseLecturer.lecturerID);
 
-            createCommand.ExecuteNonQuery();
+            try
+            {
+                createCommand.ExecuteNonQuery();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                Console.ReadKey();
+                Environment.Exit(1);
+            }
 
             return courseLecturer;
         }

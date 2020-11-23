@@ -99,9 +99,9 @@ namespace HomeTask5
             {
                 connection.Open();
 
-                Repository.DeleteAllCourses(connection);
-                Repository.DeleteAllStudents(connection);
-                Repository.DeleteAllLecturers(connection);
+                //Repository.DeleteAllCourses(connection);
+                //Repository.DeleteAllStudents(connection);
+                //Repository.DeleteAllLecturers(connection);
 
                 var student1 = new Student { FirstName = "Ilya", LastName = "Belyaev", PhoneNumber = "0734552435", Email = "belyaev.i2000@gmail.com", Github = "BelyaevIlyaUkr" };
                 var student2 = new Student { FirstName = "Konstantin", LastName = "Belyaev", PhoneNumber = "0734552435", Email = "belyaev.i2000@gmail.com", Github = "BelyaevIlyaUkr" };
@@ -114,17 +114,17 @@ namespace HomeTask5
                 var lecturer1 = new Lecturer { Name = "Alan", BirthDate = new DateTime(1980, 5, 4) };
                 var lecturer2 = new Lecturer { Name = "John", BirthDate = new DateTime(1979, 5, 4) };
                 var lecturer3 = new Lecturer { Name = "George", BirthDate = new DateTime(1995, 5, 4) };
-
-                var hometask1 = new HomeTask { Name = "Hometask1", Description = "Hi", TaskDate = new DateTime(2020, 4, 15), SerialNumber = 1, CourseID = 1 };
-                var hometask2 = new HomeTask { Name = "Hometask2", Description = "Good Bye", TaskDate = new DateTime(2020, 3, 17), SerialNumber = 1, CourseID = 2 };
-                var hometask3 = new HomeTask { Name = "Hometask3", Description = "Hello", TaskDate = new DateTime(2020, 6, 25), SerialNumber = 1, CourseID = 3 };
+                
+                var hometask1 = new HomeTask { Name = "Hometask1", Description = "Hi", TaskDate = new DateTime(2020, 4, 15), SerialNumber = 1, CourseID = 7 };
+                var hometask2 = new HomeTask { Name = "Hometask2", Description = "Good Bye", TaskDate = new DateTime(2020, 3, 17), SerialNumber = 1, CourseID = 8 };
+                var hometask3 = new HomeTask { Name = "Hometask3", Description = "Hello", TaskDate = new DateTime(2020, 6, 25), SerialNumber = 1, CourseID = 9 };
 
                 var grade1 = new Grade { GradeDate = new DateTime(2020, 3, 16), IsComplete = 1, HomeTaskID = 1, StudentID = 2 };
                 var grade2 = new Grade { GradeDate = new DateTime(2020, 2, 18), IsComplete = 1, HomeTaskID = 2, StudentID = 3 };
                 var grade3 = new Grade { GradeDate = new DateTime(2020, 1, 20), IsComplete = 1, HomeTaskID = 3, StudentID = 4 };
 
 
-                Repository.CreateStudent(connection,student1);
+                /*Repository.CreateStudent(connection,student1);
                 Repository.CreateStudent(connection, student2);
                 Repository.CreateStudent(connection, student3);
 
@@ -134,7 +134,7 @@ namespace HomeTask5
 
                 Repository.CreateLecturer(connection, lecturer1);
                 Repository.CreateLecturer(connection, lecturer2);
-                Repository.CreateLecturer(connection, lecturer3);
+                Repository.CreateLecturer(connection, lecturer3);*/
 
                 Repository.CreateHomeTask(connection, hometask1);
                 Repository.CreateHomeTask(connection, hometask2);
