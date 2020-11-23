@@ -368,7 +368,7 @@ namespace HomeTask5
         {
             var gradeID = reader.GetInt32(0);
             var gradeDate = reader.GetDateTime(1);
-            var isComplete = reader.GetInt32(2);
+            var isComplete = reader.GetBoolean(2);
             var hometaskID = reader.GetInt32(3);
             var studentID = reader.GetInt32(4);
 
@@ -385,7 +385,7 @@ namespace HomeTask5
         public static List<Grade> GetAllGrades(SqlConnection connection)
         {
             SqlCommand command = new SqlCommand("SELECT GradeID, GradeDate, IsComplete, HomeTaskID," +
-                "StudentID FROM HomeTasks", connection);
+                "StudentID FROM Grades", connection);
 
             var grades = new List<Grade>();
 
@@ -659,10 +659,10 @@ namespace HomeTask5
 
         public static List<Lecturer> GetAllLecturersForCourse(SqlConnection connection, int courseID)
         {
-            SqlCommand getLecturersIDCommand = new SqlCommand($"SELECT LecturerID FROM Courses_Lectures " +
+            SqlCommand getLecturersIDCommand = new SqlCommand($"SELECT LecturerID FROM Courses_Lecturers " +
                 $"WHERE CourseID = {courseID}", connection);
 
-            var lecturers = new List<Lecturer>();
+            var lecturersIDs = new List<int>();
 
             using (var reader = getLecturersIDCommand.ExecuteReader())
             {
@@ -670,29 +670,36 @@ namespace HomeTask5
                 {
                     var lecturerID = reader.GetInt32(0);
 
-                    SqlCommand getLecturersCommand = new SqlCommand($"SELECT LecturerID, Name, BirthDate " +
-                        $"FROM Courses WHERE LecturerID = {lecturerID}", connection);
+                    lecturersIDs.Add(lecturerID);
+                }
+            }
 
-                    using (var subreader = getLecturersCommand.ExecuteReader())
-                    {
-                        subreader.Read();
+            var lecturers = new List<Lecturer>();
 
-                        var lecturer = GetLecturer(subreader);
+            foreach(var lecturerID in lecturersIDs)
+            {
+                SqlCommand getLecturersCommand = new SqlCommand($"SELECT LecturerID, Name, BirthDate " +
+                        $"FROM Lecturers WHERE LecturerID = {lecturerID}", connection);
 
-                        lecturers.Add(lecturer);
-                    }
+                using (var reader = getLecturersCommand.ExecuteReader())
+                {
+                    reader.Read();
+
+                    var lecturer = GetLecturer(reader);
+
+                    lecturers.Add(lecturer);
                 }
             }
 
             return lecturers;
         }
 
-        public static List<Course> GetAllCoursesForLecturer(SqlConnection connection, int lecturerID)
+        public static List<Course> GetAllCoursesWithDefiniteLecturer(SqlConnection connection, int lecturerID)
         {
-            SqlCommand getCoursesIDCommand = new SqlCommand($"SELECT CourseID FROM Courses_Lectures " +
+            SqlCommand getCoursesIDCommand = new SqlCommand($"SELECT CourseID FROM Courses_Lecturers " +
                 $"WHERE LecturerID = {lecturerID}", connection);
 
-            var courses = new List<Course>();
+            var coursesIDs = new List<int>();
 
             using (var reader = getCoursesIDCommand.ExecuteReader())
             {
@@ -700,17 +707,24 @@ namespace HomeTask5
                 {
                     var courseID = reader.GetInt32(0);
 
-                    SqlCommand getCoursesCommand = new SqlCommand($"SELECT CourseID, Name, StartDate, EndDate, " +
+                    coursesIDs.Add(courseID);
+                }
+            }
+
+            var courses = new List<Course>();
+
+            foreach(var courseID in coursesIDs)
+            {
+                SqlCommand getCoursesCommand = new SqlCommand($"SELECT CourseID, Name, StartDate, EndDate, " +
                         $"PassingScore FROM Courses WHERE CourseID = {courseID}", connection);
 
-                    using (var subreader = getCoursesCommand.ExecuteReader())
-                    {
-                        subreader.Read();
+                using (var reader = getCoursesCommand.ExecuteReader())
+                {
+                    reader.Read();
 
-                        var course = GetCourse(subreader);
+                    var course = GetCourse(reader);
 
-                        courses.Add(course);
-                    }
+                    courses.Add(course);
                 }
             }
 

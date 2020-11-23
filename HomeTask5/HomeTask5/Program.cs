@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Data.SqlClient;
+using System.Globalization;
 
 namespace HomeTask5
 {
@@ -43,7 +44,7 @@ namespace HomeTask5
     {
         public int GradeID { get; set; } 
         public DateTime GradeDate { get; set; }
-        public int IsComplete { get; set; }
+        public bool IsComplete { get; set; }
         public int HomeTaskID { get; set; }
         public int StudentID { get; set; }
     }
@@ -119,9 +120,9 @@ namespace HomeTask5
                 var hometask2 = new HomeTask { Name = "Hometask2", Description = "Good Bye", TaskDate = new DateTime(2020, 3, 17), SerialNumber = 1, CourseID = 8 };
                 var hometask3 = new HomeTask { Name = "Hometask3", Description = "Hello", TaskDate = new DateTime(2020, 6, 25), SerialNumber = 1, CourseID = 9 };
 
-                var grade1 = new Grade { GradeDate = new DateTime(2020, 3, 16), IsComplete = 1, HomeTaskID = 4, StudentID = 8 };
-                var grade2 = new Grade { GradeDate = new DateTime(2020, 2, 18), IsComplete = 1, HomeTaskID = 5, StudentID = 9 };
-                var grade3 = new Grade { GradeDate = new DateTime(2020, 1, 20), IsComplete = 1, HomeTaskID = 6, StudentID = 10 };
+                var grade1 = new Grade { GradeDate = new DateTime(2020, 3, 16), IsComplete = true, HomeTaskID = 4, StudentID = 8 };
+                var grade2 = new Grade { GradeDate = new DateTime(2020, 2, 18), IsComplete = true, HomeTaskID = 5, StudentID = 9 };
+                var grade3 = new Grade { GradeDate = new DateTime(2020, 1, 20), IsComplete = true, HomeTaskID = 6, StudentID = 10 };
 
 
                 /*Repository.CreateStudent(connection,student1);
@@ -148,6 +149,7 @@ namespace HomeTask5
                 var courses = Repository.GetAllCourses(connection);
                 var students = Repository.GetAllStudents(connection);
                 var lecturers = Repository.GetAllLecturers(connection);
+                var grades = Repository.GetAllGrades(connection);
 
                 foreach(var stud in students)
                 {
@@ -166,6 +168,13 @@ namespace HomeTask5
                 foreach(var lecturer in lecturers)
                 {
                     Console.WriteLine(lecturer.Name);
+                }
+
+                Console.WriteLine("");
+
+                foreach(var grade in grades)
+                {
+                    Console.WriteLine(grade.GradeDate.Date.ToString("d", new CultureInfo("fr-FR")));
                 }
 
                 Console.WriteLine("");
@@ -190,6 +199,30 @@ namespace HomeTask5
                 foreach(var student in studentsInCourse)
                 {
                     Console.WriteLine(student.FirstName);
+                }
+
+                Console.WriteLine("");
+
+                /*Repository.CreateCourseLecturer(connection, (7, 8));
+                Repository.CreateCourseLecturer(connection, (7, 9));
+                Repository.CreateCourseLecturer(connection, (8, 8));
+                Repository.CreateCourseLecturer(connection, (9, 7));
+                Repository.CreateCourseLecturer(connection, (9, 9));*/
+
+                var coursesWithDefiniteLecturer = Repository.GetAllCoursesWithDefiniteLecturer(connection, 7);
+
+                foreach(var course in coursesWithDefiniteLecturer)
+                {
+                    Console.WriteLine(course.Name);
+                }
+
+                Console.WriteLine("");
+
+                var lecturersForCourse = Repository.GetAllLecturersForCourse(connection, 9);
+
+                foreach(var lecturer in lecturersForCourse)
+                {
+                    Console.WriteLine(lecturer.Name);
                 }
 
             }
