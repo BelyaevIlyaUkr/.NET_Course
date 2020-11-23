@@ -45,7 +45,7 @@ namespace HomeTask5
     {
         public int GradeID { get; set; } 
         public DateTime GradeDate { get; set; }
-        public bool IsComplete { get; set; }
+        public int IsComplete { get; set; }
         public int HomeTaskID { get; set; }
         public int StudentID { get; set; }
     }
@@ -332,7 +332,7 @@ namespace HomeTask5
         {
             var gradeID = reader.GetInt32(0);
             var gradeDate = reader.GetDateTime(1);
-            var isComplete = reader.GetBoolean(2);
+            var isComplete = reader.GetInt32(2);
             var hometaskID = reader.GetInt32(3);
             var studentID = reader.GetInt32(4);
 
@@ -477,6 +477,36 @@ namespace HomeTask5
             return courses;
         }
 
+        public static List<Student> GetAllStudentsForCourse(SqlConnection connection, int courseID)
+        {
+            SqlCommand getStudentsIDCommand = new SqlCommand($"SELECT StudentID FROM Students_Courses " +
+                $"WHERE CourseID = {courseID}", connection);
+
+            var students = new List<Student>();
+
+            using (var reader = getStudentsIDCommand.ExecuteReader())
+            {
+                while (reader.Read())
+                {
+                    var studentID = reader.GetInt32(0);
+
+                    SqlCommand getStudentsCommand = new SqlCommand($"SELECT StudentID, FirstName, LastName, PhoneNumber, " +
+                        $"Email, Github FROM Students WHERE StudentID = {studentID}", connection);
+
+                    using (var subreader = getStudentsCommand.ExecuteReader())
+                    {
+                        subreader.Read();
+
+                        var student = GetStudent(subreader);
+
+                        students.Add(student);
+                    }
+                }
+            }
+
+            return students;
+        }
+
         public static List<(int courseID, int lecturerID)> GetAllCoursesLecturers(SqlConnection connection)
         {
             SqlCommand command = new SqlCommand("SELECT CourseID, LecturerID FROM Courses_Lecturers", connection);
@@ -548,6 +578,36 @@ namespace HomeTask5
 
             return lecturers;
         }
+
+        public static List<Course> GetAllCoursesForLecturer(SqlConnection connection, int lecturerID)
+        {
+            SqlCommand getCoursesIDCommand = new SqlCommand($"SELECT CourseID FROM Courses_Lectures " +
+                $"WHERE LecturerID = {lecturerID}", connection);
+
+            var courses = new List<Course>();
+
+            using (var reader = getCoursesIDCommand.ExecuteReader())
+            {
+                while (reader.Read())
+                {
+                    var courseID = reader.GetInt32(0);
+
+                    SqlCommand getCoursesCommand = new SqlCommand($"SELECT CourseID, Name, StartDate, EndDate, " +
+                        $"PassingScore FROM Courses WHERE CourseID = {courseID}", connection);
+
+                    using (var subreader = getCoursesCommand.ExecuteReader())
+                    {
+                        subreader.Read();
+
+                        var course = GetCourse(subreader);
+
+                        courses.Add(course);
+                    }
+                }
+            }
+
+            return courses;
+        }
     }
 
     class Program
@@ -601,11 +661,52 @@ namespace HomeTask5
             {
                 connection.Open();
 
-                var student = new Student { FirstName = "Ilya", LastName = "Belyaev", PhoneNumber = "0734552435", Email = "belyaev.i2000@gmail.com", Github = "BelyaevIlyaUkr" };
+                var student1 = new Student { FirstName = "Ilya", LastName = "Belyaev", PhoneNumber = "0734552435", Email = "belyaev.i2000@gmail.com", Github = "BelyaevIlyaUkr" };
+                var student2 = new Student { FirstName = "Konstantin", LastName = "Belyaev", PhoneNumber = "0734552435", Email = "belyaev.i2000@gmail.com", Github = "BelyaevIlyaUkr" };
+                var student3 = new Student { FirstName = "Fedor", LastName = "Belyaev", PhoneNumber = "0734552435", Email = "belyaev.i2000@gmail.com", Github = "BelyaevIlyaUkr" };
 
-                Repository.CreateStudent(connection,student);
-                
+                var course1 = new Course { Name = ".NET", StartDate = new DateTime(2020, 8, 18), EndDate = new DateTime(2020, 10, 18), PassingScore = 185 };
+                var course2 = new Course { Name = "Python", StartDate = new DateTime(2020, 2, 20), EndDate = new DateTime(2020, 5, 20), PassingScore = 150 };
+                var course3 = new Course { Name = "C++", StartDate = new DateTime(2018, 3, 15), EndDate = new DateTime(2018, 7, 15), PassingScore = 180 };
+
+                var lecturer1 = new Lecturer { Name = "Alan", BirthDate = new DateTime(1980, 5, 4) };
+                var lecturer2 = new Lecturer { Name = "John", BirthDate = new DateTime(1979, 5, 4) };
+                var lecturer3 = new Lecturer { Name = "George", BirthDate = new DateTime(1995, 5, 4) };
+
+                var hometask1 = new HomeTask { Name = "Hometask1", Describing = "Hi", TaskDate = new DateTime(2020, 4, 15), SerialNumber = 1, CourseID = 1 };
+                var hometask2 = new HomeTask { Name = "Hometask2", Describing = "Good Bye", TaskDate = new DateTime(2020, 3, 17), SerialNumber = 1, CourseID = 2 };
+                var hometask3 = new HomeTask { Name = "Hometask3", Describing = "Hello", TaskDate = new DateTime(2020, 6, 25), SerialNumber = 1, CourseID = 3 };
+
+                var grade1 = new Grade { GradeDate = new DateTime(2020, 3, 16), IsComplete = 1, HomeTaskID = 1, StudentID = 2 };
+                var grade2 = new Grade { GradeDate = new DateTime(2020, 2, 18), IsComplete = 1, HomeTaskID = 2, StudentID = 3 };
+                var grade3 = new Grade { GradeDate = new DateTime(2020, 1, 20), IsComplete = 1, HomeTaskID = 3, StudentID = 4 };
+
+
+                Repository.CreateStudent(connection,student1);
+                Repository.CreateStudent(connection, student2);
+                Repository.CreateStudent(connection, student3);
+
+                Repository.CreateCourse(connection, course1);
+                Repository.CreateCourse(connection, course2);
+                Repository.CreateCourse(connection, course3);
+
+                Repository.CreateLecturer(connection, lecturer1);
+                Repository.CreateLecturer(connection, lecturer2);
+                Repository.CreateLecturer(connection, lecturer3);
+
+                Repository.CreateHomeTask(connection, hometask1);
+                Repository.CreateHomeTask(connection, hometask2);
+                Repository.CreateHomeTask(connection, hometask3);
+
+                Repository.CreateGrade(connection, grade1);
+                Repository.CreateGrade(connection, grade2);
+                Repository.CreateGrade(connection, grade3);
+
+
+
+                var courses = Repository.GetAllCourses(connection);
                 var students = Repository.GetAllStudents(connection);
+                var lecturers = Repository.GetAllLecturers(connection);
 
                 foreach(var stud in students)
                 {
