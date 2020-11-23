@@ -119,9 +119,9 @@ namespace HomeTask5
                 var hometask2 = new HomeTask { Name = "Hometask2", Description = "Good Bye", TaskDate = new DateTime(2020, 3, 17), SerialNumber = 1, CourseID = 8 };
                 var hometask3 = new HomeTask { Name = "Hometask3", Description = "Hello", TaskDate = new DateTime(2020, 6, 25), SerialNumber = 1, CourseID = 9 };
 
-                var grade1 = new Grade { GradeDate = new DateTime(2020, 3, 16), IsComplete = 1, HomeTaskID = 1, StudentID = 2 };
-                var grade2 = new Grade { GradeDate = new DateTime(2020, 2, 18), IsComplete = 1, HomeTaskID = 2, StudentID = 3 };
-                var grade3 = new Grade { GradeDate = new DateTime(2020, 1, 20), IsComplete = 1, HomeTaskID = 3, StudentID = 4 };
+                var grade1 = new Grade { GradeDate = new DateTime(2020, 3, 16), IsComplete = 1, HomeTaskID = 4, StudentID = 8 };
+                var grade2 = new Grade { GradeDate = new DateTime(2020, 2, 18), IsComplete = 1, HomeTaskID = 5, StudentID = 9 };
+                var grade3 = new Grade { GradeDate = new DateTime(2020, 1, 20), IsComplete = 1, HomeTaskID = 6, StudentID = 10 };
 
 
                 /*Repository.CreateStudent(connection,student1);
@@ -136,13 +136,13 @@ namespace HomeTask5
                 Repository.CreateLecturer(connection, lecturer2);
                 Repository.CreateLecturer(connection, lecturer3);*/
 
-                Repository.CreateHomeTask(connection, hometask1);
+                /*Repository.CreateHomeTask(connection, hometask1);
                 Repository.CreateHomeTask(connection, hometask2);
-                Repository.CreateHomeTask(connection, hometask3);
+                Repository.CreateHomeTask(connection, hometask3);*/
 
-                Repository.CreateGrade(connection, grade1);
+                /*Repository.CreateGrade(connection, grade1);
                 Repository.CreateGrade(connection, grade2);
-                Repository.CreateGrade(connection, grade3);
+                Repository.CreateGrade(connection, grade3);*/
 
 
                 var courses = Repository.GetAllCourses(connection);
@@ -166,6 +166,30 @@ namespace HomeTask5
                 foreach(var lecturer in lecturers)
                 {
                     Console.WriteLine(lecturer.Name);
+                }
+
+                Console.WriteLine("");
+
+                /*Repository.CreateStudentCourse(connection, (8, 7));
+                Repository.CreateStudentCourse(connection, (8, 8));
+                Repository.CreateStudentCourse(connection, (9, 9));
+                Repository.CreateStudentCourse(connection, (10,8));
+                Repository.CreateStudentCourse(connection, (10, 9));*/
+
+                var coursesForStudent = Repository.GetAllCoursesForStudent(connection, 8);
+
+                foreach(var course in coursesForStudent)
+                {
+                    Console.WriteLine(course.Name);
+                }
+
+                Console.WriteLine("");
+
+                var studentsInCourse = Repository.GetAllStudentsInCourse(connection, 9);
+
+                foreach(var student in studentsInCourse)
+                {
+                    Console.WriteLine(student.FirstName);
                 }
 
             }

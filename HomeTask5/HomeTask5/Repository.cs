@@ -191,7 +191,7 @@ namespace HomeTask5
 
         public static List<Lecturer> GetAllLecturers(SqlConnection connection)
         {
-            SqlCommand command = new SqlCommand("SELECT LecturerID, Name, BirthDate FROM Students", connection);
+            SqlCommand command = new SqlCommand("SELECT LecturerID, Name, BirthDate FROM Lecturers", connection);
 
             var lecturers = new List<Lecturer>();
 
@@ -530,7 +530,7 @@ namespace HomeTask5
             SqlCommand getCoursesIDCommand = new SqlCommand($"SELECT CourseID FROM Students_Courses " +
                 $"WHERE StudentID = {studentID}", connection);
 
-            var courses = new List<Course>();
+            var coursesIDs = new List<int>();
 
             using (var reader = getCoursesIDCommand.ExecuteReader())
             {
@@ -538,29 +538,36 @@ namespace HomeTask5
                 {
                     var courseID = reader.GetInt32(0);
 
-                    SqlCommand getCoursesCommand = new SqlCommand($"SELECT CourseID, Name, StartDate, EndDate, " +
-                        $"PassingScore FROM Courses WHERE CourseID = {courseID}", connection);
+                    coursesIDs.Add(courseID);
+                }
+            }
 
-                    using (var subreader = getCoursesCommand.ExecuteReader())
-                    {
-                        subreader.Read();
+            var courses = new List<Course>();
 
-                        var course = GetCourse(subreader);
+            foreach (var courseID in coursesIDs)
+            {
+                SqlCommand getCoursesCommand = new SqlCommand($"SELECT CourseID, Name, StartDate, EndDate, " +
+                    $"PassingScore FROM Courses WHERE CourseID = {courseID}", connection);
 
-                        courses.Add(course);
-                    }
+                using (var reader = getCoursesCommand.ExecuteReader())
+                {
+                    reader.Read();
+
+                    var course = GetCourse(reader);
+
+                    courses.Add(course);
                 }
             }
 
             return courses;
         }
 
-        public static List<Student> GetAllStudentsForCourse(SqlConnection connection, int courseID)
+        public static List<Student> GetAllStudentsInCourse(SqlConnection connection, int courseID)
         {
             SqlCommand getStudentsIDCommand = new SqlCommand($"SELECT StudentID FROM Students_Courses " +
                 $"WHERE CourseID = {courseID}", connection);
 
-            var students = new List<Student>();
+            var studentsIDs = new List<int>();
 
             using (var reader = getStudentsIDCommand.ExecuteReader())
             {
@@ -568,17 +575,24 @@ namespace HomeTask5
                 {
                     var studentID = reader.GetInt32(0);
 
-                    SqlCommand getStudentsCommand = new SqlCommand($"SELECT StudentID, FirstName, LastName, PhoneNumber, " +
-                        $"Email, Github FROM Students WHERE StudentID = {studentID}", connection);
+                    studentsIDs.Add(studentID);
+                }
+            }
 
-                    using (var subreader = getStudentsCommand.ExecuteReader())
-                    {
-                        subreader.Read();
+            var students = new List<Student>();
 
-                        var student = GetStudent(subreader);
+            foreach(var studentID in studentsIDs)
+            {
+                SqlCommand getStudentsCommand = new SqlCommand($"SELECT StudentID, FirstName, LastName, PhoneNumber, " +
+                    $"Email, Github FROM Students WHERE StudentID = {studentID}", connection);
 
-                        students.Add(student);
-                    }
+                using (var reader = getStudentsCommand.ExecuteReader())
+                {
+                    reader.Read();
+
+                    var student = GetStudent(reader);
+
+                    students.Add(student);
                 }
             }
 
