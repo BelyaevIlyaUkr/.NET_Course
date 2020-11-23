@@ -73,7 +73,7 @@ namespace HomeTask5
         public static void UpdateStudent(SqlConnection connection, Student student)
         {
             var updateCommand = new SqlCommand("UPDATE Students SET FirstName = @firstName," +
-            "LastName = @lastName, PhoneNumber = @phoneNumber, Email = @email, Github = @github" +
+            "LastName = @lastName, PhoneNumber = @phoneNumber, Email = @email, Github = @github " +
             "WHERE StudentID = @studentID", connection);
 
             updateCommand.Parameters.AddWithValue("@studentID", student.StudentID);
@@ -143,7 +143,7 @@ namespace HomeTask5
         public static void UpdateCourse(SqlConnection connection, Course course)
         {
             var updateCommand = new SqlCommand("UPDATE Courses SET Name = @name," +
-            "StartDate = @startDate, EndDate = @endDate, PassingScore = passingScore," +
+            "StartDate = @startDate, EndDate = @endDate, PassingScore = passingScore " +
             "WHERE CourseID = @courseID", connection);
 
             updateCommand.Parameters.AddWithValue("@courseID", course.CourseID);
@@ -166,7 +166,7 @@ namespace HomeTask5
 
         public static void DeleteCourse(SqlConnection connection, int courseID)
         {
-            var deleteCommand = new SqlCommand("DELETE FROM Courses WHERE CoursesID = @courseID", connection);
+            var deleteCommand = new SqlCommand("DELETE FROM Courses WHERE CourseID = @courseID", connection);
 
             deleteCommand.Parameters.AddWithValue("@courseID", courseID);
 
@@ -280,7 +280,7 @@ namespace HomeTask5
 
         public static List<HomeTask> GetAllHomeTasks(SqlConnection connection)
         {
-            SqlCommand command = new SqlCommand("SELECT HomeTaskID, Name, Description, TaskDate" +
+            SqlCommand command = new SqlCommand("SELECT HomeTaskID, Name, Description, TaskDate, " +
                 "SerialNumber, CourseID FROM HomeTasks", connection);
 
             var homeTasks = new List<HomeTask>();
@@ -428,7 +428,7 @@ namespace HomeTask5
         public static void UpdateGrade(SqlConnection connection, Grade grade)
         {
             var updateCommand = new SqlCommand("UPDATE Grades SET GradeDate = @gradeDate," +
-            "IsComplete = @isComplete, HomeTaskID = @hometaskID, StudentID = @studentID," +
+            "IsComplete = @isComplete, HomeTaskID = @hometaskID, StudentID = @studentID " +
             "WHERE GradeID = @gradeID", connection);
 
             updateCommand.Parameters.AddWithValue("@gradeDate", grade.GradeDate);

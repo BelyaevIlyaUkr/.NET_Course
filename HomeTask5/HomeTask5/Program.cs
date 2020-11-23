@@ -150,34 +150,42 @@ namespace HomeTask5
                 var students = Repository.GetAllStudents(connection);
                 var lecturers = Repository.GetAllLecturers(connection);
                 var grades = Repository.GetAllGrades(connection);
+                var hometasks = Repository.GetAllHomeTasks(connection);
 
-                foreach(var stud in students)
+                Console.WriteLine("All students\n");
+                
+                foreach (var stud in students)
                 {
                     Console.WriteLine(stud.FirstName);
                 }
 
-                Console.WriteLine("");
+                Console.WriteLine("\nAll courses\n");
 
                 foreach(var course in courses)
                 {
                     Console.WriteLine(course.Name);
                 }
 
-                Console.WriteLine("");
+                Console.WriteLine("\nAll lecturers\n");
 
                 foreach(var lecturer in lecturers)
                 {
                     Console.WriteLine(lecturer.Name);
                 }
 
-                Console.WriteLine("");
+                Console.WriteLine("\nAll grades\n");
 
                 foreach(var grade in grades)
                 {
                     Console.WriteLine(grade.GradeDate.Date.ToString("d", new CultureInfo("fr-FR")));
                 }
 
-                Console.WriteLine("");
+                Console.WriteLine("\nAll hometasks\n");
+
+                foreach (var hometask in hometasks)
+                {
+                    Console.WriteLine(hometask.Name);
+                }
 
                 /*Repository.CreateStudentCourse(connection, (8, 7));
                 Repository.CreateStudentCourse(connection, (8, 8));
@@ -187,12 +195,14 @@ namespace HomeTask5
 
                 var coursesForStudent = Repository.GetAllCoursesForStudent(connection, 8);
 
-                foreach(var course in coursesForStudent)
+                Console.WriteLine("\nAll courses for student with ID = 8\n");
+
+                foreach (var course in coursesForStudent)
                 {
                     Console.WriteLine(course.Name);
                 }
 
-                Console.WriteLine("");
+                Console.WriteLine("\nAll students in course with ID = 9\n");
 
                 var studentsInCourse = Repository.GetAllStudentsInCourse(connection, 9);
 
@@ -201,13 +211,13 @@ namespace HomeTask5
                     Console.WriteLine(student.FirstName);
                 }
 
-                Console.WriteLine("");
-
                 /*Repository.CreateCourseLecturer(connection, (7, 8));
                 Repository.CreateCourseLecturer(connection, (7, 9));
                 Repository.CreateCourseLecturer(connection, (8, 8));
                 Repository.CreateCourseLecturer(connection, (9, 7));
                 Repository.CreateCourseLecturer(connection, (9, 9));*/
+
+                Console.WriteLine("\nAll courses with lecturer with ID = 7\n");
 
                 var coursesWithDefiniteLecturer = Repository.GetAllCoursesWithDefiniteLecturer(connection, 7);
 
@@ -216,13 +226,113 @@ namespace HomeTask5
                     Console.WriteLine(course.Name);
                 }
 
-                Console.WriteLine("");
+                Console.WriteLine("\nAll lecturers for course with ID = 9\n");
 
                 var lecturersForCourse = Repository.GetAllLecturersForCourse(connection, 9);
 
                 foreach(var lecturer in lecturersForCourse)
                 {
                     Console.WriteLine(lecturer.Name);
+                }
+
+                var firstStudentUpdated = new Student { StudentID = 8, FirstName = "Ivan", LastName = "Belyaev", PhoneNumber = "0734552435", Email = "belyaev.i2000@gmail.com", Github = "BelyaevIlyaUkr" };
+                var firstCourseUpdated = new Course { CourseID = 7, Name = "C#", StartDate = new DateTime(2020, 8, 18), EndDate = new DateTime(2020, 10, 18), PassingScore = 185 };
+                var firstLecturerUpdated = new Lecturer { LecturerID = 7, Name = "Platon", BirthDate = new DateTime(1980, 5, 4) };
+                var firstGradeUpdated = new Grade { GradeID = 8, GradeDate = new DateTime(2020, 3, 24), IsComplete = true, HomeTaskID = 4, StudentID = 8 };
+                var firstHomeTaskUpdated = new HomeTask { HomeTaskID = 3, Name = "HometaskUpdated", Description = "Hi", TaskDate = new DateTime(2020, 4, 15), SerialNumber = 1, CourseID = 7 };
+
+                Repository.UpdateCourse(connection, firstCourseUpdated);
+                Repository.DeleteCourse(connection, 9);
+                Repository.UpdateStudent(connection, firstStudentUpdated);
+                Repository.DeleteStudent(connection, 9);
+                Repository.UpdateLecturer(connection, firstLecturerUpdated);
+                Repository.DeleteLecturer(connection, 8);
+                Repository.UpdateHomeTask(connection, firstHomeTaskUpdated);
+                Repository.DeleteHomeTask(connection, 5);
+                Repository.UpdateGrade(connection, firstGradeUpdated);
+                Repository.DeleteGrade(connection, 10);
+
+                Console.WriteLine("After Updating and Deleting");
+
+                courses = Repository.GetAllCourses(connection);
+                students = Repository.GetAllStudents(connection);
+                lecturers = Repository.GetAllLecturers(connection);
+                grades = Repository.GetAllGrades(connection);
+                hometasks = Repository.GetAllHomeTasks(connection);
+
+                Console.WriteLine("\nAll students\n");
+
+                foreach (var stud in students)
+                {
+                    Console.WriteLine(stud.FirstName);
+                }
+
+                Console.WriteLine("\nAll courses\n");
+
+                foreach (var course in courses)
+                {
+                    Console.WriteLine(course.Name);
+                }
+
+                Console.WriteLine("\nAll lecturers\n");
+
+                foreach (var lecturer in lecturers)
+                {
+                    Console.WriteLine(lecturer.Name);
+                }
+
+                Console.WriteLine("\nAll grades\n");
+
+                foreach (var grade in grades)
+                {
+                    Console.WriteLine(grade.GradeDate.Date.ToString("d", new CultureInfo("fr-FR")));
+                }
+
+                Console.WriteLine("\nAll hometasks\n");
+
+                foreach (var hometask in hometasks)
+                {
+                    Console.WriteLine(hometask.Name);
+                }
+
+                Console.WriteLine("\nAll pairs Student-Course\n");
+
+                var studentsCourses = Repository.GetAllStudentsCourses(connection);
+
+                foreach(var studentCourse in studentsCourses)
+                {
+                    Console.WriteLine(studentCourse);
+                }
+
+                Console.WriteLine("\nAll pairs Course-Lecturer\n");
+
+                var coursesLecturers = Repository.GetAllCoursesLecturers(connection);
+
+                foreach(var courseLecturer in coursesLecturers)
+                {
+                    Console.WriteLine(courseLecturer);
+                }
+
+
+                Repository.DeleteCourseLecturer(connection, (7, 9));
+                Repository.DeleteStudentCourse(connection, (8, 7));
+
+                Console.WriteLine("\nAll pairs Student-Course after deleting\n");
+
+                studentsCourses = Repository.GetAllStudentsCourses(connection);
+
+                foreach (var studentCourse in studentsCourses)
+                {
+                    Console.WriteLine(studentCourse);
+                }
+
+                Console.WriteLine("\nAll pairs Course-Lecturer after deleting\n");
+
+                coursesLecturers = Repository.GetAllCoursesLecturers(connection);
+
+                foreach (var courseLecturer in coursesLecturers)
+                {
+                    Console.WriteLine(courseLecturer);
                 }
 
             }
