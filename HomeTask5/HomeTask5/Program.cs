@@ -43,7 +43,11 @@ namespace HomeTask5
 
     class Grade
     {
-
+        public int GradeID { get; set; } 
+        public DateTime GradeDate { get; set; }
+        public bool IsComplete { get; set; }
+        public int HomeTaskID { get; set; }
+        public int StudentID { get; set; }
     }
 
     class Repository
@@ -135,7 +139,7 @@ namespace HomeTask5
 
         public static List<Course> GetAllCourses(SqlConnection connection)
         {
-            SqlCommand command = new SqlCommand("SELECT CourseID, Name, StartDate, EndDate, PassingScore FROM Students", connection);
+            SqlCommand command = new SqlCommand("SELECT CourseID, Name, StartDate, EndDate, PassingScore FROM Courses", connection);
 
             var courses = new List<Course>();
 
@@ -322,6 +326,227 @@ namespace HomeTask5
             deleteCommand.Parameters.AddWithValue("@hometaskID", hometaskID);
 
             deleteCommand.ExecuteNonQuery();
+        }
+
+        private static Grade GetGrade(SqlDataReader reader)
+        {
+            var gradeID = reader.GetInt32(0);
+            var gradeDate = reader.GetDateTime(1);
+            var isComplete = reader.GetBoolean(2);
+            var hometaskID = reader.GetInt32(3);
+            var studentID = reader.GetInt32(4);
+
+            return new Grade
+            {
+                GradeID = gradeID,
+                GradeDate = gradeDate,
+                IsComplete = isComplete,
+                HomeTaskID = hometaskID,
+                StudentID = studentID
+            };
+        }
+
+        public static List<Grade> GetAllGrades(SqlConnection connection)
+        {
+            SqlCommand command = new SqlCommand("SELECT GradeID, GradeDate, IsComplete, HomeTaskID," +
+                "StudentID FROM HomeTasks", connection);
+
+            var grades = new List<Grade>();
+
+            using (var reader = command.ExecuteReader())
+            {
+                while (reader.Read())
+                {
+                    var grade = GetGrade(reader);
+                    grades.Add(grade);
+                }
+            }
+
+            return grades;
+        }
+
+        public static Grade CreateGrade(SqlConnection connection, Grade grade)
+        {
+            var createCommand = new SqlCommand("INSERT INTO Grades (GradeDate, IsComplete, HomeTaskID," +
+                "StudentID) VALUES (@gradeDate, @isComplete, @hometaskID, @studentID)", connection);
+
+            createCommand.Parameters.AddWithValue("@gradeDate", grade.GradeDate);
+            createCommand.Parameters.AddWithValue("@isComplete", grade.IsComplete);
+            createCommand.Parameters.AddWithValue("@hometaskID", grade.HomeTaskID);
+            createCommand.Parameters.AddWithValue("@studentID", grade.StudentID);
+
+            createCommand.ExecuteNonQuery();
+
+            return grade;
+        }
+
+        public static void UpdateGrade(SqlConnection connection, Grade grade)
+        {
+            var updateCommand = new SqlCommand("UPDATE Grades SET GradeDate = @gradeDate," +
+            "IsComplete = @isComplete, HomeTaskID = @hometaskID, StudentID = @studentID," +
+            "WHERE GradeID = @gradeID", connection);
+
+            updateCommand.Parameters.AddWithValue("@gradeDate", grade.GradeDate);
+            updateCommand.Parameters.AddWithValue("@isComplete", grade.IsComplete);
+            updateCommand.Parameters.AddWithValue("@hometaskID", grade.HomeTaskID);
+            updateCommand.Parameters.AddWithValue("@studentID", grade.StudentID);
+            updateCommand.Parameters.AddWithValue("@gradeID", grade.GradeID);
+
+            updateCommand.ExecuteNonQuery();
+        }
+
+        public static void DeleteGrade (SqlConnection connection, int gradeID)
+        {
+            var deleteCommand = new SqlCommand("DELETE FROM Grades WHERE GradeID = @gradeID", connection);
+
+            deleteCommand.Parameters.AddWithValue("@gradeID", gradeID);
+
+            deleteCommand.ExecuteNonQuery();
+        }
+
+
+        public static List<(int studentID, int courseID)> GetAllStudentsCourses(SqlConnection connection)
+        {
+            SqlCommand command = new SqlCommand("SELECT StudentID, CourseID FROM Students_Courses", connection);
+
+            var studentsCourses = new List<(int studentID,int courseID)>();
+
+            using (var reader = command.ExecuteReader())
+            {
+                while (reader.Read())
+                {
+                    var studentCourse = (reader.GetInt32(0), reader.GetInt32(1));
+                    studentsCourses.Add(studentCourse);
+                }
+            }
+
+            return studentsCourses;
+        }
+
+        public static (int studentID, int courseID) CreateStudentCourse (SqlConnection connection, (int studentID, int courseID) studentCourse)
+        {
+            var createCommand = new SqlCommand("INSERT INTO Students_Courses (StudentID, CourseID)" +
+                " VALUES (@studentID, @courseID)", connection);
+
+            createCommand.Parameters.AddWithValue("@studentID", studentCourse.studentID);
+            createCommand.Parameters.AddWithValue("@courseID", studentCourse.courseID);
+
+            createCommand.ExecuteNonQuery();
+
+            return studentCourse;
+        }
+
+        public static void DeleteStudentCourse(SqlConnection connection, (int studentID, int courseID) studentCourse)
+        {
+            var deleteCommand = new SqlCommand("DELETE FROM Students_Courses WHERE StudentID = @studentID " +
+                "AND CourseID = @courseID", connection);
+
+            deleteCommand.Parameters.AddWithValue("@studentID", studentCourse.studentID);
+            deleteCommand.Parameters.AddWithValue("@courseID", studentCourse.courseID);
+
+            deleteCommand.ExecuteNonQuery();
+        }
+
+        public static List<Course> GetAllCoursesForStudent(SqlConnection connection, int studentID)
+        {
+            SqlCommand getCoursesIDCommand = new SqlCommand($"SELECT CourseID FROM Students_Courses " +
+                $"WHERE StudentID = {studentID}", connection);
+
+            var courses = new List<Course>();
+
+            using (var reader = getCoursesIDCommand.ExecuteReader())
+            {
+                while (reader.Read())
+                {
+                    var courseID = reader.GetInt32(0);
+
+                    SqlCommand getCoursesCommand = new SqlCommand($"SELECT CourseID, Name, StartDate, EndDate, " +
+                        $"PassingScore FROM Courses WHERE CourseID = {courseID}", connection);
+
+                    using (var subreader = getCoursesCommand.ExecuteReader())
+                    {
+                        subreader.Read();
+
+                        var course = GetCourse(subreader);
+
+                        courses.Add(course);
+                    }
+                }
+            }
+
+            return courses;
+        }
+
+        public static List<(int courseID, int lecturerID)> GetAllCoursesLecturers(SqlConnection connection)
+        {
+            SqlCommand command = new SqlCommand("SELECT CourseID, LecturerID FROM Courses_Lecturers", connection);
+
+            var coursesLecturers = new List<(int courseID, int lecturerID)>();
+
+            using (var reader = command.ExecuteReader())
+            {
+                while (reader.Read())
+                {
+                    var courseLecturer = (reader.GetInt32(0), reader.GetInt32(1));
+                    coursesLecturers.Add(courseLecturer);
+                }
+            }
+
+            return coursesLecturers;
+        }
+
+        public static (int studentID, int courseID) CreateCourseLecturer(SqlConnection connection, (int courseID, int lecturerID) courseLecturer)
+        {
+            var createCommand = new SqlCommand("INSERT INTO Courses_Lecturers (CourseID, LecturerID)" +
+                " VALUES (@courseID, @lecturerID)", connection);
+
+            createCommand.Parameters.AddWithValue("@courseID", courseLecturer.courseID);
+            createCommand.Parameters.AddWithValue("@lecturerID", courseLecturer.lecturerID);
+
+            createCommand.ExecuteNonQuery();
+
+            return courseLecturer;
+        }
+
+        public static void DeleteCourseLecturer(SqlConnection connection,(int courseID,int lecturerID) courseLecturer)
+        {
+            var deleteCommand = new SqlCommand("DELETE FROM Courses_Lecturers WHERE CourseID = @courseID " +
+                "AND LecturerID = @lecturerID", connection);
+
+            deleteCommand.Parameters.AddWithValue("@courseID", courseLecturer.courseID);
+            deleteCommand.Parameters.AddWithValue("@lecturerID", courseLecturer.lecturerID);
+
+            deleteCommand.ExecuteNonQuery();
+        }
+
+        public static List<Lecturer> GetAllLecturersForCourse(SqlConnection connection, int courseID)
+        {
+            SqlCommand getLecturersIDCommand = new SqlCommand($"SELECT LecturerID FROM Courses_Lectures " +
+                $"WHERE CourseID = {courseID}", connection);
+
+            var lecturers = new List<Lecturer>();
+
+            using (var reader = getLecturersIDCommand.ExecuteReader())
+            {
+                while (reader.Read())
+                {
+                    var lecturerID = reader.GetInt32(0);
+
+                    SqlCommand getLecturersCommand = new SqlCommand($"SELECT LecturerID, Name, BirthDate " +
+                        $"FROM Courses WHERE LecturerID = {lecturerID}", connection);
+
+                    using (var subreader = getLecturersCommand.ExecuteReader())
+                    {
+                        subreader.Read();
+
+                        var lecturer = GetLecturer(subreader);
+
+                        lecturers.Add(lecturer);
+                    }
+                }
+            }
+
+            return lecturers;
         }
     }
 
