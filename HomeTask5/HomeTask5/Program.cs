@@ -1,54 +1,11 @@
 ﻿using System;
 using System.Data.SqlClient;
 using System.Globalization;
+using StudyManager.Models;
+using StudyManager.DataAccess.ADO;
 
 namespace HomeTask5
 {
-    class Student
-    {
-        public int StudentID { get; set; }
-        public string FirstName { get; set; }
-        public string LastName { get; set; }
-        public string PhoneNumber { get; set; }
-        public string Email { get; set; }
-        public string Github { get; set; }
-    }
-
-    class Course
-    {
-        public int CourseID { get; set; }
-        public string Name { get; set; }
-        public DateTime StartDate { get; set; }
-        public DateTime EndDate { get; set; }
-        public int PassingScore { get; set; }
-    }
-
-    class Lecturer
-    {
-        public int LecturerID { get; set; }
-        public string Name { get; set; }
-        public DateTime BirthDate { get; set; }
-    }
-
-    class HomeTask
-    {
-        public int HomeTaskID { get; set; }
-        public string Name { get; set; }
-        public string Description { get; set; }
-        public DateTime TaskDate { get; set; }
-        public int SerialNumber { get; set; }
-        public int CourseID { get; set; }
-    }
-
-    class Grade
-    {
-        public int GradeID { get; set; } 
-        public DateTime GradeDate { get; set; }
-        public bool IsComplete { get; set; }
-        public int HomeTaskID { get; set; }
-        public int StudentID { get; set; }
-    }
-
     class Program
     {
         static void Main(string[] args)

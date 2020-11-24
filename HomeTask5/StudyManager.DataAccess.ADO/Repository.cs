@@ -1,10 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
+using StudyManager.Models;
 
-namespace HomeTask5
+namespace StudyManager.DataAccess.ADO
 {
-    class Repository
+    public class Repository
     {
         private static Student GetStudent(SqlDataReader reader)
         {
@@ -229,9 +230,9 @@ namespace HomeTask5
             updateCommand.Parameters.AddWithValue("@name", lecturer.Name);
             updateCommand.Parameters.AddWithValue("@birthDate", lecturer.BirthDate);
 
-            try 
-            { 
-                updateCommand.ExecuteNonQuery(); 
+            try
+            {
+                updateCommand.ExecuteNonQuery();
             }
             catch (Exception ex)
             {
@@ -415,7 +416,7 @@ namespace HomeTask5
             {
                 createCommand.ExecuteNonQuery();
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 Console.WriteLine(ex.Message);
                 Console.ReadKey();
@@ -581,7 +582,7 @@ namespace HomeTask5
 
             var students = new List<Student>();
 
-            foreach(var studentID in studentsIDs)
+            foreach (var studentID in studentsIDs)
             {
                 SqlCommand getStudentsCommand = new SqlCommand($"SELECT StudentID, FirstName, LastName, PhoneNumber, " +
                     $"Email, Github FROM Students WHERE StudentID = {studentID}", connection);
@@ -676,7 +677,7 @@ namespace HomeTask5
 
             var lecturers = new List<Lecturer>();
 
-            foreach(var lecturerID in lecturersIDs)
+            foreach (var lecturerID in lecturersIDs)
             {
                 SqlCommand getLecturersCommand = new SqlCommand($"SELECT LecturerID, Name, BirthDate " +
                         $"FROM Lecturers WHERE LecturerID = {lecturerID}", connection);
@@ -713,7 +714,7 @@ namespace HomeTask5
 
             var courses = new List<Course>();
 
-            foreach(var courseID in coursesIDs)
+            foreach (var courseID in coursesIDs)
             {
                 SqlCommand getCoursesCommand = new SqlCommand($"SELECT CourseID, Name, StartDate, EndDate, " +
                         $"PassingScore FROM Courses WHERE CourseID = {courseID}", connection);
