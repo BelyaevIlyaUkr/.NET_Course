@@ -3,12 +3,11 @@ using System.Collections.Generic;
 using System.Net;
 using System.Threading;
 
-namespace Thread_Parallel
+
+namespace Thread_Consistently
 {
     class Program
     {
-        private static Semaphore _pool;
-
         private static List<string> sitesContent = new List<string>();
 
         static void Main(string[] args)
@@ -26,31 +25,32 @@ namespace Thread_Parallel
                 "https://docs.microsoft.com/en-us/ef/core/"
             };
 
-            _pool = new Semaphore(0, 1);
+            List<Thread> threads = new List<Thread>();
 
-            for (int i = 0; i < sites.Count; i++)
+            foreach (var site in sites)
             {
-                new Thread(new ParameterizedThreadStart(DownloadString)).Start(sites[i]);
+                threads.Add(new Thread(() => DownloadString(site)));
             }
 
-            _pool.Release();
+            foreach(var t in threads)
+            {
+                t.Start();
+
+                t.Join();
+            }
 
             Console.ReadKey();
         }
 
-        private static void DownloadString(object address)
+        private static void DownloadString(object url)
         {
             WebClient client = new WebClient();
 
-            _pool.WaitOne();
-
-            sitesContent.Add(client.DownloadString((string)address));
+            sitesContent.Add(client.DownloadString((string)url));
 
             Console.WriteLine(sitesContent[sitesContent.Count - 1]);
 
             Console.WriteLine("\n\n\n\n\n\n\n\n\n\n\n\n");
-
-            _pool.Release();
         }
     }
 }
