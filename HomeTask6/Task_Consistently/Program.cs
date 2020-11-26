@@ -1,15 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Net;
-using System.Threading;
 using System.Threading.Tasks;
 
-namespace Task_Parallel
+
+namespace Task_Consistently
 {
     class Program
     {
-        private static Semaphore _pool;
-
         private static List<string> sitesContent = new List<string>();
 
         static void Main(string[] args)
@@ -27,33 +25,34 @@ namespace Task_Parallel
                 "https://docs.microsoft.com/en-us/ef/core/"
             };
 
-            _pool = new Semaphore(0, 1);
+            List<Task> tasks = new List<Task>();
 
             foreach (var site in sites)
             {
-                Task.Run(() => DownloadString(site));
+                var threadsToWait = tasks.ToArray();
+                tasks.Add(new Task(() => DownloadString(site, threadsToWait)));
             }
 
-            _pool.Release();
+            foreach(var t in tasks)
+            {
+                t.Start();
+            }
 
             Console.ReadKey();
         }
 
-        private static void DownloadString(object url)
+        private static void DownloadString(object url, object threadsToWait)
         {
+
+            Task.WaitAll((Task[]) threadsToWait);
+
             WebClient client = new WebClient();
 
-            var contentString = client.DownloadString((string)url);
-
-            _pool.WaitOne();
-
-            sitesContent.Add(contentString);
+            sitesContent.Add(client.DownloadString((string)url));
 
             Console.WriteLine(sitesContent[sitesContent.Count - 1]);
 
             Console.WriteLine("\n\n\n\n\n\n\n\n\n\n\n\n");
-
-            _pool.Release();
         }
     }
 }

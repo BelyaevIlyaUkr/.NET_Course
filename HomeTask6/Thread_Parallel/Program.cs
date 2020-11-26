@@ -40,11 +40,14 @@ namespace Thread_Parallel
 
         private static void DownloadString(object address)
         {
+
             WebClient client = new WebClient();
+
+            var contentString = client.DownloadString((string)address);
 
             _pool.WaitOne();
 
-            sitesContent.Add(client.DownloadString((string)address));
+            sitesContent.Add(contentString);
 
             Console.WriteLine(sitesContent[sitesContent.Count - 1]);
 

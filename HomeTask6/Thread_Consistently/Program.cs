@@ -29,21 +29,25 @@ namespace Thread_Consistently
 
             foreach (var site in sites)
             {
-                threads.Add(new Thread(() => DownloadString(site)));
+                var threadsToWait = threads.ToArray();
+                threads.Add(new Thread(() => DownloadString(site, threadsToWait)));
             }
 
             foreach(var t in threads)
             {
                 t.Start();
-
-                t.Join();
             }
 
             Console.ReadKey();
         }
 
-        private static void DownloadString(object url)
+        private static void DownloadString(object url, object threadsToWait)
         {
+            foreach(var t in (Thread[])threadsToWait)
+            {
+                t.Join();
+            }
+            
             WebClient client = new WebClient();
 
             sitesContent.Add(client.DownloadString((string)url));
