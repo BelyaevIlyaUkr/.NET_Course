@@ -29,8 +29,11 @@ namespace Thread_Consistently
 
             foreach (var site in sites)
             {
-                var threadsToWait = threads.ToArray();
-                threads.Add(new Thread(() => DownloadString(site, threadsToWait)));
+                Thread threadToWait;
+
+                var count = threads.Count == 0 ? threadToWait = null : threadToWait = threads[threads.Count - 1];
+
+                threads.Add(new Thread(() => DownloadString(site, threadToWait)));
             }
 
             foreach(var t in threads)
@@ -41,11 +44,11 @@ namespace Thread_Consistently
             Console.ReadKey();
         }
 
-        private static void DownloadString(object url, object threadsToWait)
+        private static void DownloadString(object url, object previousThread)
         {
-            foreach(var t in (Thread[])threadsToWait)
+            if (previousThread != null)
             {
-                t.Join();
+                ((Thread)previousThread).Join();
             }
             
             WebClient client = new WebClient();

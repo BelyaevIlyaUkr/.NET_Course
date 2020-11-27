@@ -29,8 +29,11 @@ namespace Task_Consistently
 
             foreach (var site in sites)
             {
-                var threadsToWait = tasks.ToArray();
-                tasks.Add(new Task(() => DownloadString(site, threadsToWait)));
+                Task taskToWait;
+
+                var count = tasks.Count == 0 ? taskToWait = null : taskToWait = tasks[tasks.Count - 1];
+
+                tasks.Add(new Task(() => DownloadString(site, taskToWait)));
             }
 
             foreach(var t in tasks)
@@ -41,10 +44,13 @@ namespace Task_Consistently
             Console.ReadKey();
         }
 
-        private static void DownloadString(object url, object threadsToWait)
+        private static void DownloadString(object url, object previousTask)
         {
 
-            Task.WaitAll((Task[]) threadsToWait);
+            if (previousTask != null)
+            {
+                ((Task)previousTask).Wait();
+            }
 
             WebClient client = new WebClient();
 
