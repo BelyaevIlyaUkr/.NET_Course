@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
+using System.Threading.Tasks;
 using StudyManager.Models;
 
 namespace StudyManager.DataAccess.ADO
@@ -20,13 +21,13 @@ namespace StudyManager.DataAccess.ADO
         }
 
 
-        public static List<Student> GetAllStudents(SqlConnection connection)
+        public static async Task<List<Student>> GetAllStudentsAsync(SqlConnection connection)
         {
             SqlCommand command = new SqlCommand("SELECT StudentID, FirstName, LastName, PhoneNumber, Email, Github FROM Students", connection);
 
             var students = new List<Student>();
 
-            using (var reader = command.ExecuteReader())
+            using (var reader = await command.ExecuteReaderAsync())
             {
                 while (reader.Read())
                 {
@@ -39,7 +40,7 @@ namespace StudyManager.DataAccess.ADO
         }
 
 
-        public static Student CreateStudent(SqlConnection connection, Student student)
+        public static async Task<Student> CreateStudentAsync(SqlConnection connection, Student student)
         {
             var createCommand = new SqlCommand("INSERT INTO Students (FirstName,LastName,PhoneNumber,Email,Github)" +
             "VALUES (@firstName,@lastName,@phoneNumber,@email,@github)", connection);
@@ -50,28 +51,28 @@ namespace StudyManager.DataAccess.ADO
             createCommand.Parameters.AddWithValue("@email", student.Email);
             createCommand.Parameters.AddWithValue("@github", student.Github);
 
-            createCommand.ExecuteNonQuery();
+            await createCommand.ExecuteNonQueryAsync();
 
             return student;
         }
 
 
-        public static void DeleteStudent(SqlConnection connection, int studentID)
+        public static async Task DeleteStudentAsync(SqlConnection connection, int studentID)
         {
             var deleteCommand = new SqlCommand("DELETE FROM Students WHERE StudentID = @studentID", connection);
 
             deleteCommand.Parameters.AddWithValue("@studentID", studentID);
-            deleteCommand.ExecuteNonQuery();
+            await deleteCommand.ExecuteNonQueryAsync();
         }
 
-        public static void DeleteAllStudents(SqlConnection connection)
+        public static async Task DeleteAllStudentsAsync(SqlConnection connection)
         {
             var deleteCommand = new SqlCommand("DELETE FROM Students", connection);
 
-            deleteCommand.ExecuteNonQuery();
+            await deleteCommand.ExecuteNonQueryAsync();
         }
 
-        public static void UpdateStudent(SqlConnection connection, Student student)
+        public static async Task UpdateStudentAsync(SqlConnection connection, Student student)
         {
             var updateCommand = new SqlCommand("UPDATE Students SET FirstName = @firstName," +
             "LastName = @lastName, PhoneNumber = @phoneNumber, Email = @email, Github = @github " +
@@ -86,7 +87,7 @@ namespace StudyManager.DataAccess.ADO
 
             try
             {
-                updateCommand.ExecuteNonQuery();
+                await updateCommand.ExecuteNonQueryAsync();
             }
             catch (Exception ex)
             {
@@ -108,13 +109,13 @@ namespace StudyManager.DataAccess.ADO
         }
 
 
-        public static List<Course> GetAllCourses(SqlConnection connection)
+        public static async Task<List<Course>> GetAllCoursesAsync(SqlConnection connection)
         {
             SqlCommand command = new SqlCommand("SELECT CourseID, Name, StartDate, EndDate, PassingScore FROM Courses", connection);
 
             var courses = new List<Course>();
 
-            using (var reader = command.ExecuteReader())
+            using (var reader = await command.ExecuteReaderAsync())
             {
                 while (reader.Read())
                 {
@@ -126,7 +127,7 @@ namespace StudyManager.DataAccess.ADO
             return courses;
         }
 
-        public static Course CreateCourse(SqlConnection connection, Course course)
+        public static async Task<Course> CreateCourseAsync(SqlConnection connection, Course course)
         {
             var createCommand = new SqlCommand("INSERT INTO Courses (Name,StartDate,EndDate,PassingScore)" +
             "VALUES (@name,@startDate,@endDate,@passingScore)", connection);
@@ -136,12 +137,12 @@ namespace StudyManager.DataAccess.ADO
             createCommand.Parameters.AddWithValue("@endDate", course.EndDate);
             createCommand.Parameters.AddWithValue("@passingScore", course.PassingScore);
 
-            createCommand.ExecuteNonQuery();
+            await createCommand.ExecuteNonQueryAsync();
 
             return course;
         }
 
-        public static void UpdateCourse(SqlConnection connection, Course course)
+        public static async Task UpdateCourseAsync(SqlConnection connection, Course course)
         {
             var updateCommand = new SqlCommand("UPDATE Courses SET Name = @name," +
             "StartDate = @startDate, EndDate = @endDate, PassingScore = passingScore " +
@@ -155,7 +156,7 @@ namespace StudyManager.DataAccess.ADO
 
             try
             {
-                updateCommand.ExecuteNonQuery();
+                await updateCommand.ExecuteNonQueryAsync();
             }
             catch (Exception ex)
             {
@@ -165,20 +166,20 @@ namespace StudyManager.DataAccess.ADO
             }
         }
 
-        public static void DeleteCourse(SqlConnection connection, int courseID)
+        public static async Task DeleteCourseAsync(SqlConnection connection, int courseID)
         {
             var deleteCommand = new SqlCommand("DELETE FROM Courses WHERE CourseID = @courseID", connection);
 
             deleteCommand.Parameters.AddWithValue("@courseID", courseID);
 
-            deleteCommand.ExecuteNonQuery();
+            await deleteCommand.ExecuteNonQueryAsync();
         }
 
-        public static void DeleteAllCourses(SqlConnection connection)
+        public static async Task DeleteAllCoursesAsync(SqlConnection connection)
         {
             var deleteCommand = new SqlCommand("DELETE FROM Courses", connection);
 
-            deleteCommand.ExecuteNonQuery();
+            await deleteCommand.ExecuteNonQueryAsync();
         }
 
         private static Lecturer GetLecturer(SqlDataReader reader)
@@ -190,13 +191,13 @@ namespace StudyManager.DataAccess.ADO
             return new Lecturer { LecturerID = lecturerID, Name = name, BirthDate = birthDate };
         }
 
-        public static List<Lecturer> GetAllLecturers(SqlConnection connection)
+        public static async Task<List<Lecturer>> GetAllLecturersAsync(SqlConnection connection)
         {
             SqlCommand command = new SqlCommand("SELECT LecturerID, Name, BirthDate FROM Lecturers", connection);
 
             var lecturers = new List<Lecturer>();
 
-            using (var reader = command.ExecuteReader())
+            using (var reader = await command.ExecuteReaderAsync())
             {
                 while (reader.Read())
                 {
@@ -208,7 +209,7 @@ namespace StudyManager.DataAccess.ADO
             return lecturers;
         }
 
-        public static Lecturer CreateLecturer(SqlConnection connection, Lecturer lecturer)
+        public static async Task<Lecturer> CreateLecturerAsync(SqlConnection connection, Lecturer lecturer)
         {
             var createCommand = new SqlCommand("INSERT INTO Lecturers (Name, BirthDate)" +
             "VALUES (@name, @birthDate)", connection);
@@ -216,12 +217,12 @@ namespace StudyManager.DataAccess.ADO
             createCommand.Parameters.AddWithValue("@name", lecturer.Name);
             createCommand.Parameters.AddWithValue("@birthDate", lecturer.BirthDate);
 
-            createCommand.ExecuteNonQuery();
+            await createCommand.ExecuteNonQueryAsync();
 
             return lecturer;
         }
 
-        public static void UpdateLecturer(SqlConnection connection, Lecturer lecturer)
+        public static async Task UpdateLecturerAsync(SqlConnection connection, Lecturer lecturer)
         {
             var updateCommand = new SqlCommand("UPDATE Lecturers SET Name = @name," +
             "BirthDate = @birthDate WHERE LecturerID = @lecturerID", connection);
@@ -232,7 +233,7 @@ namespace StudyManager.DataAccess.ADO
 
             try
             {
-                updateCommand.ExecuteNonQuery();
+                await updateCommand.ExecuteNonQueryAsync();
             }
             catch (Exception ex)
             {
@@ -243,20 +244,20 @@ namespace StudyManager.DataAccess.ADO
 
         }
 
-        public static void DeleteLecturer(SqlConnection connection, int lecturerID)
+        public static async Task DeleteLecturerAsync(SqlConnection connection, int lecturerID)
         {
             var deleteCommand = new SqlCommand("DELETE FROM Lecturers WHERE LecturerID = @lecturerID", connection);
 
             deleteCommand.Parameters.AddWithValue("@lecturerID", lecturerID);
 
-            deleteCommand.ExecuteNonQuery();
+            await deleteCommand.ExecuteNonQueryAsync();
         }
 
-        public static void DeleteAllLecturers(SqlConnection connection)
+        public static async Task DeleteAllLecturersAsync(SqlConnection connection)
         {
             var deleteCommand = new SqlCommand("DELETE FROM Lecturers", connection);
 
-            deleteCommand.ExecuteNonQuery();
+            await deleteCommand.ExecuteNonQueryAsync();
         }
 
         private static HomeTask GetHomeTask(SqlDataReader reader)
@@ -279,14 +280,14 @@ namespace StudyManager.DataAccess.ADO
             };
         }
 
-        public static List<HomeTask> GetAllHomeTasks(SqlConnection connection)
+        public static async Task<List<HomeTask>> GetAllHomeTasksAsync(SqlConnection connection)
         {
             SqlCommand command = new SqlCommand("SELECT HomeTaskID, Name, Description, TaskDate, " +
                 "SerialNumber, CourseID FROM HomeTasks", connection);
 
             var homeTasks = new List<HomeTask>();
 
-            using (var reader = command.ExecuteReader())
+            using (var reader = await command.ExecuteReaderAsync())
             {
                 while (reader.Read())
                 {
@@ -298,7 +299,7 @@ namespace StudyManager.DataAccess.ADO
             return homeTasks;
         }
 
-        public static HomeTask CreateHomeTask(SqlConnection connection, HomeTask hometask)
+        public static async Task<HomeTask> CreateHomeTaskAsync(SqlConnection connection, HomeTask hometask)
         {
             var createCommand = new SqlCommand("INSERT INTO HomeTasks (Name, Description, TaskDate," +
                 "SerialNumber, CourseID) VALUES (@name, @description, @taskDate, @serialNumber, @courseID)", connection);
@@ -311,7 +312,7 @@ namespace StudyManager.DataAccess.ADO
 
             try
             {
-                createCommand.ExecuteNonQuery();
+                await createCommand.ExecuteNonQueryAsync();
             }
             catch (Exception ex)
             {
@@ -323,7 +324,7 @@ namespace StudyManager.DataAccess.ADO
             return hometask;
         }
 
-        public static void UpdateHomeTask(SqlConnection connection, HomeTask hometask)
+        public static async Task UpdateHomeTaskAsync(SqlConnection connection, HomeTask hometask)
         {
             var updateCommand = new SqlCommand("UPDATE Hometasks SET Name = @name," +
             "Description = @description, TaskDate = @taskDate, SerialNumber = @serialNumber," +
@@ -338,7 +339,7 @@ namespace StudyManager.DataAccess.ADO
 
             try
             {
-                updateCommand.ExecuteNonQuery();
+                await updateCommand.ExecuteNonQueryAsync();
             }
             catch (Exception ex)
             {
@@ -349,20 +350,20 @@ namespace StudyManager.DataAccess.ADO
 
         }
 
-        public static void DeleteHomeTask(SqlConnection connection, int hometaskID)
+        public static async Task DeleteHomeTaskAsync(SqlConnection connection, int hometaskID)
         {
             var deleteCommand = new SqlCommand("DELETE FROM HomeTasks WHERE HomeTaskID = @hometaskID", connection);
 
             deleteCommand.Parameters.AddWithValue("@hometaskID", hometaskID);
 
-            deleteCommand.ExecuteNonQuery();
+            await deleteCommand.ExecuteNonQueryAsync();
         }
 
-        public static void DeleteAllHomeTasks(SqlConnection connection)
+        public static async Task DeleteAllHomeTasksAsync(SqlConnection connection)
         {
             var deleteCommand = new SqlCommand("DELETE FROM HomeTasks", connection);
 
-            deleteCommand.ExecuteNonQuery();
+            await deleteCommand.ExecuteNonQueryAsync();
         }
 
         private static Grade GetGrade(SqlDataReader reader)
@@ -383,14 +384,14 @@ namespace StudyManager.DataAccess.ADO
             };
         }
 
-        public static List<Grade> GetAllGrades(SqlConnection connection)
+        public static async Task<List<Grade>> GetAllGradesAsync(SqlConnection connection)
         {
             SqlCommand command = new SqlCommand("SELECT GradeID, GradeDate, IsComplete, HomeTaskID," +
                 "StudentID FROM Grades", connection);
 
             var grades = new List<Grade>();
 
-            using (var reader = command.ExecuteReader())
+            using (var reader = await command.ExecuteReaderAsync())
             {
                 while (reader.Read())
                 {
@@ -402,7 +403,7 @@ namespace StudyManager.DataAccess.ADO
             return grades;
         }
 
-        public static Grade CreateGrade(SqlConnection connection, Grade grade)
+        public static async Task<Grade> CreateGradeAsync(SqlConnection connection, Grade grade)
         {
             var createCommand = new SqlCommand("INSERT INTO Grades (GradeDate, IsComplete, HomeTaskID," +
                 "StudentID) VALUES (@gradeDate, @isComplete, @hometaskID, @studentID)", connection);
@@ -414,7 +415,7 @@ namespace StudyManager.DataAccess.ADO
 
             try
             {
-                createCommand.ExecuteNonQuery();
+                await createCommand.ExecuteNonQueryAsync();
             }
             catch (Exception ex)
             {
@@ -426,7 +427,7 @@ namespace StudyManager.DataAccess.ADO
             return grade;
         }
 
-        public static void UpdateGrade(SqlConnection connection, Grade grade)
+        public static async Task UpdateGradeAsync(SqlConnection connection, Grade grade)
         {
             var updateCommand = new SqlCommand("UPDATE Grades SET GradeDate = @gradeDate," +
             "IsComplete = @isComplete, HomeTaskID = @hometaskID, StudentID = @studentID " +
@@ -440,7 +441,7 @@ namespace StudyManager.DataAccess.ADO
 
             try
             {
-                updateCommand.ExecuteNonQuery();
+                await updateCommand.ExecuteNonQueryAsync();
             }
             catch (Exception ex)
             {
@@ -450,30 +451,30 @@ namespace StudyManager.DataAccess.ADO
             }
         }
 
-        public static void DeleteGrade(SqlConnection connection, int gradeID)
+        public static async Task DeleteGradeAsync(SqlConnection connection, int gradeID)
         {
             var deleteCommand = new SqlCommand("DELETE FROM Grades WHERE GradeID = @gradeID", connection);
 
             deleteCommand.Parameters.AddWithValue("@gradeID", gradeID);
 
-            deleteCommand.ExecuteNonQuery();
+            await deleteCommand.ExecuteNonQueryAsync();
         }
 
 
-        public static void DeleteAllGrades(SqlConnection connection)
+        public static async Task DeleteAllGradesAsync(SqlConnection connection)
         {
             var deleteCommand = new SqlCommand("DELETE FROM Grades", connection);
 
-            deleteCommand.ExecuteNonQuery();
+            await deleteCommand.ExecuteNonQueryAsync();
         }
 
-        public static List<(int studentID, int courseID)> GetAllStudentsCourses(SqlConnection connection)
+        public static async Task<List<(int studentID, int courseID)>> GetAllStudentsCoursesAsync(SqlConnection connection)
         {
             SqlCommand command = new SqlCommand("SELECT StudentID, CourseID FROM Students_Courses", connection);
 
             var studentsCourses = new List<(int studentID, int courseID)>();
 
-            using (var reader = command.ExecuteReader())
+            using (var reader = await command.ExecuteReaderAsync())
             {
                 while (reader.Read())
                 {
@@ -485,7 +486,7 @@ namespace StudyManager.DataAccess.ADO
             return studentsCourses;
         }
 
-        public static (int studentID, int courseID) CreateStudentCourse(SqlConnection connection, (int studentID, int courseID) studentCourse)
+        public static async Task<(int studentID, int courseID)> CreateStudentCourseAsync(SqlConnection connection, (int studentID, int courseID) studentCourse)
         {
             var createCommand = new SqlCommand("INSERT INTO Students_Courses (StudentID, CourseID)" +
                 " VALUES (@studentID, @courseID)", connection);
@@ -495,7 +496,7 @@ namespace StudyManager.DataAccess.ADO
 
             try
             {
-                createCommand.ExecuteNonQuery();
+                await createCommand.ExecuteNonQueryAsync();
             }
             catch (Exception ex)
             {
@@ -507,7 +508,7 @@ namespace StudyManager.DataAccess.ADO
             return studentCourse;
         }
 
-        public static void DeleteStudentCourse(SqlConnection connection, (int studentID, int courseID) studentCourse)
+        public static async Task DeleteStudentCourseAsync(SqlConnection connection, (int studentID, int courseID) studentCourse)
         {
             var deleteCommand = new SqlCommand("DELETE FROM Students_Courses WHERE StudentID = @studentID " +
                 "AND CourseID = @courseID", connection);
@@ -515,25 +516,25 @@ namespace StudyManager.DataAccess.ADO
             deleteCommand.Parameters.AddWithValue("@studentID", studentCourse.studentID);
             deleteCommand.Parameters.AddWithValue("@courseID", studentCourse.courseID);
 
-            deleteCommand.ExecuteNonQuery();
+            await deleteCommand.ExecuteNonQueryAsync();
         }
 
 
-        public static void DeleteAllStudentCourses(SqlConnection connection)
+        public static async Task DeleteAllStudentCoursesAsync(SqlConnection connection)
         {
             var deleteCommand = new SqlCommand("DELETE FROM Student_Courses", connection);
 
-            deleteCommand.ExecuteNonQuery();
+            await deleteCommand.ExecuteNonQueryAsync();
         }
 
-        public static List<Course> GetAllCoursesForStudent(SqlConnection connection, int studentID)
+        public static async Task<List<Course>> GetAllCoursesForStudentAsync(SqlConnection connection, int studentID)
         {
             SqlCommand getCoursesIDCommand = new SqlCommand($"SELECT CourseID FROM Students_Courses " +
                 $"WHERE StudentID = {studentID}", connection);
 
             var coursesIDs = new List<int>();
 
-            using (var reader = getCoursesIDCommand.ExecuteReader())
+            using (var reader = await getCoursesIDCommand.ExecuteReaderAsync())
             {
                 while (reader.Read())
                 {
@@ -550,7 +551,7 @@ namespace StudyManager.DataAccess.ADO
                 SqlCommand getCoursesCommand = new SqlCommand($"SELECT CourseID, Name, StartDate, EndDate, " +
                     $"PassingScore FROM Courses WHERE CourseID = {courseID}", connection);
 
-                using (var reader = getCoursesCommand.ExecuteReader())
+                using (var reader = await getCoursesCommand.ExecuteReaderAsync())
                 {
                     reader.Read();
 
@@ -563,14 +564,14 @@ namespace StudyManager.DataAccess.ADO
             return courses;
         }
 
-        public static List<Student> GetAllStudentsInCourse(SqlConnection connection, int courseID)
+        public static async Task<List<Student>> GetAllStudentsInCourseAsync(SqlConnection connection, int courseID)
         {
             SqlCommand getStudentsIDCommand = new SqlCommand($"SELECT StudentID FROM Students_Courses " +
                 $"WHERE CourseID = {courseID}", connection);
 
             var studentsIDs = new List<int>();
 
-            using (var reader = getStudentsIDCommand.ExecuteReader())
+            using (var reader = await getStudentsIDCommand.ExecuteReaderAsync())
             {
                 while (reader.Read())
                 {
@@ -600,13 +601,13 @@ namespace StudyManager.DataAccess.ADO
             return students;
         }
 
-        public static List<(int courseID, int lecturerID)> GetAllCoursesLecturers(SqlConnection connection)
+        public static async Task<List<(int courseID, int lecturerID)>> GetAllCoursesLecturersAsync(SqlConnection connection)
         {
             SqlCommand command = new SqlCommand("SELECT CourseID, LecturerID FROM Courses_Lecturers", connection);
 
             var coursesLecturers = new List<(int courseID, int lecturerID)>();
 
-            using (var reader = command.ExecuteReader())
+            using (var reader = await command.ExecuteReaderAsync())
             {
                 while (reader.Read())
                 {
@@ -618,7 +619,7 @@ namespace StudyManager.DataAccess.ADO
             return coursesLecturers;
         }
 
-        public static (int studentID, int courseID) CreateCourseLecturer(SqlConnection connection, (int courseID, int lecturerID) courseLecturer)
+        public static async Task<(int studentID, int courseID)> CreateCourseLecturerAsync(SqlConnection connection, (int courseID, int lecturerID) courseLecturer)
         {
             var createCommand = new SqlCommand("INSERT INTO Courses_Lecturers (CourseID, LecturerID)" +
                 " VALUES (@courseID, @lecturerID)", connection);
@@ -628,7 +629,7 @@ namespace StudyManager.DataAccess.ADO
 
             try
             {
-                createCommand.ExecuteNonQuery();
+                await createCommand.ExecuteNonQueryAsync();
             }
             catch (Exception ex)
             {
@@ -640,7 +641,7 @@ namespace StudyManager.DataAccess.ADO
             return courseLecturer;
         }
 
-        public static void DeleteCourseLecturer(SqlConnection connection, (int courseID, int lecturerID) courseLecturer)
+        public static async Task DeleteCourseLecturerAsync(SqlConnection connection, (int courseID, int lecturerID) courseLecturer)
         {
             var deleteCommand = new SqlCommand("DELETE FROM Courses_Lecturers WHERE CourseID = @courseID " +
                 "AND LecturerID = @lecturerID", connection);
@@ -648,24 +649,24 @@ namespace StudyManager.DataAccess.ADO
             deleteCommand.Parameters.AddWithValue("@courseID", courseLecturer.courseID);
             deleteCommand.Parameters.AddWithValue("@lecturerID", courseLecturer.lecturerID);
 
-            deleteCommand.ExecuteNonQuery();
+            await deleteCommand.ExecuteNonQueryAsync();
         }
 
-        public static void DeleteAllCoursesLecturers(SqlConnection connection)
+        public static async Task DeleteAllCoursesLecturersAsync(SqlConnection connection)
         {
             var deleteCommand = new SqlCommand("DELETE FROM Courses_Lecturers", connection);
 
-            deleteCommand.ExecuteNonQuery();
+            await deleteCommand.ExecuteNonQueryAsync();
         }
 
-        public static List<Lecturer> GetAllLecturersForCourse(SqlConnection connection, int courseID)
+        public static async Task<List<Lecturer>> GetAllLecturersForCourseAsync(SqlConnection connection, int courseID)
         {
             SqlCommand getLecturersIDCommand = new SqlCommand($"SELECT LecturerID FROM Courses_Lecturers " +
                 $"WHERE CourseID = {courseID}", connection);
 
             var lecturersIDs = new List<int>();
 
-            using (var reader = getLecturersIDCommand.ExecuteReader())
+            using (var reader = await getLecturersIDCommand.ExecuteReaderAsync())
             {
                 while (reader.Read())
                 {
@@ -682,7 +683,7 @@ namespace StudyManager.DataAccess.ADO
                 SqlCommand getLecturersCommand = new SqlCommand($"SELECT LecturerID, Name, BirthDate " +
                         $"FROM Lecturers WHERE LecturerID = {lecturerID}", connection);
 
-                using (var reader = getLecturersCommand.ExecuteReader())
+                using (var reader = await getLecturersCommand.ExecuteReaderAsync())
                 {
                     reader.Read();
 
@@ -695,14 +696,14 @@ namespace StudyManager.DataAccess.ADO
             return lecturers;
         }
 
-        public static List<Course> GetAllCoursesWithDefiniteLecturer(SqlConnection connection, int lecturerID)
+        public static async Task<List<Course>> GetAllCoursesWithDefiniteLecturerAsync(SqlConnection connection, int lecturerID)
         {
             SqlCommand getCoursesIDCommand = new SqlCommand($"SELECT CourseID FROM Courses_Lecturers " +
                 $"WHERE LecturerID = {lecturerID}", connection);
 
             var coursesIDs = new List<int>();
 
-            using (var reader = getCoursesIDCommand.ExecuteReader())
+            using (var reader = await getCoursesIDCommand.ExecuteReaderAsync())
             {
                 while (reader.Read())
                 {
@@ -719,7 +720,7 @@ namespace StudyManager.DataAccess.ADO
                 SqlCommand getCoursesCommand = new SqlCommand($"SELECT CourseID, Name, StartDate, EndDate, " +
                         $"PassingScore FROM Courses WHERE CourseID = {courseID}", connection);
 
-                using (var reader = getCoursesCommand.ExecuteReader())
+                using (var reader = await getCoursesCommand.ExecuteReaderAsync())
                 {
                     reader.Read();
 
