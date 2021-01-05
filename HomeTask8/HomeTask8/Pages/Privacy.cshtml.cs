@@ -5,17 +5,14 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.Extensions.Configuration;
 
 namespace HomeTask8.Pages
 {
-    public class IndexModel : PageModel
+    public class PrivacyModel : PageModel
     {
-        private readonly ILogger<IndexModel> _logger;
+        private readonly ILogger<PrivacyModel> _logger;
 
-        public IConfiguration Configuration { get; }
-
-        public IndexModel(ILogger<IndexModel> logger, IConfiguration configuration)
+        public PrivacyModel(ILogger<PrivacyModel> logger)
         {
             _logger = logger;
         }

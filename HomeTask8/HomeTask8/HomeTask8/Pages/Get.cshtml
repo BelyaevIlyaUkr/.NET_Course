@@ -6,14 +6,8 @@
 <h2>Getting information</h2>
 <form method="get">
     <div id="input_get_fields">
-        <label for="info_type">Information type</label><br />
-        <select name="info_type" id="info_type">
-            <option value="" disabled selected hidden>Choose type</option>
-            <option value="all_students">All students</option>
-            <option value="all_lecturers">All lecturers</option>
-            <option value="all_courses">All courses</option>
-            <option value="all_grades">All grades</option>
-        </select>
+        <label asp-for="SelectedInfoType"></label><br />
+        <select asp-for="SelectedInfoType" asp-items="Model.InfoTypes"></select>
     </div>
     <div id="input_get_fields">
         <label for="extra_field">Extra field</label><br />
