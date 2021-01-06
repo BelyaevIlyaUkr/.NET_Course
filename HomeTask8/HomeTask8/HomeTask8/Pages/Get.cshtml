@@ -3,15 +3,147 @@
 @{
     ViewData["Title"] = "Getting information";
 }
+
 <h2>Getting information</h2>
+
 <form method="get">
     <div id="input_get_fields">
         <label asp-for="SelectedInfoType"></label><br />
-        <select asp-for="SelectedInfoType" asp-items="Model.InfoTypes"></select>
+        <select asp-for="SelectedInfoType" asp-items="Model.InfoTypes">
+            <option value="" selected disabled hidden >Choose type</option>
+        </select>
     </div>
     <div id="input_get_fields">
         <label for="extra_field">Extra field</label><br />
         <input type="text" name="extra_field" id="extra_field" />
     </div> <br />
-    <input type="submit" id="get_button" value="Get information" />
+    <button id="get_button" type="submit">Get Information</button>
 </form>
+
+@if (Model.ExceptionMessage == null)
+{
+<table class="table">
+    @switch (Model.SelectedInfoType)
+    {
+        case "allStudents":
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>First Name</th>
+                    <th>Last Name</th>
+                    <th>Phone number</th>
+                    <th>Email</th>
+                    <th>Github</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (StudyManager.Models.Student student in Model.Objects)
+                {
+                    <tr>
+                        <td>@student.StudentID</td>
+                        <td>@student.FirstName</td>
+                        <td>@student.LastName</td>
+                        <td>@student.PhoneNumber</td>
+                        <td>@student.Email</td>
+                        <td>@student.Github</td>
+                    </tr>
+                }
+            </tbody>
+            break;
+        case "allCourses":
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Name</th>
+                    <th>Start Date</th>
+                    <th>End Date</th>
+                    <th>Passing Score</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (StudyManager.Models.Course course in Model.Objects)
+                {
+                    <tr>
+                        <td>@course.CourseID</td>
+                        <td>@course.Name</td>
+                        <td>@course.StartDate</td>
+                        <td>@course.EndDate</td>
+                        <td>@course.PassingScore</td>
+                    </tr>
+                }
+            </tbody>
+            break;
+        case "allLecturers":
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Name</th>
+                    <th>Birth Date</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (StudyManager.Models.Lecturer lecturer in Model.Objects)
+                {
+                    <tr>
+                        <td>@lecturer.LecturerID</td>
+                        <td>@lecturer.Name</td>
+                        <td>@lecturer.BirthDate</td>
+                    </tr>
+                }
+            </tbody>
+            break;
+        case "allHomeTasks":
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Name</th>
+                    <th>Description</th>
+                    <th>Task Date</th>
+                    <th>Serial Number</th>
+                    <th>Course ID</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (StudyManager.Models.HomeTask hometask in Model.Objects)
+                {
+                    <tr>
+                        <td>@hometask.HomeTaskID</td>
+                        <td>@hometask.Name</td>
+                        <td>@hometask.Description</td>
+                        <td>@hometask.TaskDate</td>
+                        <td>@hometask.SerialNumber</td>
+                        <td>@hometask.CourseID</td>
+                    </tr>
+                }
+            </tbody>
+            break;
+        case "allGrades":
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Grade Date</th>
+                    <th>Is Complete</th>
+                    <th>HomeTask ID</th>
+                    <th>Student ID</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (StudyManager.Models.Grade grade in Model.Objects)
+                {
+                    <tr>
+                        <td>@grade.GradeID</td>
+                        <td>@grade.GradeDate</td>
+                        <td>@grade.IsComplete</td>
+                        <td>@grade.HomeTaskID</td>
+                        <td>@grade.StudentID</td>
+                    </tr>
+                }
+            </tbody>
+            break;
+    }
+</table>
+}
+else
+{
+
+}

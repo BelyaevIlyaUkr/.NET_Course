@@ -17,58 +17,64 @@ namespace HomeTask8.Pages
     {
         SqlConnection Connection { get; }
         
-        public ArrayList Objects { get; set; }
+        public List<object> Objects { get; set; }
 
         [Display(Name = "Information type")]
+        [BindProperty (SupportsGet=true)]
         public string SelectedInfoType { get; set; }
 
         public List<SelectListItem> InfoTypes { get; }
+
+        public string ExceptionMessage { get; set; }
 
         public GetModel(IConfiguration configuration)
         {
             //Creating connection object one time, here, because it is performance expensive operation.
             Connection = new SqlConnection(configuration.GetConnectionString("DefaultConnection"));
 
-            Objects = new ArrayList();
-
             InfoTypes = new List<SelectListItem> {
-                new SelectListItem { Text = "Choose Type", Disabled = true, Selected = true },
                 new SelectListItem { Value = "allStudents", Text = "All students" },
                 new SelectListItem { Value = "allCourses", Text = "All courses" },
                 new SelectListItem { Value = "allLecturers", Text = "All lecturers" },
                 new SelectListItem { Value = "allHomeTasks", Text = "All hometasks" },
-                new SelectListItem { Value = "allGrades", Text = "All grades" },
+                new SelectListItem { Value = "allGrades", Text = "All grades" }
             };
+
+            Objects = new List<object>();
         }
 
-        public void OnGet()
+        public async Task OnGetAsync()
         {
             try
             {
                 Connection.Open();
 
+                ExceptionMessage = null;
+
+                Objects.Clear();
+
                 switch (SelectedInfoType)
                 {
                     case "allStudents":
-                        Repository.GetAllStudentsAsync(Connection);
+                        Objects.AddRange(await Repository.GetAllStudentsAsync(Connection));
                         break;
                     case "allCourses":
-                        Repository.GetAllCoursesAsync(Connection);
+                        Objects.AddRange(await Repository.GetAllCoursesAsync(Connection));
                         break;
                     case "allLecturers":
-                        Repository.GetAllLecturersAsync(Connection);
+                        Objects.AddRange(await Repository.GetAllLecturersAsync(Connection));
                         break;
                     case "allHomeTasks":
-                        Repository.GetAllHomeTasksAsync(Connection);
+                        Objects.AddRange(await Repository.GetAllHomeTasksAsync(Connection));
                         break;
                     case "allGrades":
-                        Repository.GetAllGradesAsync(Connection);
+                        Objects.AddRange(await Repository.GetAllGradesAsync(Connection));
                         break;
                 }
             }
             catch(Exception ex)
             {
-                Console.WriteLine("Operation can't be completed: " + ex.Message);
+                ExceptionMessage = "Operation can't be completed: " + ex.Message;
             }
             finally
             {
