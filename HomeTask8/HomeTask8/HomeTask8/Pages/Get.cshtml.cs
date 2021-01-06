@@ -25,6 +25,10 @@ namespace HomeTask8.Pages
 
         public List<SelectListItem> InfoTypes { get; }
 
+        [Display(Name = "")]
+        [BindProperty(SupportsGet = true)]
+        public int FilterField { get; set; }
+
         public string ExceptionMessage { get; set; }
 
         public GetModel(IConfiguration configuration)
@@ -37,7 +41,11 @@ namespace HomeTask8.Pages
                 new SelectListItem { Value = "allCourses", Text = "All courses" },
                 new SelectListItem { Value = "allLecturers", Text = "All lecturers" },
                 new SelectListItem { Value = "allHomeTasks", Text = "All hometasks" },
-                new SelectListItem { Value = "allGrades", Text = "All grades" }
+                new SelectListItem { Value = "allGrades", Text = "All grades" },
+                new SelectListItem { Value = "allCoursesForStudent", Text = "All courses for student" },
+                new SelectListItem { Value = "allStudentsInCourse", Text = "All students in course" },
+                new SelectListItem { Value = "allLecturersForCourse", Text = "All lecturers for course" },
+                new SelectListItem { Value = "allCoursesWithDefiniteLecturer", Text = "All courses with definite lecturer" }
             };
 
             Objects = new List<object>();
@@ -70,11 +78,23 @@ namespace HomeTask8.Pages
                     case "allGrades":
                         Objects.AddRange(await Repository.GetAllGradesAsync(Connection));
                         break;
+                    case "allCoursesForStudent":
+                        Objects.AddRange(await Repository.GetAllCoursesForStudentAsync(Connection, FilterField));
+                        break;
+                    case "allStudentsInCourse":
+                        Objects.AddRange(await Repository.GetAllStudentsInCourseAsync(Connection, FilterField));
+                        break;
+                    case "allLecturersForCourse":
+                        Objects.AddRange(await Repository.GetAllLecturersForCourseAsync(Connection, FilterField));
+                        break;
+                    case "allCoursesWithDefiniteLecturer":
+                        Objects.AddRange(await Repository.GetAllCoursesWithDefiniteLecturerAsync(Connection, FilterField));
+                        break;
                 }
             }
             catch(Exception ex)
             {
-                ExceptionMessage = "Operation can't be completed: " + ex.Message;
+                ExceptionMessage = ex.Message;
             }
             finally
             {

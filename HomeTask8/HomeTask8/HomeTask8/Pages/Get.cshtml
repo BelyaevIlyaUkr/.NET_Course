@@ -14,10 +14,10 @@
         </select>
     </div>
     <div id="input_get_fields">
-        <label for="extra_field">Extra field</label><br />
-        <input type="text" name="extra_field" id="extra_field" />
+        <label asp-for="FilterField"></label><br />
+        <input asp-for="FilterField" />
     </div> <br />
-    <button id="get_button" type="submit">Get Information</button>
+    <button id="get_button" type="submit">Get Information</button> <br />
 </form>
 
 @if (Model.ExceptionMessage == null)
@@ -26,6 +26,7 @@
     @switch (Model.SelectedInfoType)
     {
         case "allStudents":
+        case "allStudentsInCourse":
             <thead>
                 <tr>
                     <th>ID</th>
@@ -51,6 +52,8 @@
             </tbody>
             break;
         case "allCourses":
+        case "allCoursesForStudent":
+        case "allCoursesWithDefiniteLecturer":
             <thead>
                 <tr>
                     <th>ID</th>
@@ -66,14 +69,15 @@
                     <tr>
                         <td>@course.CourseID</td>
                         <td>@course.Name</td>
-                        <td>@course.StartDate</td>
-                        <td>@course.EndDate</td>
+                        <td>@course.StartDate.Date.ToString("d", new CultureInfo("fr-FR"))</td>
+                        <td>@course.EndDate.Date.ToString("d", new CultureInfo("fr-FR"))</td>
                         <td>@course.PassingScore</td>
                     </tr>
                 }
             </tbody>
             break;
         case "allLecturers":
+        case "allLecturersForCourse":
             <thead>
                 <tr>
                     <th>ID</th>
@@ -87,7 +91,7 @@
                     <tr>
                         <td>@lecturer.LecturerID</td>
                         <td>@lecturer.Name</td>
-                        <td>@lecturer.BirthDate</td>
+                        <td>@lecturer.BirthDate.Date.ToString("d", new CultureInfo("fr-FR"))</td>
                     </tr>
                 }
             </tbody>
@@ -110,7 +114,7 @@
                         <td>@hometask.HomeTaskID</td>
                         <td>@hometask.Name</td>
                         <td>@hometask.Description</td>
-                        <td>@hometask.TaskDate</td>
+                        <td>@hometask.TaskDate.Date.ToString("d", new CultureInfo("fr-FR"))</td>
                         <td>@hometask.SerialNumber</td>
                         <td>@hometask.CourseID</td>
                     </tr>
@@ -132,7 +136,7 @@
                 {
                     <tr>
                         <td>@grade.GradeID</td>
-                        <td>@grade.GradeDate</td>
+                        <td>@grade.GradeDate.Date.ToString("d", new CultureInfo("fr-FR"))</td>
                         <td>@grade.IsComplete</td>
                         <td>@grade.HomeTaskID</td>
                         <td>@grade.StudentID</td>
@@ -145,5 +149,5 @@
 }
 else
 {
-
+    <h3 class="text-danger">@Model.ExceptionMessage</h3>
 }
