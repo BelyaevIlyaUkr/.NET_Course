@@ -25,8 +25,8 @@ namespace HomeTask8.Pages
 
         public List<SelectListItem> InfoTypes { get; }
 
-        [Display(Name = "")]
         [BindProperty(SupportsGet = true)]
+        [Display(Name = "Privet")]
         public int FilterField { get; set; }
 
         public string ExceptionMessage { get; set; }
