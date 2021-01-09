@@ -3,14 +3,34 @@
 
 // Write your Javascript code.
 
-function filterFieldTogglingFunction(chose) {
-    if (chose === 'allStudents' || chose === 'allCourses' || chose === 'allHomeTasks'
+function filterFieldTogglingFunction() {
+    var selectTag = document.getElementById('SelectedInfoType');
+
+    var chose = selectTag.options[selectTag.selectedIndex].value;
+
+    var elements = document.getElementsByClassName('filter_section');
+
+    if (chose === "" || chose === 'allStudents' || chose === 'allCourses' || chose === 'allHomeTasks'
         || chose === 'allGrades' || chose === 'allLecturers') {
-        document.getElementById('FilterField').style.display = 'none';
-        document.getElementById('FilterFieldLabel').style.display = 'none';
+        for (var i = 0; i < elements.length; i++) {
+            elements[i].style.display = 'none';
+        }
     }
     else {
-        document.getElementById('FilterField').style.display = 'inline-block';
-        document.getElementById('FilterFieldLabel').style.display = 'inline-block';
+        for (var i = 0; i < elements.length; i++) {
+            elements[i].style.display = 'inline-block';
+        }
+
+        switch (chose) {
+            case 'allCoursesForStudent':
+                elements[0].children[0].innerText = 'StudentID';
+                break;
+            case 'allStudentsInCourse':
+            case 'allLecturersForCourse':
+                elements[0].children[0].innerText = 'CourseID';
+                break;
+            case 'allCoursesWithDefiniteLecturer':
+                elements[0].children[0].innerText = 'LecturerID';
+        }
     }
 }
