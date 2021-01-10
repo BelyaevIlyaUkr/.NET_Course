@@ -85,16 +85,7 @@ namespace StudyManager.DataAccess.ADO
             updateCommand.Parameters.AddWithValue("@email", student.Email);
             updateCommand.Parameters.AddWithValue("@github", student.Github);
 
-            try
-            {
-                await updateCommand.ExecuteNonQueryAsync();
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.Message);
-                Console.ReadKey();
-                Environment.Exit(1);
-            }
+            await updateCommand.ExecuteNonQueryAsync();
         }
 
         private static Course GetCourse(SqlDataReader reader)
@@ -154,16 +145,7 @@ namespace StudyManager.DataAccess.ADO
             updateCommand.Parameters.AddWithValue("@endDate", course.EndDate);
             updateCommand.Parameters.AddWithValue("@passingScore", course.PassingScore);
 
-            try
-            {
-                await updateCommand.ExecuteNonQueryAsync();
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.Message);
-                Console.ReadKey();
-                Environment.Exit(1);
-            }
+            await updateCommand.ExecuteNonQueryAsync();
         }
 
         public static async Task DeleteCourseAsync(SqlConnection connection, int courseID)
@@ -231,17 +213,7 @@ namespace StudyManager.DataAccess.ADO
             updateCommand.Parameters.AddWithValue("@name", lecturer.Name);
             updateCommand.Parameters.AddWithValue("@birthDate", lecturer.BirthDate);
 
-            try
-            {
-                await updateCommand.ExecuteNonQueryAsync();
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.Message);
-                Console.ReadKey();
-                Environment.Exit(1);
-            }
-
+            await updateCommand.ExecuteNonQueryAsync();
         }
 
         public static async Task DeleteLecturerAsync(SqlConnection connection, int lecturerID)
@@ -310,16 +282,7 @@ namespace StudyManager.DataAccess.ADO
             createCommand.Parameters.AddWithValue("@serialNumber", hometask.SerialNumber);
             createCommand.Parameters.AddWithValue("@courseID", hometask.CourseID);
 
-            try
-            {
-                await createCommand.ExecuteNonQueryAsync();
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.Message);
-                Console.ReadKey();
-                Environment.Exit(1);
-            }
+            await createCommand.ExecuteNonQueryAsync();
 
             return hometask;
         }
@@ -337,17 +300,7 @@ namespace StudyManager.DataAccess.ADO
             updateCommand.Parameters.AddWithValue("@serialNumber", hometask.SerialNumber);
             updateCommand.Parameters.AddWithValue("@courseID", hometask.CourseID);
 
-            try
-            {
-                await updateCommand.ExecuteNonQueryAsync();
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.Message);
-                Console.ReadKey();
-                Environment.Exit(1);
-            }
-
+            await updateCommand.ExecuteNonQueryAsync();
         }
 
         public static async Task DeleteHomeTaskAsync(SqlConnection connection, int hometaskID)
@@ -413,16 +366,7 @@ namespace StudyManager.DataAccess.ADO
             createCommand.Parameters.AddWithValue("@hometaskID", grade.HomeTaskID);
             createCommand.Parameters.AddWithValue("@studentID", grade.StudentID);
 
-            try
-            {
-                await createCommand.ExecuteNonQueryAsync();
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.Message);
-                Console.ReadKey();
-                Environment.Exit(1);
-            }
+            await createCommand.ExecuteNonQueryAsync();
 
             return grade;
         }
@@ -439,16 +383,7 @@ namespace StudyManager.DataAccess.ADO
             updateCommand.Parameters.AddWithValue("@studentID", grade.StudentID);
             updateCommand.Parameters.AddWithValue("@gradeID", grade.GradeID);
 
-            try
-            {
-                await updateCommand.ExecuteNonQueryAsync();
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.Message);
-                Console.ReadKey();
-                Environment.Exit(1);
-            }
+            await updateCommand.ExecuteNonQueryAsync();
         }
 
         public static async Task DeleteGradeAsync(SqlConnection connection, int gradeID)
@@ -494,16 +429,7 @@ namespace StudyManager.DataAccess.ADO
             createCommand.Parameters.AddWithValue("@studentID", studentCourse.studentID);
             createCommand.Parameters.AddWithValue("@courseID", studentCourse.courseID);
 
-            try
-            {
-                await createCommand.ExecuteNonQueryAsync();
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.Message);
-                Console.ReadKey();
-                Environment.Exit(1);
-            }
+            await createCommand.ExecuteNonQueryAsync();
 
             return studentCourse;
         }
@@ -627,16 +553,7 @@ namespace StudyManager.DataAccess.ADO
             createCommand.Parameters.AddWithValue("@courseID", courseLecturer.courseID);
             createCommand.Parameters.AddWithValue("@lecturerID", courseLecturer.lecturerID);
 
-            try
-            {
-                await createCommand.ExecuteNonQueryAsync();
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.Message);
-                Console.ReadKey();
-                Environment.Exit(1);
-            }
+            await createCommand.ExecuteNonQueryAsync();
 
             return courseLecturer;
         }
