@@ -10,7 +10,7 @@
     <div class="margining">
         <label asp-for="SelectedInfoType"></label>
         <br />
-        <select onchange="inputFieldsInAddToggling(true); clearTableInAddPage();" asp-for="SelectedInfoType" asp-items="Model.InfoTypes">
+        <select onchange="inputFieldsInAddToggling(true); clearResultPlaceInAddPage();" asp-for="SelectedInfoType" asp-items="Model.InfoTypes">
             <option value="" selected disabled hidden>Choose type</option>
         </select>
     </div>
@@ -158,13 +158,20 @@
                 <tbody>
                     @foreach (StudyManager.Models.Grade grade in Model.Objects)
                     {
-                        <tr>
-                            <td>@grade.GradeID</td>
-                            <td>@grade.GradeDate.Date.ToString("d", new CultureInfo("fr-FR"))</td>
-                            <td>@grade.IsComplete</td>
-                            <td>@grade.HomeTaskID</td>
-                            <td>@grade.StudentID</td>
-                        </tr>
+                    <tr>
+                        <td>@grade.GradeID</td>
+                        <td>@grade.GradeDate.Date.ToString("d", new CultureInfo("fr-FR"))</td>
+                        @if (grade.IsComplete)
+                        {
+                            <td>yes</td>
+                        }
+                        else
+                        {
+                            <td>no</td>
+                        }
+                        <td>@grade.HomeTaskID</td>
+                        <td>@grade.StudentID</td>
+                    </tr>
                     }
                 </tbody>
                 break;
@@ -173,5 +180,5 @@
 }
 else
 {
-    <h3 class="text-danger">@Model.ExceptionMessage</h3>
+    <h3 id="error-label" class="text-danger">@Model.ExceptionMessage</h3>
 }

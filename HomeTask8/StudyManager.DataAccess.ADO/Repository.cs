@@ -282,7 +282,14 @@ namespace StudyManager.DataAccess.ADO
             createCommand.Parameters.AddWithValue("@serialNumber", hometask.SerialNumber);
             createCommand.Parameters.AddWithValue("@courseID", hometask.CourseID);
 
-            await createCommand.ExecuteNonQueryAsync();
+            try
+            {
+                await createCommand.ExecuteNonQueryAsync();
+            }
+            catch (SqlException)
+            {
+                throw new Exception("there isn't course with such ID in database");
+            }
 
             return hometask;
         }
@@ -366,7 +373,14 @@ namespace StudyManager.DataAccess.ADO
             createCommand.Parameters.AddWithValue("@hometaskID", grade.HomeTaskID);
             createCommand.Parameters.AddWithValue("@studentID", grade.StudentID);
 
-            await createCommand.ExecuteNonQueryAsync();
+            try
+            {
+                await createCommand.ExecuteNonQueryAsync();
+            }
+            catch (SqlException)
+            {
+                throw new Exception("There isn't hometask with such ID or/and student with such ID in database");
+            }
 
             return grade;
         }

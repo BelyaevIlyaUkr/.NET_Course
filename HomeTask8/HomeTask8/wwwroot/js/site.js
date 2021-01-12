@@ -141,7 +141,7 @@ function inputFieldsInAddToggling(isClearingInputRequired) {
                         break;
                     case 1:
                         label = 'Is Complete';
-                        placeholder = 'e.g. false';
+                        placeholder = 'e.g. yes';
                         break;
                     case 2:
                         label = 'Hometask ID';
@@ -188,7 +188,14 @@ function inputFieldsInAddToggling(isClearingInputRequired) {
     }
 }
 
-function clearTableInAddPage() {
+function clearResultPlaceInAddPage() {
+    let errorLabel = document.getElementById('error-label');
+
+    if (errorLabel !== null) {
+        errorLabel.firstChild.data = '';
+        return;
+    }
+
     let elements = document.getElementsByClassName('table');
 
     elements[0].innerHTML = '';
@@ -200,6 +207,6 @@ function clearTableInAddPage() {
 
 function clearInputFieldsAddPage(elements) {
     for (let i = 0; i < elements.length; i++) {
-        elements[i].children[2].value = '';
+        elements[i].children[2].value = null;
     }
 }
