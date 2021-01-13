@@ -31,12 +31,17 @@ function filterFieldTogglingInGet() {
     }
 }
 
-function inputFieldsInAddToggling(isClearingInputRequired) {
+function inputFieldsOnAddAndUpdatePageToggling(isClearingInputRequired, page) {
     let selectTag = document.getElementById('SelectedInfoType');
 
     let chose = selectTag.options[selectTag.selectedIndex].value;
 
-    let elements = document.getElementsByClassName('AddPageInputFields');
+    let elements;
+
+    if (page === 'add')
+        elements = document.getElementsByClassName('AddPageInputFields');
+    else
+        elements = document.getElementsByClassName('UpdatePageInputFields');
 
     let label, placeholder;
     switch (chose) {
@@ -48,7 +53,21 @@ function inputFieldsInAddToggling(isClearingInputRequired) {
         case 'student':
             for (let i = 0; i < elements.length; i++) {
                 elements[i].style.display = 'inline-block';
-                switch (i) {
+
+                if (page === 'update' && i == 0) {
+                    elements[i].children[0].innerHTML = 'Student ID';
+                    elements[i].children[2].value = 0;
+                    continue;
+                }
+
+                let currentField;
+
+                if (page === 'add')
+                    currentField = i;
+                else
+                    currentField = i - 1;
+
+                switch (currentField) {
                     case 0:
                         label = 'First Name';
                         placeholder = 'e.g. Illia';
@@ -77,7 +96,21 @@ function inputFieldsInAddToggling(isClearingInputRequired) {
         case 'course':
             for (let i = 0; i < elements.length; i++) {
                 elements[i].style.display = 'inline-block';
-                switch (i) {
+
+                if (page === 'update' && i == 0) {
+                    elements[i].children[0].innerHTML = 'Course ID';
+                    elements[i].children[2].value = 0;
+                    continue;
+                }
+
+                let currentField;
+
+                if (page === 'add')
+                    currentField = i;
+                else
+                    currentField = i - 1;
+
+                switch (currentField) {
                     case 0:
                         label = 'Name';
                         placeholder = 'e.g. .NET';
@@ -105,7 +138,21 @@ function inputFieldsInAddToggling(isClearingInputRequired) {
         case 'hometask':
             for (let i = 0; i < elements.length; i++) {
                 elements[i].style.display = 'inline-block';
-                switch (i) {
+
+                if (page === 'update' && i == 0) {
+                    elements[i].children[0].innerHTML = 'Hometask ID';
+                    elements[i].children[2].value = 0;
+                    continue;
+                }
+
+                let currentField;
+
+                if (page === 'add')
+                    currentField = i;
+                else
+                    currentField = i - 1;
+
+                switch (currentField) {
                     case 0:
                         label = 'Name';
                         placeholder = 'e.g. Generics';
@@ -134,7 +181,21 @@ function inputFieldsInAddToggling(isClearingInputRequired) {
         case 'grade':
             for (let i = 0; i < elements.length; i++) {
                 elements[i].style.display = 'inline-block';
-                switch (i) {
+
+                if (page === 'update' && i == 0) {
+                    elements[i].children[0].innerHTML = 'Grade ID';
+                    elements[i].children[2].value = 0;
+                    continue;
+                }
+
+                let currentField;
+
+                if (page === 'add')
+                    currentField = i;
+                else
+                    currentField = i - 1;
+
+                switch (currentField) {
                     case 0:
                         label = 'Grade Date';
                         placeholder = 'e.g. 26/09/2020';
@@ -162,7 +223,21 @@ function inputFieldsInAddToggling(isClearingInputRequired) {
         case 'lecturer':
             for (let i = 0; i < elements.length; i++) {
                 elements[i].style.display = 'inline-block';
-                switch (i) {
+
+                if (page === 'update' && i == 0) {
+                    elements[i].children[0].innerHTML = 'Lecturer ID';
+                    elements[i].children[2].value = 0;
+                    continue;
+                }
+
+                let currentField;
+
+                if (page === 'add')
+                    currentField = i;
+                else
+                    currentField = i - 1;
+
+                switch (currentField) {
                     case 0:
                         label = 'Name';
                         placeholder = 'e.g. John';
@@ -184,11 +259,11 @@ function inputFieldsInAddToggling(isClearingInputRequired) {
     }
 
     if (isClearingInputRequired) {
-        clearInputFieldsAddPage(elements);
+        clearInputFieldsOnAddOrUpdatePage(elements, page);
     }
 }
 
-function clearResultPlaceInAddPage() {
+function clearResultPlaceOnPage() {
     let errorLabel = document.getElementById('error-label');
 
     if (errorLabel !== null) {
@@ -202,11 +277,21 @@ function clearResultPlaceInAddPage() {
 
     let congratulationalLabel = document.getElementById('congratulational-label');
 
-    congratulationalLabel.firstChild.data = '';
+    if (congratulationalLabel !== null)
+        congratulationalLabel.firstChild.data = '';
 }
 
-function clearInputFieldsAddPage(elements) {
-    for (let i = 0; i < elements.length; i++) {
+function clearInputFieldsOnAddOrUpdatePage(elements, page) {
+    let i;
+
+    if (page === 'add')
+        i = 0;
+    else {
+        i = 1;
+        elements[0].children[2].value = 0;
+    }
+
+    for (; i < elements.length; i++) {
         elements[i].children[2].value = null;
     }
 }

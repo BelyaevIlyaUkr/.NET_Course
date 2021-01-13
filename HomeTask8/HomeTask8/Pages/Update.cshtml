@@ -1,4 +1,189 @@
 ﻿@page
 @model HomeTask8.Pages.UpdateModel
-@{
+@{ 
+    ViewData["Title"] = "Updating information"; 
 }
+
+<h2>Updating information</h2>
+
+<form method="post">
+    <div class="margining">
+        <label asp-for="SelectedInfoType"></label>
+        <br />
+        <select onchange="inputFieldsOnAddAndUpdatePageToggling(true,'update'); clearResultPlaceOnPage();" asp-for="SelectedInfoType" asp-items="Model.InfoTypes">
+            <option value="" selected disabled hidden>Choose type</option>
+        </select>
+    </div>
+
+    <div class="UpdatePageInputFields margining">
+        <label for="FirstInputField"></label><br />
+        <input asp-for="FirstInputField" />
+    </div>
+    <div class="UpdatePageInputFields margining">
+        <label for="SecondInputField"></label><br />
+        <input asp-for="SecondInputField" />
+    </div>
+    <div class="UpdatePageInputFields margining">
+        <label for="ThirdInputField"></label><br />
+        <input asp-for="ThirdInputField" />
+    </div>
+    <div class="UpdatePageInputFields margining">
+        <label for="FourthInputField margining"></label><br />
+        <input asp-for="FourthInputField" />
+    </div>
+    <div class="UpdatePageInputFields margining">
+        <label for="FifthInputField"></label><br />
+        <input asp-for="FifthInputField" />
+    </div>
+    <div class="UpdatePageInputFields margining">
+        <label for="SixthInputField"></label><br />
+        <input asp-for="SixthInputField" />
+    </div>
+    <br />
+
+    <button class="margining" type="submit">Update object</button>
+
+    <script>
+        inputFieldsOnAddAndUpdatePageToggling(false, 'update');
+    </script>
+</form>
+
+@if (Model.ExceptionMessage == null)
+{
+    if (Model.Objects.Count != 0)
+    {
+        <h3 class="text-black-50" id="congratulational-label">Object was successfully updated:</h3>
+    }
+    <table class="table">
+        @switch (Model.SelectedInfoType)
+        {
+            case "student":
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>First Name</th>
+                        <th>Last Name</th>
+                        <th>Phone number</th>
+                        <th>Email</th>
+                        <th>Github</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (StudyManager.Models.Student student in Model.Objects)
+                    {
+                        <tr>
+                            <td>@student.StudentID</td>
+                            <td>@student.FirstName</td>
+                            <td>@student.LastName</td>
+                            <td>@student.PhoneNumber</td>
+                            <td>@student.Email</td>
+                            <td>@student.Github</td>
+                        </tr>
+                    }
+                </tbody>
+                break;
+            case "course":
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Name</th>
+                        <th>Start Date</th>
+                        <th>End Date</th>
+                        <th>Passing Score</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (StudyManager.Models.Course course in Model.Objects)
+                    {
+                        <tr>
+                            <td>@course.CourseID</td>
+                            <td>@course.Name</td>
+                            <td>@course.StartDate.Date.ToString("d", new CultureInfo("fr-FR"))</td>
+                            <td>@course.EndDate.Date.ToString("d", new CultureInfo("fr-FR"))</td>
+                            <td>@course.PassingScore</td>
+                        </tr>
+                    }
+                </tbody>
+                break;
+            case "lecturer":
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Name</th>
+                        <th>Birth Date</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (StudyManager.Models.Lecturer lecturer in Model.Objects)
+                    {
+                        <tr>
+                            <td>@lecturer.LecturerID</td>
+                            <td>@lecturer.Name</td>
+                            <td>@lecturer.BirthDate.Date.ToString("d", new CultureInfo("fr-FR"))</td>
+                        </tr>
+                    }
+                </tbody>
+                break;
+            case "hometask":
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Name</th>
+                        <th>Description</th>
+                        <th>Task Date</th>
+                        <th>Serial Number</th>
+                        <th>Course ID</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (StudyManager.Models.HomeTask hometask in Model.Objects)
+                    {
+                        <tr>
+                            <td>@hometask.HomeTaskID</td>
+                            <td>@hometask.Name</td>
+                            <td>@hometask.Description</td>
+                            <td>@hometask.TaskDate.Date.ToString("d", new CultureInfo("fr-FR"))</td>
+                            <td>@hometask.SerialNumber</td>
+                            <td>@hometask.CourseID</td>
+                        </tr>
+                    }
+                </tbody>
+                break;
+            case "grade":
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Grade Date</th>
+                        <th>Is Complete</th>
+                        <th>HomeTask ID</th>
+                        <th>Student ID</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (StudyManager.Models.Grade grade in Model.Objects)
+                    {
+                        <tr>
+                            <td>@grade.GradeID</td>
+                            <td>@grade.GradeDate.Date.ToString("d", new CultureInfo("fr-FR"))</td>
+                            @if (grade.IsComplete)
+                            {
+                                <td>yes</td>
+                            }
+                            else
+                            {
+                                <td>no</td>
+                            }
+                            <td>@grade.HomeTaskID</td>
+                            <td>@grade.StudentID</td>
+                        </tr>
+                    }
+                </tbody>
+                break;
+        }
+    </table>
+}
+else
+{
+    <h3 id="error-label" class="text-danger">@Model.ExceptionMessage</h3>
+}
+

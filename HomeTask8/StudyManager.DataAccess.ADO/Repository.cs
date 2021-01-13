@@ -85,7 +85,14 @@ namespace StudyManager.DataAccess.ADO
             updateCommand.Parameters.AddWithValue("@email", student.Email);
             updateCommand.Parameters.AddWithValue("@github", student.Github);
 
-            await updateCommand.ExecuteNonQueryAsync();
+            try
+            {
+                await updateCommand.ExecuteNonQueryAsync();
+            }
+            catch (SqlException)
+            {
+                throw new Exception("There isn't student with such ID in database");
+            }
         }
 
         private static Course GetCourse(SqlDataReader reader)
@@ -145,7 +152,14 @@ namespace StudyManager.DataAccess.ADO
             updateCommand.Parameters.AddWithValue("@endDate", course.EndDate);
             updateCommand.Parameters.AddWithValue("@passingScore", course.PassingScore);
 
-            await updateCommand.ExecuteNonQueryAsync();
+            try
+            {
+                await updateCommand.ExecuteNonQueryAsync();
+            }
+            catch (SqlException)
+            {
+                throw new Exception("There isn't course with such ID in database");
+            }
         }
 
         public static async Task DeleteCourseAsync(SqlConnection connection, int courseID)
@@ -213,7 +227,14 @@ namespace StudyManager.DataAccess.ADO
             updateCommand.Parameters.AddWithValue("@name", lecturer.Name);
             updateCommand.Parameters.AddWithValue("@birthDate", lecturer.BirthDate);
 
-            await updateCommand.ExecuteNonQueryAsync();
+            try
+            {
+                await updateCommand.ExecuteNonQueryAsync();
+            }
+            catch (Exception)
+            {
+                throw new Exception("There isn't lecturer with such ID in database");
+            }
         }
 
         public static async Task DeleteLecturerAsync(SqlConnection connection, int lecturerID)
@@ -307,7 +328,14 @@ namespace StudyManager.DataAccess.ADO
             updateCommand.Parameters.AddWithValue("@serialNumber", hometask.SerialNumber);
             updateCommand.Parameters.AddWithValue("@courseID", hometask.CourseID);
 
-            await updateCommand.ExecuteNonQueryAsync();
+            try
+            {
+                await updateCommand.ExecuteNonQueryAsync();
+            }
+            catch (SqlException)
+            {
+                throw new Exception("There isn't hometask or/and course with such ID in database");
+            }
         }
 
         public static async Task DeleteHomeTaskAsync(SqlConnection connection, int hometaskID)
@@ -397,7 +425,14 @@ namespace StudyManager.DataAccess.ADO
             updateCommand.Parameters.AddWithValue("@studentID", grade.StudentID);
             updateCommand.Parameters.AddWithValue("@gradeID", grade.GradeID);
 
-            await updateCommand.ExecuteNonQueryAsync();
+            try
+            {
+                await updateCommand.ExecuteNonQueryAsync();
+            }
+            catch (SqlException)
+            {
+                throw new Exception("There isn't grade or/and hometask or/and student with such ID in database");
+            }
         }
 
         public static async Task DeleteGradeAsync(SqlConnection connection, int gradeID)

@@ -289,9 +289,6 @@ namespace HomeTask8.Pages
         {
             if (!int.TryParse(numberString, out resultNumber))
                 return false;
-
-            if (resultNumber < 0)
-                return false;
             
             return true;
         }

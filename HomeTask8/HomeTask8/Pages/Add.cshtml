@@ -10,7 +10,7 @@
     <div class="margining">
         <label asp-for="SelectedInfoType"></label>
         <br />
-        <select onchange="inputFieldsInAddToggling(true); clearResultPlaceInAddPage();" asp-for="SelectedInfoType" asp-items="Model.InfoTypes">
+        <select onchange="inputFieldsOnAddAndUpdatePageToggling(true,'add'); clearResultPlaceOnPage();" asp-for="SelectedInfoType" asp-items="Model.InfoTypes">
             <option value="" selected disabled hidden>Choose type</option>
         </select>
     </div>
@@ -40,7 +40,7 @@
     <button class="margining" type="submit">Add object</button>
 
     <script>
-        inputFieldsInAddToggling(false);
+        inputFieldsOnAddAndUpdatePageToggling(false, 'add');
     </script>
 </form>
 
@@ -48,7 +48,7 @@
 {
     if(Model.Objects.Count != 0)
     {
-        <h3 class="text-black-50" id="congratulational-label">Objects was successfully added:</h3>
+        <h3 class="text-black-50" id="congratulational-label">Object was successfully added:</h3>
     }
     <table class="table">
         @switch (Model.SelectedInfoType)
