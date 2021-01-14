@@ -55,19 +55,24 @@ namespace StudyManager.DataAccess.ADO
         }
 
 
-        public static async Task DeleteStudentAsync(SqlConnection connection, int studentID)
+        public static async Task<int> DeleteStudentAsync(SqlConnection connection, int studentID)
         {
             var deleteCommand = new SqlCommand("DELETE FROM Students WHERE StudentID = @studentID", connection);
 
             deleteCommand.Parameters.AddWithValue("@studentID", studentID);
-            await deleteCommand.ExecuteNonQueryAsync();
+            
+            var numberOfAffectedRows = await deleteCommand.ExecuteNonQueryAsync();
+
+            return numberOfAffectedRows;
         }
 
-        public static async Task DeleteAllStudentsAsync(SqlConnection connection)
+        public static async Task<int> DeleteAllStudentsAsync(SqlConnection connection)
         {
             var deleteCommand = new SqlCommand("DELETE FROM Students", connection);
 
-            await deleteCommand.ExecuteNonQueryAsync();
+            var numberOfAffectedRows = await deleteCommand.ExecuteNonQueryAsync();
+
+            return numberOfAffectedRows;
         }
 
         public static async Task<int> UpdateStudentAsync(SqlConnection connection, Student student)
@@ -148,20 +153,24 @@ namespace StudyManager.DataAccess.ADO
             return numberOfAffectedRows;
         }
 
-        public static async Task DeleteCourseAsync(SqlConnection connection, int courseID)
+        public static async Task<int> DeleteCourseAsync(SqlConnection connection, int courseID)
         {
             var deleteCommand = new SqlCommand("DELETE FROM Courses WHERE CourseID = @courseID", connection);
 
             deleteCommand.Parameters.AddWithValue("@courseID", courseID);
 
-            await deleteCommand.ExecuteNonQueryAsync();
+            var numberOfAffectedRows = await deleteCommand.ExecuteNonQueryAsync();
+
+            return numberOfAffectedRows;
         }
 
-        public static async Task DeleteAllCoursesAsync(SqlConnection connection)
+        public static async Task<int> DeleteAllCoursesAsync(SqlConnection connection)
         {
             var deleteCommand = new SqlCommand("DELETE FROM Courses", connection);
 
-            await deleteCommand.ExecuteNonQueryAsync();
+            var numberOfAffectedRows = await deleteCommand.ExecuteNonQueryAsync();
+
+            return numberOfAffectedRows;
         }
 
         private static Lecturer GetLecturer(SqlDataReader reader)
@@ -216,20 +225,24 @@ namespace StudyManager.DataAccess.ADO
             return numberOfAffectedRows;  
         }
 
-        public static async Task DeleteLecturerAsync(SqlConnection connection, int lecturerID)
+        public static async Task<int> DeleteLecturerAsync(SqlConnection connection, int lecturerID)
         {
             var deleteCommand = new SqlCommand("DELETE FROM Lecturers WHERE LecturerID = @lecturerID", connection);
 
             deleteCommand.Parameters.AddWithValue("@lecturerID", lecturerID);
 
-            await deleteCommand.ExecuteNonQueryAsync();
+            var numberOfAffectedRows = await deleteCommand.ExecuteNonQueryAsync();
+
+            return numberOfAffectedRows;
         }
 
-        public static async Task DeleteAllLecturersAsync(SqlConnection connection)
+        public static async Task<int> DeleteAllLecturersAsync(SqlConnection connection)
         {
             var deleteCommand = new SqlCommand("DELETE FROM Lecturers", connection);
 
-            await deleteCommand.ExecuteNonQueryAsync();
+            var numberOfAffectedRows = await deleteCommand.ExecuteNonQueryAsync();
+
+            return numberOfAffectedRows;
         }
 
         private static HomeTask GetHomeTask(SqlDataReader reader)
@@ -317,20 +330,24 @@ namespace StudyManager.DataAccess.ADO
             }
         }
 
-        public static async Task DeleteHomeTaskAsync(SqlConnection connection, int hometaskID)
+        public static async Task<int> DeleteHomeTaskAsync(SqlConnection connection, int hometaskID)
         {
             var deleteCommand = new SqlCommand("DELETE FROM HomeTasks WHERE HomeTaskID = @hometaskID", connection);
 
             deleteCommand.Parameters.AddWithValue("@hometaskID", hometaskID);
 
-            await deleteCommand.ExecuteNonQueryAsync();
+            var numberOfAffectedRows = await deleteCommand.ExecuteNonQueryAsync();
+
+            return numberOfAffectedRows;
         }
 
-        public static async Task DeleteAllHomeTasksAsync(SqlConnection connection)
+        public static async Task<int> DeleteAllHomeTasksAsync(SqlConnection connection)
         {
             var deleteCommand = new SqlCommand("DELETE FROM HomeTasks", connection);
 
-            await deleteCommand.ExecuteNonQueryAsync();
+            var numberOfAffectedRows = await deleteCommand.ExecuteNonQueryAsync();
+
+            return numberOfAffectedRows;
         }
 
         private static Grade GetGrade(SqlDataReader reader)
@@ -414,21 +431,25 @@ namespace StudyManager.DataAccess.ADO
             }
         }
 
-        public static async Task DeleteGradeAsync(SqlConnection connection, int gradeID)
+        public static async Task<int> DeleteGradeAsync(SqlConnection connection, int gradeID)
         {
             var deleteCommand = new SqlCommand("DELETE FROM Grades WHERE GradeID = @gradeID", connection);
 
             deleteCommand.Parameters.AddWithValue("@gradeID", gradeID);
 
-            await deleteCommand.ExecuteNonQueryAsync();
+            var numberOfAffectedRows = await deleteCommand.ExecuteNonQueryAsync();
+
+            return numberOfAffectedRows;
         }
 
 
-        public static async Task DeleteAllGradesAsync(SqlConnection connection)
+        public static async Task<int> DeleteAllGradesAsync(SqlConnection connection)
         {
             var deleteCommand = new SqlCommand("DELETE FROM Grades", connection);
 
-            await deleteCommand.ExecuteNonQueryAsync();
+            var numberOfAffectedRows = await deleteCommand.ExecuteNonQueryAsync();
+
+            return numberOfAffectedRows;
         }
 
         public static async Task<List<(int studentID, int courseID)>> GetAllStudentsCoursesAsync(SqlConnection connection)

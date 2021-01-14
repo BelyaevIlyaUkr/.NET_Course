@@ -259,7 +259,7 @@ function inputFieldsOnAddAndUpdatePageToggling(isClearingInputRequired, page) {
     }
 
     if (isClearingInputRequired) {
-        clearInputFieldsOnAddOrUpdatePage(elements);
+        clearInputFieldsOnPage(elements);
     }
 }
 
@@ -282,8 +282,45 @@ function clearResultPlaceOnPage() {
         tableElement[0].innerHTML = '';
 }
 
-function clearInputFieldsOnAddOrUpdatePage(elements) {
+function clearInputFieldsOnPage(elements) {
     for (let i = 0; i < elements.length; i++) {
         elements[i].children[2].value = null;
+    }
+}
+
+function filterFieldTogglingOnDeletePage(isClearingInputRequired) {
+    let selectTag = document.getElementById('SelectedInfoType');
+
+    let chose = selectTag.options[selectTag.selectedIndex].value;
+
+    let elements = document.getElementsByClassName('filter-section-on-delete-page');
+
+    if (chose === "" || chose === 'allStudents' || chose === 'allCourses' || chose === 'allHomeTasks'
+        || chose === 'allGrades' || chose === 'allLecturers') {
+        elements[0].style.display = 'none';
+    }
+    else {
+        elements[0].style.display = 'inline-block';
+
+        switch (chose) {
+            case 'studentWithDefiniteID':
+                elements[0].children[0].innerHTML = 'Student ID';
+                break;
+            case 'courseWithDefiniteID':
+                elements[0].children[0].innerHTML = 'Course ID';
+                break;
+            case 'lecturerWithDefiniteID':
+                elements[0].children[0].innerHTML = 'Lecturer ID';
+                break;
+            case 'hometaskWithDefiniteID':
+                elements[0].children[0].innerHTML = 'Hometask ID';
+                break;
+            case 'gradeWithDefiniteID':
+                elements[0].children[0].innerHTML = 'Grade ID';
+        }
+    }
+
+    if (isClearingInputRequired) {
+        clearInputFieldsOnPage(elements);
     }
 }
