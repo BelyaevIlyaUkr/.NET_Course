@@ -48,6 +48,8 @@ namespace HomeTask8.Pages
 
         public string ExceptionMessage { get; set; }
 
+        public string ResultMessage { get; set; }
+
         public List<object> Objects { get; set; }
 
         public UpdateModel(IConfiguration configuration)
@@ -75,6 +77,8 @@ namespace HomeTask8.Pages
                 ExceptionMessage = null;
 
                 Objects.Clear();
+
+                ResultMessage = "Object was updated successfully";
 
                 switch (SelectedInfoType)
                 {
@@ -110,8 +114,12 @@ namespace HomeTask8.Pages
                             Github = SixthInputField
                         };
 
-                        await Repository.UpdateStudentAsync(Connection, studentToUpdate);
-                        Objects.AddRange(await Repository.GetAllStudentsAsync(Connection));
+                        var numberOfAffectedStudentRows = await Repository.UpdateStudentAsync(Connection, studentToUpdate);
+
+                        if (numberOfAffectedStudentRows == 0)
+                            ResultMessage = "There isn't student with such ID in database";
+                        else
+                            Objects.AddRange(await Repository.GetAllStudentsAsync(Connection));
                         break;
                     case "course":
                         if (IsAnyVisibleFieldNullExceptFirst(4))
@@ -140,8 +148,12 @@ namespace HomeTask8.Pages
                             PassingScore = resultPassingScore
                         };
 
-                        await Repository.UpdateCourseAsync(Connection, courseToUpdate);
-                        Objects.AddRange(await Repository.GetAllCoursesAsync(Connection));
+                        var numberOfAffectedCourseRows = await Repository.UpdateCourseAsync(Connection, courseToUpdate);
+
+                        if (numberOfAffectedCourseRows == 0)
+                            ResultMessage = "There isn't course with such ID in database";
+                        else
+                            Objects.AddRange(await Repository.GetAllCoursesAsync(Connection));
                         break;
                     case "lecturer":
                         if (IsAnyVisibleFieldNullExceptFirst(2))
@@ -163,8 +175,12 @@ namespace HomeTask8.Pages
                             BirthDate = resultBirthDate
                         };
 
-                        await Repository.UpdateLecturerAsync(Connection, lecturerToUpdate);
-                        Objects.AddRange(await Repository.GetAllLecturersAsync(Connection));
+                        var numberOfAffectedLecturerRows = await Repository.UpdateLecturerAsync(Connection, lecturerToUpdate);
+
+                        if (numberOfAffectedLecturerRows == 0)
+                            ResultMessage = "There isn't lecturer with such ID in database";
+                        else
+                            Objects.AddRange(await Repository.GetAllLecturersAsync(Connection));
                         break;
                     case "hometask":
                         if (IsAnyVisibleFieldNullExceptFirst(5))
@@ -195,8 +211,12 @@ namespace HomeTask8.Pages
                             CourseID = resultCourseID
                         };
 
-                        await Repository.UpdateHomeTaskAsync(Connection, hometaskToUpdate);
-                        Objects.AddRange(await Repository.GetAllHomeTasksAsync(Connection));
+                        var numberOfAffectedHometaskRows = await Repository.UpdateHomeTaskAsync(Connection, hometaskToUpdate);
+
+                        if (numberOfAffectedHometaskRows == 0)
+                            ResultMessage = "There isn't hometask with such ID in database";
+                        else
+                            Objects.AddRange(await Repository.GetAllHomeTasksAsync(Connection));
                         break;
                     case "grade":
                         if (IsAnyVisibleFieldNullExceptFirst(4))
@@ -227,8 +247,14 @@ namespace HomeTask8.Pages
                             StudentID = resultStudentID
                         };
 
-                        await Repository.UpdateGradeAsync(Connection, gradeToUpdate);
-                        Objects.AddRange(await Repository.GetAllGradesAsync(Connection));
+                        var numberOfAffectedGradeRows = await Repository.UpdateGradeAsync(Connection, gradeToUpdate);
+
+                        if (numberOfAffectedGradeRows == 0)
+                            ResultMessage = "There isn't grade with such ID in database";
+                        else
+                        {
+                            Objects.AddRange(await Repository.GetAllGradesAsync(Connection));
+                        }
                         break;
                 }
             }

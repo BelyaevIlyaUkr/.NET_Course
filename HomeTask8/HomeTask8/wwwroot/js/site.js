@@ -56,7 +56,7 @@ function inputFieldsOnAddAndUpdatePageToggling(isClearingInputRequired, page) {
 
                 if (page === 'update' && i == 0) {
                     elements[i].children[0].innerHTML = 'Student ID';
-                    elements[i].children[2].value = 0;
+                    elements[i].children[2].placeholder = 'e.g. 22';
                     continue;
                 }
 
@@ -99,7 +99,7 @@ function inputFieldsOnAddAndUpdatePageToggling(isClearingInputRequired, page) {
 
                 if (page === 'update' && i == 0) {
                     elements[i].children[0].innerHTML = 'Course ID';
-                    elements[i].children[2].value = 0;
+                    elements[i].children[2].placeholder = 'e.g. 22';
                     continue;
                 }
 
@@ -141,7 +141,7 @@ function inputFieldsOnAddAndUpdatePageToggling(isClearingInputRequired, page) {
 
                 if (page === 'update' && i == 0) {
                     elements[i].children[0].innerHTML = 'Hometask ID';
-                    elements[i].children[2].value = 0;
+                    elements[i].children[2].placeholder = 'e.g. 22';
                     continue;
                 }
 
@@ -184,7 +184,7 @@ function inputFieldsOnAddAndUpdatePageToggling(isClearingInputRequired, page) {
 
                 if (page === 'update' && i == 0) {
                     elements[i].children[0].innerHTML = 'Grade ID';
-                    elements[i].children[2].value = 0;
+                    elements[i].children[2].placeholder = 'e.g. 22';
                     continue;
                 }
 
@@ -226,7 +226,7 @@ function inputFieldsOnAddAndUpdatePageToggling(isClearingInputRequired, page) {
 
                 if (page === 'update' && i == 0) {
                     elements[i].children[0].innerHTML = 'Lecturer ID';
-                    elements[i].children[2].value = 0;
+                    elements[i].children[2].placeholder = 'e.g. 22';
                     continue;
                 }
 
@@ -259,7 +259,7 @@ function inputFieldsOnAddAndUpdatePageToggling(isClearingInputRequired, page) {
     }
 
     if (isClearingInputRequired) {
-        clearInputFieldsOnAddOrUpdatePage(elements, page);
+        clearInputFieldsOnAddOrUpdatePage(elements);
     }
 }
 
@@ -271,27 +271,19 @@ function clearResultPlaceOnPage() {
         return;
     }
 
-    let elements = document.getElementsByClassName('table');
+    let resultLabel = document.getElementById('result-label');
 
-    elements[0].innerHTML = '';
+    if (resultLabel !== null)
+        resultLabel.firstChild.data = '';
 
-    let congratulationalLabel = document.getElementById('congratulational-label');
+    let tableElement = document.getElementsByClassName('table');
 
-    if (congratulationalLabel !== null)
-        congratulationalLabel.firstChild.data = '';
+    if (tableElement !== null)
+        tableElement[0].innerHTML = '';
 }
 
-function clearInputFieldsOnAddOrUpdatePage(elements, page) {
-    let i;
-
-    if (page === 'add')
-        i = 0;
-    else {
-        i = 1;
-        elements[0].children[2].value = 0;
-    }
-
-    for (; i < elements.length; i++) {
+function clearInputFieldsOnAddOrUpdatePage(elements) {
+    for (let i = 0; i < elements.length; i++) {
         elements[i].children[2].value = null;
     }
 }

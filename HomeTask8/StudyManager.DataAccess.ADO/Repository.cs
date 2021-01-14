@@ -40,7 +40,7 @@ namespace StudyManager.DataAccess.ADO
         }
 
 
-        public static async Task<Student> CreateStudentAsync(SqlConnection connection, Student student)
+        public static async Task CreateStudentAsync(SqlConnection connection, Student student)
         {
             var createCommand = new SqlCommand("INSERT INTO Students (FirstName,LastName,PhoneNumber,Email,Github)" +
             "VALUES (@firstName,@lastName,@phoneNumber,@email,@github)", connection);
@@ -52,8 +52,6 @@ namespace StudyManager.DataAccess.ADO
             createCommand.Parameters.AddWithValue("@github", student.Github);
 
             await createCommand.ExecuteNonQueryAsync();
-
-            return student;
         }
 
 
@@ -72,7 +70,7 @@ namespace StudyManager.DataAccess.ADO
             await deleteCommand.ExecuteNonQueryAsync();
         }
 
-        public static async Task UpdateStudentAsync(SqlConnection connection, Student student)
+        public static async Task<int> UpdateStudentAsync(SqlConnection connection, Student student)
         {
             var updateCommand = new SqlCommand("UPDATE Students SET FirstName = @firstName," +
             "LastName = @lastName, PhoneNumber = @phoneNumber, Email = @email, Github = @github " +
@@ -85,14 +83,9 @@ namespace StudyManager.DataAccess.ADO
             updateCommand.Parameters.AddWithValue("@email", student.Email);
             updateCommand.Parameters.AddWithValue("@github", student.Github);
 
-            try
-            {
-                await updateCommand.ExecuteNonQueryAsync();
-            }
-            catch (SqlException)
-            {
-                throw new Exception("There isn't student with such ID in database");
-            }
+            var numberOfAffectedRows = await updateCommand.ExecuteNonQueryAsync();
+
+            return numberOfAffectedRows;
         }
 
         private static Course GetCourse(SqlDataReader reader)
@@ -125,7 +118,7 @@ namespace StudyManager.DataAccess.ADO
             return courses;
         }
 
-        public static async Task<Course> CreateCourseAsync(SqlConnection connection, Course course)
+        public static async Task CreateCourseAsync(SqlConnection connection, Course course)
         {
             var createCommand = new SqlCommand("INSERT INTO Courses (Name,StartDate,EndDate,PassingScore)" +
             "VALUES (@name,@startDate,@endDate,@passingScore)", connection);
@@ -136,11 +129,9 @@ namespace StudyManager.DataAccess.ADO
             createCommand.Parameters.AddWithValue("@passingScore", course.PassingScore);
 
             await createCommand.ExecuteNonQueryAsync();
-
-            return course;
         }
 
-        public static async Task UpdateCourseAsync(SqlConnection connection, Course course)
+        public static async Task<int> UpdateCourseAsync(SqlConnection connection, Course course)
         {
             var updateCommand = new SqlCommand("UPDATE Courses SET Name = @name," +
             "StartDate = @startDate, EndDate = @endDate, PassingScore = passingScore " +
@@ -152,14 +143,9 @@ namespace StudyManager.DataAccess.ADO
             updateCommand.Parameters.AddWithValue("@endDate", course.EndDate);
             updateCommand.Parameters.AddWithValue("@passingScore", course.PassingScore);
 
-            try
-            {
-                await updateCommand.ExecuteNonQueryAsync();
-            }
-            catch (SqlException)
-            {
-                throw new Exception("There isn't course with such ID in database");
-            }
+            var numberOfAffectedRows = await updateCommand.ExecuteNonQueryAsync();
+
+            return numberOfAffectedRows;
         }
 
         public static async Task DeleteCourseAsync(SqlConnection connection, int courseID)
@@ -205,7 +191,7 @@ namespace StudyManager.DataAccess.ADO
             return lecturers;
         }
 
-        public static async Task<Lecturer> CreateLecturerAsync(SqlConnection connection, Lecturer lecturer)
+        public static async Task CreateLecturerAsync(SqlConnection connection, Lecturer lecturer)
         {
             var createCommand = new SqlCommand("INSERT INTO Lecturers (Name, BirthDate)" +
             "VALUES (@name, @birthDate)", connection);
@@ -214,11 +200,9 @@ namespace StudyManager.DataAccess.ADO
             createCommand.Parameters.AddWithValue("@birthDate", lecturer.BirthDate);
 
             await createCommand.ExecuteNonQueryAsync();
-
-            return lecturer;
         }
 
-        public static async Task UpdateLecturerAsync(SqlConnection connection, Lecturer lecturer)
+        public static async Task<int> UpdateLecturerAsync(SqlConnection connection, Lecturer lecturer)
         {
             var updateCommand = new SqlCommand("UPDATE Lecturers SET Name = @name," +
             "BirthDate = @birthDate WHERE LecturerID = @lecturerID", connection);
@@ -227,14 +211,9 @@ namespace StudyManager.DataAccess.ADO
             updateCommand.Parameters.AddWithValue("@name", lecturer.Name);
             updateCommand.Parameters.AddWithValue("@birthDate", lecturer.BirthDate);
 
-            try
-            {
-                await updateCommand.ExecuteNonQueryAsync();
-            }
-            catch (Exception)
-            {
-                throw new Exception("There isn't lecturer with such ID in database");
-            }
+            var numberOfAffectedRows = await updateCommand.ExecuteNonQueryAsync();
+
+            return numberOfAffectedRows;  
         }
 
         public static async Task DeleteLecturerAsync(SqlConnection connection, int lecturerID)
@@ -292,7 +271,7 @@ namespace StudyManager.DataAccess.ADO
             return homeTasks;
         }
 
-        public static async Task<HomeTask> CreateHomeTaskAsync(SqlConnection connection, HomeTask hometask)
+        public static async Task CreateHomeTaskAsync(SqlConnection connection, HomeTask hometask)
         {
             var createCommand = new SqlCommand("INSERT INTO HomeTasks (Name, Description, TaskDate," +
                 "SerialNumber, CourseID) VALUES (@name, @description, @taskDate, @serialNumber, @courseID)", connection);
@@ -311,11 +290,9 @@ namespace StudyManager.DataAccess.ADO
             {
                 throw new Exception("there isn't course with such ID in database");
             }
-
-            return hometask;
         }
 
-        public static async Task UpdateHomeTaskAsync(SqlConnection connection, HomeTask hometask)
+        public static async Task<int> UpdateHomeTaskAsync(SqlConnection connection, HomeTask hometask)
         {
             var updateCommand = new SqlCommand("UPDATE Hometasks SET Name = @name," +
             "Description = @description, TaskDate = @taskDate, SerialNumber = @serialNumber," +
@@ -330,11 +307,13 @@ namespace StudyManager.DataAccess.ADO
 
             try
             {
-                await updateCommand.ExecuteNonQueryAsync();
+                var numberOfAffectedRows = await updateCommand.ExecuteNonQueryAsync();
+
+                return numberOfAffectedRows;
             }
             catch (SqlException)
             {
-                throw new Exception("There isn't hometask or/and course with such ID in database");
+                throw new Exception("There isn't course with such ID in database");
             }
         }
 
@@ -391,7 +370,7 @@ namespace StudyManager.DataAccess.ADO
             return grades;
         }
 
-        public static async Task<Grade> CreateGradeAsync(SqlConnection connection, Grade grade)
+        public static async Task CreateGradeAsync(SqlConnection connection, Grade grade)
         {
             var createCommand = new SqlCommand("INSERT INTO Grades (GradeDate, IsComplete, HomeTaskID," +
                 "StudentID) VALUES (@gradeDate, @isComplete, @hometaskID, @studentID)", connection);
@@ -409,11 +388,9 @@ namespace StudyManager.DataAccess.ADO
             {
                 throw new Exception("There isn't hometask with such ID or/and student with such ID in database");
             }
-
-            return grade;
         }
 
-        public static async Task UpdateGradeAsync(SqlConnection connection, Grade grade)
+        public static async Task<int> UpdateGradeAsync(SqlConnection connection, Grade grade)
         {
             var updateCommand = new SqlCommand("UPDATE Grades SET GradeDate = @gradeDate," +
             "IsComplete = @isComplete, HomeTaskID = @hometaskID, StudentID = @studentID " +
@@ -427,11 +404,13 @@ namespace StudyManager.DataAccess.ADO
 
             try
             {
-                await updateCommand.ExecuteNonQueryAsync();
+                var numberOfAffectedRows = await updateCommand.ExecuteNonQueryAsync();
+
+                return numberOfAffectedRows;
             }
             catch (SqlException)
             {
-                throw new Exception("There isn't grade or/and hometask or/and student with such ID in database");
+                throw new Exception("There isn't hometask or/and student with such ID in database");
             }
         }
 

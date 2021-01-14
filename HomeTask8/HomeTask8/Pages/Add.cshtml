@@ -46,9 +46,9 @@
 
 @if (Model.ExceptionMessage == null)
 {
-    if(Model.Objects.Count != 0)
+    if (Model.Objects.Count != 0)
     {
-        <h3 class="text-black-50" id="congratulational-label">Object was successfully added:</h3>
+        <h3 id="result-label" class="text-black-50">Object was successfully added:</h3>
     }
     <table class="table">
         @switch (Model.SelectedInfoType)

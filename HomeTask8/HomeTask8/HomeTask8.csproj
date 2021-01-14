@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk.Web">
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
@@ -10,7 +10,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\StudyManager.DataAccess.ADO\StudyManager.DataAccess.ADO.csproj" />
-    <ProjectReference Include="C:\Users\ilyabelyaev\source\repos\.NET_Sigma_Software\HomeTask8\StudyManager.Models\StudyManager.Models.csproj" />
+    <ProjectReference Include="..\StudyManager.Models\StudyManager.Models.csproj" />
   </ItemGroup>
 
 </Project>

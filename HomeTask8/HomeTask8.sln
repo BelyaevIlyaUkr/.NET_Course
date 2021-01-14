@@ -7,7 +7,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HomeTask8", "HomeTask8\Home
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "StudyManager.DataAccess.ADO", "StudyManager.DataAccess.ADO\StudyManager.DataAccess.ADO.csproj", "{682061EF-6975-44DD-B5D2-816157DE6978}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "StudyManager.Models", "C:\Users\ilyabelyaev\source\repos\.NET_Sigma_Software\HomeTask8\StudyManager.Models\StudyManager.Models.csproj", "{5F4848CD-CC48-4D31-A62F-C2FF564DAEC6}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "StudyManager.Models", "StudyManager.Models\StudyManager.Models.csproj", "{B235ECDD-93C6-4E30-97EB-2A80D41F77B1}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -23,10 +23,10 @@ Global
 		{682061EF-6975-44DD-B5D2-816157DE6978}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{682061EF-6975-44DD-B5D2-816157DE6978}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{682061EF-6975-44DD-B5D2-816157DE6978}.Release|Any CPU.Build.0 = Release|Any CPU
-		{5F4848CD-CC48-4D31-A62F-C2FF564DAEC6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{5F4848CD-CC48-4D31-A62F-C2FF564DAEC6}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{5F4848CD-CC48-4D31-A62F-C2FF564DAEC6}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{5F4848CD-CC48-4D31-A62F-C2FF564DAEC6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B235ECDD-93C6-4E30-97EB-2A80D41F77B1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B235ECDD-93C6-4E30-97EB-2A80D41F77B1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B235ECDD-93C6-4E30-97EB-2A80D41F77B1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B235ECDD-93C6-4E30-97EB-2A80D41F77B1}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
