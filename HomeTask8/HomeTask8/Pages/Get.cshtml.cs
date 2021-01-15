@@ -78,27 +78,43 @@ namespace HomeTask8.Pages
                         Objects.AddRange(await Repository.GetAllGradesAsync(Connection));
                         break;
                     case "allCoursesForStudent":
+                        if (!IsFilterFieldFilled())
+                            throw new Exception("student ID field must be filled (with non-zero value)");
                         Objects.AddRange(await Repository.GetAllCoursesForStudentAsync(Connection, FilterField));
                         break;
                     case "allStudentsInCourse":
+                        if (!IsFilterFieldFilled())
+                            throw new Exception("course ID field must be filled (with non-zero value)");
                         Objects.AddRange(await Repository.GetAllStudentsInCourseAsync(Connection, FilterField));
                         break;
                     case "allLecturersForCourse":
+                        if (!IsFilterFieldFilled())
+                            throw new Exception("course ID field must be filled (with non-zero value)");
                         Objects.AddRange(await Repository.GetAllLecturersForCourseAsync(Connection, FilterField));
                         break;
                     case "allCoursesWithDefiniteLecturer":
+                        if (!IsFilterFieldFilled())
+                            throw new Exception("lecturer ID field must be filled (with non-zero value)");
                         Objects.AddRange(await Repository.GetAllCoursesWithDefiniteLecturerAsync(Connection, FilterField));
                         break;
                 }
             }
             catch(Exception ex)
             {
-                ExceptionMessage = ex.Message;
+                ExceptionMessage = "Error: " + ex.Message;
             }
             finally
             {
                 Connection.Close();
             }
+        }
+
+        bool IsFilterFieldFilled()
+        {
+            if (FilterField == 0)
+                return false;
+
+            return true;
         }
     }
 }

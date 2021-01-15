@@ -1,7 +1,7 @@
 ﻿@page
 @model HomeTask8.Pages.AddModel
-@{ 
-    ViewData["Title"] = "Adding new objects"; 
+@{
+    ViewData["Title"] = "Adding new objects";
 }
 
 <h2>Adding new objects</h2>
@@ -10,7 +10,7 @@
     <div class="margining">
         <label asp-for="SelectedInfoType"></label>
         <br />
-        <select onchange="inputFieldsOnAddAndUpdatePageToggling(true,'add'); clearResultPlaceOnPage();" asp-for="SelectedInfoType" asp-items="Model.InfoTypes">
+        <select onchange="inputFieldsOnAddOrUpdatePageToggling(true,'add'); clearResultPlaceOnPage();" asp-for="SelectedInfoType" asp-items="Model.InfoTypes">
             <option value="" selected disabled hidden>Choose type</option>
         </select>
     </div>
@@ -40,7 +40,7 @@
     <button class="margining" type="submit">Add object</button>
 
     <script>
-        inputFieldsOnAddAndUpdatePageToggling(false, 'add');
+        inputFieldsOnAddOrUpdatePageToggling(false, 'add');
     </script>
 </form>
 
@@ -50,6 +50,7 @@
     {
         <h3 id="result-label" class="text-black-50">Object was successfully added:</h3>
     }
+
     <table class="table">
         @switch (Model.SelectedInfoType)
         {
@@ -158,20 +159,20 @@
                 <tbody>
                     @foreach (StudyManager.Models.Grade grade in Model.Objects)
                     {
-                    <tr>
-                        <td>@grade.GradeID</td>
-                        <td>@grade.GradeDate.Date.ToString("d", new CultureInfo("fr-FR"))</td>
-                        @if (grade.IsComplete)
-                        {
-                            <td>yes</td>
-                        }
-                        else
-                        {
-                            <td>no</td>
-                        }
-                        <td>@grade.HomeTaskID</td>
-                        <td>@grade.StudentID</td>
-                    </tr>
+                        <tr>
+                            <td>@grade.GradeID</td>
+                            <td>@grade.GradeDate.Date.ToString("d", new CultureInfo("fr-FR"))</td>
+                            @if (grade.IsComplete)
+                            {
+                                <td>yes</td>
+                            }
+                            else
+                            {
+                                <td>no</td>
+                            }
+                            <td>@grade.HomeTaskID</td>
+                            <td>@grade.StudentID</td>
+                        </tr>
                     }
                 </tbody>
                 break;

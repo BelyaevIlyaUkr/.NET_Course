@@ -23,7 +23,7 @@ namespace HomeTask8.Pages
         SqlConnection Connection { get; }
 
         [Display(Name = "Object type")]
-        [BindProperty(SupportsGet = true)]
+        [BindProperty]
         public string SelectedInfoType { get; set; }
 
         public List<SelectListItem> InfoTypes { get; }
@@ -82,9 +82,11 @@ namespace HomeTask8.Pages
 
                 switch (SelectedInfoType)
                 {
+                    case null:
+                        throw new Exception("type of information isn't chosed");
                     case "student":
-                        if (IsAnyVisibleFieldNullExceptFirst(5))
-                            throw new Exception("all input fields must be filled");
+                        if (IsAnyVisibleInputFieldNotFilled(6))
+                            throw new Exception("all input fields must be filled (first field with non-zero value)");
 
                         SecondInputField = SecondInputField.Trim();
                         ThirdInputField = ThirdInputField.Trim();
@@ -122,8 +124,8 @@ namespace HomeTask8.Pages
                             Objects.AddRange(await Repository.GetAllStudentsAsync(Connection));
                         break;
                     case "course":
-                        if (IsAnyVisibleFieldNullExceptFirst(4))
-                            throw new Exception("all input fields must be filled");
+                        if (IsAnyVisibleInputFieldNotFilled(6))
+                            throw new Exception("all input fields must be filled (first field with non-zero value)");
 
                         SecondInputField = SecondInputField.Trim();
                         ThirdInputField = ThirdInputField.Trim();
@@ -156,8 +158,8 @@ namespace HomeTask8.Pages
                             Objects.AddRange(await Repository.GetAllCoursesAsync(Connection));
                         break;
                     case "lecturer":
-                        if (IsAnyVisibleFieldNullExceptFirst(2))
-                            throw new Exception("all input fields must be filled");
+                        if (IsAnyVisibleInputFieldNotFilled(3))
+                            throw new Exception("all input fields must be filled (first field with non-zero value)");
 
                         SecondInputField = SecondInputField.Trim();
                         ThirdInputField = ThirdInputField.Trim();
@@ -183,8 +185,8 @@ namespace HomeTask8.Pages
                             Objects.AddRange(await Repository.GetAllLecturersAsync(Connection));
                         break;
                     case "hometask":
-                        if (IsAnyVisibleFieldNullExceptFirst(5))
-                            throw new Exception("all input fields must be filled");
+                        if (IsAnyVisibleInputFieldNotFilled(6))
+                            throw new Exception("all input fields must be filled (first field with non-zero value)");
 
                         SecondInputField = SecondInputField.Trim();
                         ThirdInputField = ThirdInputField.Trim();
@@ -219,8 +221,8 @@ namespace HomeTask8.Pages
                             Objects.AddRange(await Repository.GetAllHomeTasksAsync(Connection));
                         break;
                     case "grade":
-                        if (IsAnyVisibleFieldNullExceptFirst(4))
-                            throw new Exception("all input fields must be filled");
+                        if (IsAnyVisibleInputFieldNotFilled(5))
+                            throw new Exception("all input fields must be filled (first field with non-zero value)");
 
                         SecondInputField = SecondInputField.Trim();
                         ThirdInputField = ThirdInputField.Trim();
@@ -339,14 +341,17 @@ namespace HomeTask8.Pages
             return true;
         }
 
-        bool IsAnyVisibleFieldNullExceptFirst(int numberOfVisibleFieldsWithoutFirst)
+        bool IsAnyVisibleInputFieldNotFilled(int numberOfVisibleFields)
         {
-            List<string> fields = new List<string> { SecondInputField, ThirdInputField, FourthInputField,
+            if (FirstInputField == 0)
+                return true;
+
+            List<string> allfieldsExceptFirst = new List<string> { SecondInputField, ThirdInputField, FourthInputField,
                 FifthInputField, SixthInputField};
 
-            for (int i = 0; i < numberOfVisibleFieldsWithoutFirst; i++)
+            for (int i = 0; i < numberOfVisibleFields - 1 ; i++)
             {
-                if (fields[i] == null)
+                if (allfieldsExceptFirst[i] == null)
                     return true;
             }
 

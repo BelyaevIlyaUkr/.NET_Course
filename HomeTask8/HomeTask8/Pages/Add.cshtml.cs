@@ -22,7 +22,7 @@ namespace HomeTask8.Pages
         SqlConnection Connection { get; }
 
         [Display(Name = "Object type")]
-        [BindProperty(SupportsGet = true)]
+        [BindProperty]
         public string SelectedInfoType { get; set; }
 
         public List<SelectListItem> InfoTypes { get; }
@@ -74,8 +74,10 @@ namespace HomeTask8.Pages
 
                 switch (SelectedInfoType)
                 {
+                    case null:
+                        throw new Exception("type of information isn't chosed");
                     case "student":
-                        if (IsAnyVisibleFieldNull(5))
+                        if (IsAnyVisibleInputFieldNull(5))
                             throw new Exception("all input fields must be filled");
 
                         FirstInputField = FirstInputField.Trim();
@@ -109,7 +111,7 @@ namespace HomeTask8.Pages
                         Objects.AddRange(await Repository.GetAllStudentsAsync(Connection));
                         break;
                     case "course":
-                        if (IsAnyVisibleFieldNull(4))
+                        if (IsAnyVisibleInputFieldNull(4))
                             throw new Exception("all input fields must be filled");
 
                         FirstInputField = FirstInputField.Trim();
@@ -138,7 +140,7 @@ namespace HomeTask8.Pages
                         Objects.AddRange(await Repository.GetAllCoursesAsync(Connection));
                         break;
                     case "lecturer":
-                        if (IsAnyVisibleFieldNull(2))
+                        if (IsAnyVisibleInputFieldNull(2))
                             throw new Exception("all input fields must be filled");
 
                         FirstInputField = FirstInputField.Trim();
@@ -160,7 +162,7 @@ namespace HomeTask8.Pages
                         Objects.AddRange(await Repository.GetAllLecturersAsync(Connection));
                         break;
                     case "hometask":
-                        if (IsAnyVisibleFieldNull(5))
+                        if (IsAnyVisibleInputFieldNull(5))
                             throw new Exception("all input fields must be filled");
 
                         FirstInputField = FirstInputField.Trim();
@@ -191,7 +193,7 @@ namespace HomeTask8.Pages
                         Objects.AddRange(await Repository.GetAllHomeTasksAsync(Connection));
                         break;
                     case "grade":
-                        if (IsAnyVisibleFieldNull(4))
+                        if (IsAnyVisibleInputFieldNull(4))
                             throw new Exception("all input fields must be filled");
 
                         FirstInputField = FirstInputField.Trim();
@@ -305,7 +307,7 @@ namespace HomeTask8.Pages
             return true;
         }
 
-        bool IsAnyVisibleFieldNull(int numberOfVisibleFields)
+        bool IsAnyVisibleInputFieldNull(int numberOfVisibleFields)
         {
             List<string> fields = new List<string> { FirstInputField, SecondInputField, ThirdInputField,
                 FourthInputField, FifthInputField};

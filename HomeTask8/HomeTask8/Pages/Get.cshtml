@@ -9,7 +9,7 @@
 <form method="get">
     <div class="margining select-section-inline">
         <label asp-for="SelectedInfoType"></label><br />
-        <select onChange="filterFieldTogglingInGet()" asp-for="SelectedInfoType" asp-items="Model.InfoTypes">
+        <select onChange="filterFieldTogglingInGet(true); clearResultPlaceOnPage();" asp-for="SelectedInfoType" asp-items="Model.InfoTypes">
             <option value="" selected disabled hidden>Choose type</option>
         </select>
     </div>
@@ -23,7 +23,7 @@
     <button class="margining" type="submit">Get Information</button> <br />
 
     <script>
-        filterFieldTogglingInGet();
+        filterFieldTogglingInGet(false);
     </script>
 </form>
 

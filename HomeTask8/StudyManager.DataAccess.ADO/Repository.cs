@@ -470,7 +470,7 @@ namespace StudyManager.DataAccess.ADO
             return studentsCourses;
         }
 
-        public static async Task<(int studentID, int courseID)> CreateStudentCourseAsync(SqlConnection connection, (int studentID, int courseID) studentCourse)
+        public static async Task CreateStudentCourseAsync(SqlConnection connection, (int studentID, int courseID) studentCourse)
         {
             var createCommand = new SqlCommand("INSERT INTO Students_Courses (StudentID, CourseID)" +
                 " VALUES (@studentID, @courseID)", connection);
@@ -478,9 +478,15 @@ namespace StudyManager.DataAccess.ADO
             createCommand.Parameters.AddWithValue("@studentID", studentCourse.studentID);
             createCommand.Parameters.AddWithValue("@courseID", studentCourse.courseID);
 
-            await createCommand.ExecuteNonQueryAsync();
-
-            return studentCourse;
+            try
+            {
+                await createCommand.ExecuteNonQueryAsync();
+            }
+            catch (SqlException)
+            {
+                throw new Exception("there isn't student or/and course with such ID or " +
+                    "this student have already been connected to this course");
+            }
         }
 
         public static async Task DeleteStudentCourseAsync(SqlConnection connection, (int studentID, int courseID) studentCourse)
@@ -594,7 +600,7 @@ namespace StudyManager.DataAccess.ADO
             return coursesLecturers;
         }
 
-        public static async Task<(int studentID, int courseID)> CreateCourseLecturerAsync(SqlConnection connection, (int courseID, int lecturerID) courseLecturer)
+        public static async Task CreateCourseLecturerAsync(SqlConnection connection, (int courseID, int lecturerID) courseLecturer)
         {
             var createCommand = new SqlCommand("INSERT INTO Courses_Lecturers (CourseID, LecturerID)" +
                 " VALUES (@courseID, @lecturerID)", connection);
@@ -602,9 +608,15 @@ namespace StudyManager.DataAccess.ADO
             createCommand.Parameters.AddWithValue("@courseID", courseLecturer.courseID);
             createCommand.Parameters.AddWithValue("@lecturerID", courseLecturer.lecturerID);
 
-            await createCommand.ExecuteNonQueryAsync();
-
-            return courseLecturer;
+            try
+            {
+                await createCommand.ExecuteNonQueryAsync();
+            }
+            catch (SqlException)
+            {
+                throw new Exception("there isn't lecturer or/and course with such ID or " +
+                    "this lecturer have already been connected to this course");
+            }
         }
 
         public static async Task DeleteCourseLecturerAsync(SqlConnection connection, (int courseID, int lecturerID) courseLecturer)

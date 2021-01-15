@@ -18,13 +18,13 @@ namespace HomeTask8.Pages
         public List<object> Objects { get; set; }
 
         [Display(Name = "Information type")]
-        [BindProperty(SupportsGet = true)]
+        [BindProperty]
         public string SelectedInfoType { get; set; }
 
         public List<SelectListItem> InfoTypes { get; }
 
-        [BindProperty(SupportsGet = true)]
-        public int FilterField { get; set; }
+        [BindProperty]
+        public int FirstInputField { get; set; }
 
         public string ExceptionMessage { get; set; }
 
@@ -65,6 +65,8 @@ namespace HomeTask8.Pages
 
                 switch (SelectedInfoType)
                 {
+                    case null:
+                        throw new Exception("type of information isn't chosed");
                     case "allStudents":
                         var numberOfDeletedStudentsRows = await Repository.DeleteAllStudentsAsync(Connection);
 
@@ -106,7 +108,10 @@ namespace HomeTask8.Pages
                             Objects.AddRange(await Repository.GetAllGradesAsync(Connection));
                         break;
                     case "studentWithDefiniteID":
-                        var numberOfAffectedStudentRows = await Repository.DeleteStudentAsync(Connection, FilterField);
+                        if (!IsFirstInputFieldFilled())
+                            throw new Exception("student ID field must be filled (with non-zero value)");
+
+                        var numberOfAffectedStudentRows = await Repository.DeleteStudentAsync(Connection, FirstInputField);
 
                         if (numberOfAffectedStudentRows == 0)
                             ResultMessage = "There isn't student with such ID in database";
@@ -115,7 +120,10 @@ namespace HomeTask8.Pages
                         Objects.AddRange(await Repository.GetAllStudentsAsync(Connection));
                         break;
                     case "courseWithDefiniteID":
-                        var numberOfAffectedCourseRows = await Repository.DeleteCourseAsync(Connection, FilterField);
+                        if (!IsFirstInputFieldFilled())
+                            throw new Exception("course ID field must be filled (with non-zero value)");
+
+                        var numberOfAffectedCourseRows = await Repository.DeleteCourseAsync(Connection, FirstInputField);
 
                         if (numberOfAffectedCourseRows == 0)
                             ResultMessage = "There isn't course with such ID in database";
@@ -124,7 +132,10 @@ namespace HomeTask8.Pages
                         Objects.AddRange(await Repository.GetAllCoursesAsync(Connection));
                         break;
                     case "lecturerWithDefiniteID":
-                        var numberOfAffectedLecturerRows = await Repository.DeleteLecturerAsync(Connection, FilterField);
+                        if (!IsFirstInputFieldFilled())
+                            throw new Exception("lecturer ID field must be filled (with non-zero value)");
+
+                        var numberOfAffectedLecturerRows = await Repository.DeleteLecturerAsync(Connection, FirstInputField);
 
                         if (numberOfAffectedLecturerRows == 0)
                             ResultMessage = "There isn't lecturer with such ID in database";
@@ -133,7 +144,10 @@ namespace HomeTask8.Pages
                         Objects.AddRange(await Repository.GetAllLecturersAsync(Connection));
                         break;
                     case "hometaskWithDefiniteID":
-                        var numberOfAffectedHometaskRows = await Repository.DeleteHomeTaskAsync(Connection, FilterField);
+                        if (!IsFirstInputFieldFilled())
+                            throw new Exception("hometask ID field must be filled (with non-zero value)");
+
+                        var numberOfAffectedHometaskRows = await Repository.DeleteHomeTaskAsync(Connection, FirstInputField);
 
                         if (numberOfAffectedHometaskRows == 0)
                             ResultMessage = "There isn't hometask with such ID in database";
@@ -142,7 +156,10 @@ namespace HomeTask8.Pages
                         Objects.AddRange(await Repository.GetAllHomeTasksAsync(Connection));
                         break;
                     case "gradeWithDefiniteID":
-                        var numberOfAffectedGradeRows = await Repository.DeleteGradeAsync(Connection, FilterField);
+                        if (!IsFirstInputFieldFilled())
+                            throw new Exception("grade ID field must be filled (with non-zero value)");
+
+                        var numberOfAffectedGradeRows = await Repository.DeleteGradeAsync(Connection, FirstInputField);
 
                         if (numberOfAffectedGradeRows == 0)
                             ResultMessage = "There isn't grade with such ID in database";
@@ -154,12 +171,20 @@ namespace HomeTask8.Pages
             }
             catch (Exception ex)
             {
-                ExceptionMessage = ex.Message;
+                ExceptionMessage = "Error: " + ex.Message;
             }
             finally
             {
                 Connection.Close();
             }
+        }
+
+        bool IsFirstInputFieldFilled()
+        {
+            if (FirstInputField == 0)
+                return false;
+
+            return true;
         }
     }
 }

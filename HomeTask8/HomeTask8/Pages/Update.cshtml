@@ -10,7 +10,7 @@
 	<div class="margining">
 		<label asp-for="SelectedInfoType"></label>
 		<br />
-		<select onchange="inputFieldsOnAddAndUpdatePageToggling(true,'update'); clearResultPlaceOnPage();" asp-for="SelectedInfoType" asp-items="Model.InfoTypes">
+		<select onchange="inputFieldsOnAddOrUpdatePageToggling(true,'update'); clearResultPlaceOnPage();" asp-for="SelectedInfoType" asp-items="Model.InfoTypes">
 			<option value="" selected disabled hidden>Choose type</option>
 		</select>
 	</div>
@@ -44,7 +44,7 @@
 	<button class="margining" type="submit">Update object</button>
 
 	<script>
-		inputFieldsOnAddAndUpdatePageToggling(false, 'update');
+		inputFieldsOnAddOrUpdatePageToggling(false, 'update');
 	</script>
 </form>
 

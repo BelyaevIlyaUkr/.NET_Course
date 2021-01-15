@@ -3,7 +3,7 @@
 
 // Write your Javascript code.
 
-function filterFieldTogglingInGet() {
+function filterFieldTogglingInGet(isClearingInputRequired) {
     let selectTag = document.getElementById('SelectedInfoType');
 
     let chose = selectTag.options[selectTag.selectedIndex].value;
@@ -28,10 +28,16 @@ function filterFieldTogglingInGet() {
             case 'allCoursesWithDefiniteLecturer':
                 elements[0].children[0].innerHTML = 'LecturerID';
         }
+
+        elements[0].children[2].placeholder = 'e.g. 22';
+
+        if (isClearingInputRequired) {
+            clearInputFieldsOnPage(elements);
+        }
     }
 }
 
-function inputFieldsOnAddAndUpdatePageToggling(isClearingInputRequired, page) {
+function inputFieldsOnAddOrUpdatePageToggling(isClearingInputRequired, page) {
     let selectTag = document.getElementById('SelectedInfoType');
 
     let chose = selectTag.options[selectTag.selectedIndex].value;
@@ -318,6 +324,35 @@ function filterFieldTogglingOnDeletePage(isClearingInputRequired) {
             case 'gradeWithDefiniteID':
                 elements[0].children[0].innerHTML = 'Grade ID';
         }
+    }
+
+    if (isClearingInputRequired) {
+        clearInputFieldsOnPage(elements);
+    }
+}
+
+function inputFieldsTogglingOnConnectOrDisconnectPage(isClearingInputRequired) {
+    let selectTag = document.getElementById('SelectedInfoType');
+
+    let chose = selectTag.options[selectTag.selectedIndex].value;
+
+
+    let elements = document.getElementsByClassName('ConnectOrDisconnectPageInputFields');
+
+    if (chose === "") {
+        for (let i = 0; i < elements.length; i++) {
+            elements[i].style.display = 'none';
+        }
+    }
+    else {
+        for (let i = 0; i < elements.length; i++) {
+            elements[i].style.display = 'inline-block'; 
+        }
+
+        if (chose === "studentToCourse")
+            elements[0].children[0].innerHTML = 'Student ID';
+        else 
+            elements[0].children[0].innerHTML = 'Lecturer ID';
     }
 
     if (isClearingInputRequired) {
