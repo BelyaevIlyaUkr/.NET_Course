@@ -116,8 +116,10 @@ namespace HomeTask8.Pages
                         if (numberOfAffectedStudentRows == 0)
                             ResultMessage = "There isn't student with such ID in database";
                         else
+                        {
                             ResultMessage = "Object was deleted successfully";
-                        Objects.AddRange(await Repository.GetAllStudentsAsync(Connection));
+                            Objects.AddRange(await Repository.GetAllStudentsAsync(Connection));
+                        }
                         break;
                     case "courseWithDefiniteID":
                         if (!IsFirstInputFieldFilled())
@@ -128,8 +130,10 @@ namespace HomeTask8.Pages
                         if (numberOfAffectedCourseRows == 0)
                             ResultMessage = "There isn't course with such ID in database";
                         else
+                        {
                             ResultMessage = "Object was deleted successfully";
-                        Objects.AddRange(await Repository.GetAllCoursesAsync(Connection));
+                            Objects.AddRange(await Repository.GetAllCoursesAsync(Connection));
+                        }
                         break;
                     case "lecturerWithDefiniteID":
                         if (!IsFirstInputFieldFilled())
@@ -140,8 +144,10 @@ namespace HomeTask8.Pages
                         if (numberOfAffectedLecturerRows == 0)
                             ResultMessage = "There isn't lecturer with such ID in database";
                         else
+                        {
                             ResultMessage = "Object was deleted successfully";
-                        Objects.AddRange(await Repository.GetAllLecturersAsync(Connection));
+                            Objects.AddRange(await Repository.GetAllLecturersAsync(Connection));
+                        }
                         break;
                     case "hometaskWithDefiniteID":
                         if (!IsFirstInputFieldFilled())
@@ -152,8 +158,10 @@ namespace HomeTask8.Pages
                         if (numberOfAffectedHometaskRows == 0)
                             ResultMessage = "There isn't hometask with such ID in database";
                         else
+                        {
                             ResultMessage = "Object was deleted successfully";
-                        Objects.AddRange(await Repository.GetAllHomeTasksAsync(Connection));
+                            Objects.AddRange(await Repository.GetAllHomeTasksAsync(Connection));
+                        }
                         break;
                     case "gradeWithDefiniteID":
                         if (!IsFirstInputFieldFilled())
@@ -164,8 +172,10 @@ namespace HomeTask8.Pages
                         if (numberOfAffectedGradeRows == 0)
                             ResultMessage = "There isn't grade with such ID in database";
                         else
+                        {
                             ResultMessage = "Object was deleted successfully";
-                        Objects.AddRange(await Repository.GetAllGradesAsync(Connection));
+                            Objects.AddRange(await Repository.GetAllGradesAsync(Connection));
+                        }
                         break;
                 }
             }

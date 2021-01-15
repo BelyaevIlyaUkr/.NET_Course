@@ -1,4 +1,97 @@
 ﻿@page
 @model HomeTask8.Pages.DisconnectModel
-@{
+@{ 
+    ViewData["Title"] = "Disconnecting objects"; 
+}
+
+<h2>Disconnecting information</h2>
+
+<form method="post">
+    <div class="margining select-section-inline">
+        <label asp-for="SelectedInfoType"></label>
+        <br />
+        <select onchange="inputFieldsTogglingOnConnectOrDisconnectPage(true); clearResultPlaceOnPage();" asp-for="SelectedInfoType" asp-items="Model.InfoTypes">
+            <option value="" selected disabled hidden>Choose type</option>
+        </select>
+    </div>
+
+    <div class="ConnectOrDisconnectPageInputFields margining">
+        <label for="FirstInputField"></label><br />
+        <input asp-for="FirstInputField" />
+    </div>
+    <div class="ConnectOrDisconnectPageInputFields margining">
+        <label asp-for="SecondInputField"></label><br />
+        <input asp-for="SecondInputField" />
+    </div>
+    <br />
+
+    <button class="margining" type="submit">Disconnect objects</button>
+
+    <script>inputFieldsTogglingOnConnectOrDisconnectPage(false);</script>
+</form>
+
+@if (Model.ExceptionMessage == null)
+{
+    <h3 id="result-label" class="text-black-50">@Model.ResultMessage</h3>
+
+    if (Model.ResultMessage == "Student was disconnected from course successfully. List of students on this course:" ||
+        Model.ResultMessage == "Lecturer was disconnected from course successfully. List of lecturers on this course:" ||
+        Model.ResultMessage == "All specified objects were deleted successfully") 
+    { 
+        <table class="table">
+            @switch (Model.SelectedInfoType)
+            {
+                case "allStudentsFromAllCourses":
+                case "studentFromCourse":
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>First Name</th>
+                            <th>Last Name</th>
+                            <th>Phone number</th>
+                            <th>Email</th>
+                            <th>Github</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (StudyManager.Models.Student student in Model.Objects)
+                        {
+                            <tr>
+                                <td>@student.StudentID</td>
+                                <td>@student.FirstName</td>
+                                <td>@student.LastName</td>
+                                <td>@student.PhoneNumber</td>
+                                <td>@student.Email</td>
+                                <td>@student.Github</td>
+                            </tr>
+                        }
+                    </tbody>
+                    break;
+                case "allLecturersFromAllCourses":
+                case "lecturerFromCourse":
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Name</th>
+                            <th>Birth Date</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (StudyManager.Models.Lecturer lecturer in Model.Objects)
+                        {
+                            <tr>
+                                <td>@lecturer.LecturerID</td>
+                                <td>@lecturer.Name</td>
+                                <td>@lecturer.BirthDate.Date.ToString("d", new CultureInfo("fr-FR"))</td>
+                            </tr>
+                        }
+                    </tbody>
+                    break;
+            }
+        </table>
+    }
+}
+else
+{
+    <h3 id="error-label" class="text-danger">@Model.ExceptionMessage</h3>
 }

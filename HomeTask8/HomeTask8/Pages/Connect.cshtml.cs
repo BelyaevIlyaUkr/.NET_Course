@@ -60,14 +60,14 @@ namespace HomeTask8.Pages
                     case null:
                         throw new Exception("type of information isn't chosed");
                     case "studentToCourse":
-                        if (!areAllInputFieldsFilled())
+                        if (!AreAllInputFieldsFilled())
                             throw new Exception("All input fields must be filled (with non-zero value)");
 
                         await Repository.CreateStudentCourseAsync(Connection, (FirstInputField, SecondInputField));
                         Objects.AddRange(await Repository.GetAllStudentsInCourseAsync(Connection, SecondInputField));
                         break;
                     case "lecturerToCourse":
-                        if (!areAllInputFieldsFilled())
+                        if (!AreAllInputFieldsFilled())
                             throw new Exception("All input fields must be filled (with non-zero value)");
 
                         await Repository.CreateCourseLecturerAsync(Connection, (SecondInputField, FirstInputField));
@@ -85,7 +85,7 @@ namespace HomeTask8.Pages
             }
         }
 
-        bool areAllInputFieldsFilled()
+        bool AreAllInputFieldsFilled()
         {
             if (FirstInputField == 0)
                 return false;

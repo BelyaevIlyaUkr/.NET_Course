@@ -489,7 +489,7 @@ namespace StudyManager.DataAccess.ADO
             }
         }
 
-        public static async Task DeleteStudentCourseAsync(SqlConnection connection, (int studentID, int courseID) studentCourse)
+        public static async Task<int> DeleteStudentCourseAsync(SqlConnection connection, (int studentID, int courseID) studentCourse)
         {
             var deleteCommand = new SqlCommand("DELETE FROM Students_Courses WHERE StudentID = @studentID " +
                 "AND CourseID = @courseID", connection);
@@ -497,15 +497,19 @@ namespace StudyManager.DataAccess.ADO
             deleteCommand.Parameters.AddWithValue("@studentID", studentCourse.studentID);
             deleteCommand.Parameters.AddWithValue("@courseID", studentCourse.courseID);
 
-            await deleteCommand.ExecuteNonQueryAsync();
+            var numberOfAffectedRows = await deleteCommand.ExecuteNonQueryAsync();
+
+            return numberOfAffectedRows;
         }
 
 
-        public static async Task DeleteAllStudentCoursesAsync(SqlConnection connection)
+        public static async Task<int> DeleteAllStudentCoursesAsync(SqlConnection connection)
         {
-            var deleteCommand = new SqlCommand("DELETE FROM Student_Courses", connection);
+            var deleteCommand = new SqlCommand("DELETE FROM Students_Courses", connection);
 
-            await deleteCommand.ExecuteNonQueryAsync();
+            var numberOfAffectedRows = await deleteCommand.ExecuteNonQueryAsync();
+
+            return numberOfAffectedRows;
         }
 
         public static async Task<List<Course>> GetAllCoursesForStudentAsync(SqlConnection connection, int studentID)
@@ -619,7 +623,7 @@ namespace StudyManager.DataAccess.ADO
             }
         }
 
-        public static async Task DeleteCourseLecturerAsync(SqlConnection connection, (int courseID, int lecturerID) courseLecturer)
+        public static async Task<int> DeleteCourseLecturerAsync(SqlConnection connection, (int courseID, int lecturerID) courseLecturer)
         {
             var deleteCommand = new SqlCommand("DELETE FROM Courses_Lecturers WHERE CourseID = @courseID " +
                 "AND LecturerID = @lecturerID", connection);
@@ -627,14 +631,18 @@ namespace StudyManager.DataAccess.ADO
             deleteCommand.Parameters.AddWithValue("@courseID", courseLecturer.courseID);
             deleteCommand.Parameters.AddWithValue("@lecturerID", courseLecturer.lecturerID);
 
-            await deleteCommand.ExecuteNonQueryAsync();
+            var numberOfAffectedRows = await deleteCommand.ExecuteNonQueryAsync();
+
+            return numberOfAffectedRows;
         }
 
-        public static async Task DeleteAllCoursesLecturersAsync(SqlConnection connection)
+        public static async Task<int> DeleteAllCoursesLecturersAsync(SqlConnection connection)
         {
             var deleteCommand = new SqlCommand("DELETE FROM Courses_Lecturers", connection);
 
-            await deleteCommand.ExecuteNonQueryAsync();
+            var numberOfAffectedRows = await deleteCommand.ExecuteNonQueryAsync();
+
+            return numberOfAffectedRows;
         }
 
         public static async Task<List<Lecturer>> GetAllLecturersForCourseAsync(SqlConnection connection, int courseID)

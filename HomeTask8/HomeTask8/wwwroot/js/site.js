@@ -339,7 +339,7 @@ function inputFieldsTogglingOnConnectOrDisconnectPage(isClearingInputRequired) {
 
     let elements = document.getElementsByClassName('ConnectOrDisconnectPageInputFields');
 
-    if (chose === "") {
+    if (chose === "" || chose === 'allLecturersFromAllCourses' || chose === 'allStudentsFromAllCourses') {
         for (let i = 0; i < elements.length; i++) {
             elements[i].style.display = 'none';
         }
@@ -349,7 +349,7 @@ function inputFieldsTogglingOnConnectOrDisconnectPage(isClearingInputRequired) {
             elements[i].style.display = 'inline-block'; 
         }
 
-        if (chose === "studentToCourse")
+        if (chose === 'studentToCourse' || chose === 'studentFromCourse')
             elements[0].children[0].innerHTML = 'Student ID';
         else 
             elements[0].children[0].innerHTML = 'Lecturer ID';
