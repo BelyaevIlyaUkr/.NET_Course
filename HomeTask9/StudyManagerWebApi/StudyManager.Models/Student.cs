@@ -1,4 +1,5 @@
 ﻿
+
 namespace StudyManager.Models
 {
     public class Student

@@ -4,5 +4,10 @@
     <TargetFramework>netcoreapp3.1</TargetFramework>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\StudyManager.DataAccess.ADO\StudyManager.DataAccess.ADO.csproj" />
+    <ProjectReference Include="..\StudyManager.Models\StudyManager.Models.csproj" />
+  </ItemGroup>
+
 
 </Project>

@@ -79,13 +79,11 @@ namespace StudyManager.DataAccess.ADO
             return numberOfAffectedRows;
         }
 
-        public static async Task<int> DeleteAllStudentsAsync(SqlConnection connection)
+        public static async Task DeleteAllStudentsAsync(SqlConnection connection)
         {
             var deleteCommand = new SqlCommand("DELETE FROM Students", connection);
 
-            var numberOfAffectedRows = await deleteCommand.ExecuteNonQueryAsync();
-
-            return numberOfAffectedRows;
+            await deleteCommand.ExecuteNonQueryAsync();
         }
 
         public static async Task<int> UpdateStudentAsync(SqlConnection connection, Student student)
@@ -104,139 +102,6 @@ namespace StudyManager.DataAccess.ADO
             var numberOfAffectedRows = await updateCommand.ExecuteNonQueryAsync();
 
             return numberOfAffectedRows;
-        }
-
-        public static async Task<List<(int courseID, int lecturerID)>> GetAllCoursesLecturersAsync(SqlConnection connection)
-        {
-            SqlCommand command = new SqlCommand("SELECT CourseID, LecturerID FROM Courses_Lecturers", connection);
-
-            var coursesLecturers = new List<(int courseID, int lecturerID)>();
-
-            using (var reader = await command.ExecuteReaderAsync())
-            {
-                while (reader.Read())
-                {
-                    var courseLecturer = (reader.GetInt32(0), reader.GetInt32(1));
-                    coursesLecturers.Add(courseLecturer);
-                }
-            }
-
-            return coursesLecturers;
-        }
-
-        public static async Task CreateCourseLecturerAsync(SqlConnection connection, (int courseID, int lecturerID) courseLecturer)
-        {
-            var createCommand = new SqlCommand("INSERT INTO Courses_Lecturers (CourseID, LecturerID)" +
-                " VALUES (@courseID, @lecturerID)", connection);
-
-            createCommand.Parameters.AddWithValue("@courseID", courseLecturer.courseID);
-            createCommand.Parameters.AddWithValue("@lecturerID", courseLecturer.lecturerID);
-
-            try
-            {
-                await createCommand.ExecuteNonQueryAsync();
-            }
-            catch (SqlException)
-            {
-                throw new Exception("there isn't lecturer or/and course with such ID or " +
-                    "this lecturer have already been connected to this course");
-            }
-        }
-
-        public static async Task<int> DeleteCourseLecturerAsync(SqlConnection connection, (int courseID, int lecturerID) courseLecturer)
-        {
-            var deleteCommand = new SqlCommand("DELETE FROM Courses_Lecturers WHERE CourseID = @courseID " +
-                "AND LecturerID = @lecturerID", connection);
-
-            deleteCommand.Parameters.AddWithValue("@courseID", courseLecturer.courseID);
-            deleteCommand.Parameters.AddWithValue("@lecturerID", courseLecturer.lecturerID);
-
-            var numberOfAffectedRows = await deleteCommand.ExecuteNonQueryAsync();
-
-            return numberOfAffectedRows;
-        }
-
-        public static async Task<int> DeleteAllCoursesLecturersAsync(SqlConnection connection)
-        {
-            var deleteCommand = new SqlCommand("DELETE FROM Courses_Lecturers", connection);
-
-            var numberOfAffectedRows = await deleteCommand.ExecuteNonQueryAsync();
-
-            return numberOfAffectedRows;
-        }
-
-        public static async Task<List<Lecturer>> GetAllLecturersForCourseAsync(SqlConnection connection, int courseID)
-        {
-            SqlCommand getLecturersIDCommand = new SqlCommand($"SELECT LecturerID FROM Courses_Lecturers " +
-                $"WHERE CourseID = {courseID}", connection);
-
-            var lecturersIDs = new List<int>();
-
-            using (var reader = await getLecturersIDCommand.ExecuteReaderAsync())
-            {
-                while (reader.Read())
-                {
-                    var lecturerID = reader.GetInt32(0);
-
-                    lecturersIDs.Add(lecturerID);
-                }
-            }
-
-            var lecturers = new List<Lecturer>();
-
-            foreach (var lecturerID in lecturersIDs)
-            {
-                SqlCommand getLecturersCommand = new SqlCommand($"SELECT LecturerID, Name, BirthDate " +
-                        $"FROM Lecturers WHERE LecturerID = {lecturerID}", connection);
-
-                using (var reader = await getLecturersCommand.ExecuteReaderAsync())
-                {
-                    reader.Read();
-
-                    var lecturer = GetLecturer(reader);
-
-                    lecturers.Add(lecturer);
-                }
-            }
-
-            return lecturers;
-        }
-
-        public static async Task<List<Course>> GetAllCoursesWithDefiniteLecturerAsync(SqlConnection connection, int lecturerID)
-        {
-            SqlCommand getCoursesIDCommand = new SqlCommand($"SELECT CourseID FROM Courses_Lecturers " +
-                $"WHERE LecturerID = {lecturerID}", connection);
-
-            var coursesIDs = new List<int>();
-
-            using (var reader = await getCoursesIDCommand.ExecuteReaderAsync())
-            {
-                while (reader.Read())
-                {
-                    var courseID = reader.GetInt32(0);
-
-                    coursesIDs.Add(courseID);
-                }
-            }
-
-            var courses = new List<Course>();
-
-            foreach (var courseID in coursesIDs)
-            {
-                SqlCommand getCoursesCommand = new SqlCommand($"SELECT CourseID, Name, StartDate, EndDate, " +
-                        $"PassingScore FROM Courses WHERE CourseID = {courseID}", connection);
-
-                using (var reader = await getCoursesCommand.ExecuteReaderAsync())
-                {
-                    reader.Read();
-
-                    var course = GetCourse(reader);
-
-                    courses.Add(course);
-                }
-            }
-
-            return courses;
         }
     }
 }
