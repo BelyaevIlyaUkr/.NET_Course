@@ -38,17 +38,14 @@ namespace StudyManagerWebApi.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<Student>> Get(int id)
         {
-            if (id == 0)
-                return BadRequest("Error: student id can't be zero and must be filled");
+            if (Validation.IsAnyFieldNotFilled(new List<object> { id }))
+                return BadRequest("Error: student ID must be filled (with non-zero value)");
 
             using (var connection = new SqlConnection(Configuration.GetConnectionString("DefaultConnection")))
             {
                 connection.Open();
 
                 var student = await StudentsRepository.GetDefiniteStudent(connection, id);
-
-                if (student == null)
-                    return NotFound("There isn't student with such ID in database");
 
                 return new ObjectResult(student);
             }
@@ -61,12 +58,21 @@ namespace StudyManagerWebApi.Controllers
             if (student == null)
                 return BadRequest("Error: student object can't be null");
 
-            if (string.IsNullOrEmpty(student.FirstName) || string.IsNullOrEmpty(student.LastName)
-                || string.IsNullOrEmpty(student.PhoneNumber) || string.IsNullOrEmpty(student.Github)
-                || string.IsNullOrEmpty(student.Email))
-            {
-                return BadRequest("Error: all input fields must be filled");
-            }
+            if (Validation.IsAnyFieldNotFilled(new List<object> { student.FirstName, student.LastName, student.PhoneNumber,
+                student.Email, student.Github}))
+                return BadRequest("Error: all fields must be filled");
+
+            if (!Validation.IsValidFirstOrLastName(student.FirstName))
+                return BadRequest("Error: first name is incorrect");
+
+            if (!Validation.IsValidFirstOrLastName(student.LastName))
+                return BadRequest("Error: last name is incorrect");
+
+            if (!Validation.IsValidPhoneNumber(student.PhoneNumber))
+                return BadRequest("Error: phone number is incorrect");
+
+            if (!Validation.IsValidEmailAddress(student.Email))
+                return BadRequest("Error: email address is incorrect");
 
             using (var connection = new SqlConnection(Configuration.GetConnectionString("DefaultConnection")))
             {
@@ -85,15 +91,21 @@ namespace StudyManagerWebApi.Controllers
             if (student == null)
                 return BadRequest("Error: student object can't be null");
 
-            if (student.StudentID <= 0)
-                return BadRequest("Error: student ID can't be zero or less and must be filled");
+            if (Validation.IsAnyFieldNotFilled(new List<object> { student.StudentID, student.FirstName, student.LastName, student.PhoneNumber,
+                student.Email, student.Github}))
+                return BadRequest("Error: all fields must be filled (student ID - with non-zero value)");
 
-            if (string.IsNullOrEmpty(student.FirstName) || string.IsNullOrEmpty(student.LastName) 
-                || string.IsNullOrEmpty(student.PhoneNumber) || string.IsNullOrEmpty(student.Github) 
-                || string.IsNullOrEmpty(student.Email))
-            {
-                return BadRequest("Error: all input fields must be filled");
-            }
+            if (!Validation.IsValidFirstOrLastName(student.FirstName))
+                return BadRequest("Error: first name is incorrect");
+
+            if (!Validation.IsValidFirstOrLastName(student.LastName))
+                return BadRequest("Error: last name is incorrect");
+
+            if (!Validation.IsValidPhoneNumber(student.PhoneNumber))
+                return BadRequest("Error: phone number is incorrect");
+
+            if (!Validation.IsValidEmailAddress(student.Email))
+                return BadRequest("Error: email address is incorrect");
 
             using (var connection = new SqlConnection(Configuration.GetConnectionString("DefaultConnection")))
             {
@@ -112,8 +124,8 @@ namespace StudyManagerWebApi.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {
-            if (id <= 0)
-                return BadRequest("Error: student id can't be negative or zero and must be filled");
+            if (Validation.IsAnyFieldNotFilled(new List<object> { id }))
+                return BadRequest("Error: student ID must be filled (with non-zero value)");
 
             using (var connection = new SqlConnection(Configuration.GetConnectionString("DefaultConnection")))
             {
