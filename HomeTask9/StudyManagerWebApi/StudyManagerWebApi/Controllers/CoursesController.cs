@@ -38,8 +38,8 @@ namespace StudyManagerWebApi.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<Course>> Get(int id)
         {
-            if (Validation.IsAnyFieldNotFilled(new List<object> { id }))
-                return BadRequest("Error: course ID must be filled (with non-zero value)");
+            if (Validation.IsAnyInputObjectDataNotSpecified(new List<object> { id }))
+                return BadRequest("Error: course ID must be specified (with non-zero value)");
 
             using (var connection = new SqlConnection(Configuration.GetConnectionString("DefaultConnection")))
             {
@@ -58,14 +58,11 @@ namespace StudyManagerWebApi.Controllers
         [HttpPost]
         public async Task<IActionResult> Post([FromBody] Dictionary<string, string> course)
         {
-            if (course == default)
-                return BadRequest("Error: course object can't be empty");
-
-            if (Validation.IsAnyFieldNotFilled(new List<object> { course.ContainsKey("Name") ? course["Name"] : null, 
+            if (Validation.IsAnyInputObjectDataNotSpecified(new List<object> { course.ContainsKey("Name") ? course["Name"] : null, 
                 course.ContainsKey("StartDate") ? course["StartDate"] : null, course.ContainsKey("EndDate") ? course["EndDate"] : null, 
                 course.ContainsKey("PassingScore") ? course["PassingScore"] : null}))
             {
-                return BadRequest("Error: all fields must be filled");
+                return BadRequest("Error: all course input data must be specified");
             }
 
             course["Name"] = course["Name"].Trim();
@@ -104,14 +101,11 @@ namespace StudyManagerWebApi.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> Put(int id, [FromBody] Dictionary<string, string> course)
         {
-            if (course == default)
-                return BadRequest("Error: course object can't be empty");
-
-            if (Validation.IsAnyFieldNotFilled(new List<object> { id, course.ContainsKey("Name") ? course["Name"] : null,
+            if (Validation.IsAnyInputObjectDataNotSpecified(new List<object> { id, course.ContainsKey("Name") ? course["Name"] : null,
                 course.ContainsKey("StartDate") ? course["StartDate"] : null, course.ContainsKey("EndDate") ? course["EndDate"] : null,
                 course.ContainsKey("PassingScore") ? course["PassingScore"] : null}))
             {
-                return BadRequest("Error: all fields must be filled (course ID with non-zero value)");
+                return BadRequest("Error: all course input data must be specified (course ID - with non-zero value)");
             }
 
             course["Name"] = course["Name"].Trim();
@@ -154,8 +148,8 @@ namespace StudyManagerWebApi.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {
-            if (Validation.IsAnyFieldNotFilled(new List<object> { id }))
-                return BadRequest("Error: course ID must be filled (with non-zero value)");
+            if (Validation.IsAnyInputObjectDataNotSpecified(new List<object> { id }))
+                return BadRequest("Error: course ID must be specified (with non-zero value)");
 
             using (var connection = new SqlConnection(Configuration.GetConnectionString("DefaultConnection")))
             {

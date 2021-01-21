@@ -82,7 +82,7 @@ namespace StudyManagerWebApi
             return true;
         }
 
-        public static bool IsAnyFieldNotFilled(List<object> fields)
+        public static bool IsAnyInputObjectDataNotSpecified(List<object> fields)
         {
             for (int i = 0; i < fields.Count; i++)
             {
