@@ -5,7 +5,7 @@ using StudyManager.Models;
 
 namespace StudyManager.DataAccess.ADO
 {
-    class CoursesRepository
+    public class CoursesRepository
     {
         private static Course GetCourse(SqlDataReader reader)
         {

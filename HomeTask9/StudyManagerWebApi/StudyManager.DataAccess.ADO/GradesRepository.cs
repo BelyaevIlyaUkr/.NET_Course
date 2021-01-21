@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace StudyManager.DataAccess.ADO
 {
-    class GradesRepository
+    public class GradesRepository
     {
         private static Grade GetGrade(SqlDataReader reader)
         {

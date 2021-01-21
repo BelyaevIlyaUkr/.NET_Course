@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace StudyManager.DataAccess.ADO
 {
-    class HometasksRepository
+    public class HometasksRepository
     {
         private static HomeTask GetHomeTask(SqlDataReader reader)
         {

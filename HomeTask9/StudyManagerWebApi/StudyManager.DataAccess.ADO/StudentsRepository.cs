@@ -79,11 +79,13 @@ namespace StudyManager.DataAccess.ADO
             return numberOfAffectedRows;
         }
 
-        public static async Task DeleteAllStudentsAsync(SqlConnection connection)
+        public static async Task<int> DeleteAllStudentsAsync(SqlConnection connection)
         {
             var deleteCommand = new SqlCommand("DELETE FROM Students", connection);
 
-            await deleteCommand.ExecuteNonQueryAsync();
+            var numberOfAffectedRows = await deleteCommand.ExecuteNonQueryAsync();
+
+            return numberOfAffectedRows;
         }
 
         public static async Task<int> UpdateStudentAsync(SqlConnection connection, Student student)

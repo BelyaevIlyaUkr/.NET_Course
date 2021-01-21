@@ -47,77 +47,113 @@ namespace StudyManagerWebApi.Controllers
 
                 var student = await StudentsRepository.GetDefiniteStudent(connection, id);
 
+                if (student == null)
+                    return NotFound("There isn't student with such id in database");
+
                 return new ObjectResult(student);
             }
         }
 
         // POST api/<StudentsController>
         [HttpPost]
-        public async Task<IActionResult> Post([FromBody] Student student)
+        public async Task<IActionResult> Post([FromBody] Dictionary<string, string> student)
         {
             if (student == null)
                 return BadRequest("Error: student object can't be null");
 
-            if (Validation.IsAnyFieldNotFilled(new List<object> { student.FirstName, student.LastName, student.PhoneNumber,
-                student.Email, student.Github}))
-                return BadRequest("Error: all fields must be filled");
-
-            if (!Validation.IsValidFirstOrLastName(student.FirstName))
-                return BadRequest("Error: first name is incorrect");
-
-            if (!Validation.IsValidFirstOrLastName(student.LastName))
-                return BadRequest("Error: last name is incorrect");
-
-            if (!Validation.IsValidPhoneNumber(student.PhoneNumber))
-                return BadRequest("Error: phone number is incorrect");
-
-            if (!Validation.IsValidEmailAddress(student.Email))
-                return BadRequest("Error: email address is incorrect");
-
-            using (var connection = new SqlConnection(Configuration.GetConnectionString("DefaultConnection")))
+            if (Validation.IsAnyFieldNotFilled(new List<object> { student.ContainsKey("FirstName") ? student["FirstName"] : null,
+                student.ContainsKey("LastName") ? student["LastName"] : null, student.ContainsKey("PhoneNumber") ? 
+                student["PhoneNumber"] : null, student.ContainsKey("Email") ? student["Email"] : null, 
+                student.ContainsKey("Github") ? student["Github"] : null}))
             {
-                connection.Open();
-
-                await StudentsRepository.CreateStudentAsync(connection, student); 
+                return BadRequest("Error: all student input fields must be filled");
             }
 
-            return Ok();
-        }
-
-        // PUT api/<StudentsController>
-        [HttpPut]
-        public async Task<IActionResult> Put([FromBody] Student student)
-        {
-            if (student == null)
-                return BadRequest("Error: student object can't be null");
-
-            if (Validation.IsAnyFieldNotFilled(new List<object> { student.StudentID, student.FirstName, student.LastName, student.PhoneNumber,
-                student.Email, student.Github}))
-                return BadRequest("Error: all fields must be filled (student ID - with non-zero value)");
-
-            if (!Validation.IsValidFirstOrLastName(student.FirstName))
+            if (!Validation.IsValidFirstOrLastName(student["FirstName"]))
                 return BadRequest("Error: first name is incorrect");
 
-            if (!Validation.IsValidFirstOrLastName(student.LastName))
+            if (!Validation.IsValidFirstOrLastName(student["LastName"]))
                 return BadRequest("Error: last name is incorrect");
 
-            if (!Validation.IsValidPhoneNumber(student.PhoneNumber))
+            if (!Validation.IsValidPhoneNumber(student["PhoneNumber"]))
                 return BadRequest("Error: phone number is incorrect");
 
-            if (!Validation.IsValidEmailAddress(student.Email))
+            if (!Validation.IsValidEmailAddress(student["Email"]))
                 return BadRequest("Error: email address is incorrect");
+
+            var resultStudent = new Student
+            {
+                FirstName = student["FirstName"],
+                LastName = student["LastName"],
+                PhoneNumber = student["PhoneNumber"],
+                Email = student["Email"],
+                Github = student["Github"]
+            };
 
             using (var connection = new SqlConnection(Configuration.GetConnectionString("DefaultConnection")))
             {
                 connection.Open();
 
-                var numberOfAffectedRows = await StudentsRepository.UpdateStudentAsync(connection, student);
+                await StudentsRepository.CreateStudentAsync(connection, resultStudent); 
+            }
+
+            return Ok(resultStudent);
+        }
+
+        // PUT api/<StudentsController>/5
+        [HttpPut("{id}")]
+        public async Task<IActionResult> Put(int id, [FromBody] Dictionary<string, string> student)
+        {
+            if (student == null)
+                return BadRequest("Error: student object can't be null");
+
+            if (Validation.IsAnyFieldNotFilled(new List<object> { id, student.ContainsKey("FirstName") ? student["FirstName"] : null,
+                student.ContainsKey("LastName") ? student["LastName"] : null, student.ContainsKey("PhoneNumber") ?
+                student["PhoneNumber"] : null, student.ContainsKey("Email") ? student["Email"] : null,
+                student.ContainsKey("Github") ? student["Github"] : null}))
+            {
+                return BadRequest("Error: all student input fields must be filled (student ID - with non-zero value)");
+            }
+
+            student["FirstName"] = student["FirstName"].Trim();
+            student["LastName"] = student["LastName"].Trim();
+            student["PhoneNumber"] = student["PhoneNumber"].Trim();
+            student["Email"] = student["Email"].Trim();
+            student["Github"] = student["Github"].Trim();
+
+            if (!Validation.IsValidFirstOrLastName(student["FirstName"]))
+                return BadRequest("Error: first name is incorrect");
+
+            if (!Validation.IsValidFirstOrLastName(student["LastName"]))
+                return BadRequest("Error: last name is incorrect");
+
+            if (!Validation.IsValidPhoneNumber(student["PhoneNumber"]))
+                return BadRequest("Error: phone number is incorrect");
+
+            if (!Validation.IsValidEmailAddress(student["Email"]))
+                return BadRequest("Error: email address is incorrect");
+
+            var resultStudent = new Student
+            {
+                StudentID = id,
+                FirstName = student["FirstName"],
+                LastName = student["LastName"],
+                PhoneNumber = student["PhoneNumber"],
+                Email = student["Email"],
+                Github = student["Github"]
+            };
+
+            using (var connection = new SqlConnection(Configuration.GetConnectionString("DefaultConnection")))
+            {
+                connection.Open();
+
+                var numberOfAffectedRows = await StudentsRepository.UpdateStudentAsync(connection, resultStudent);
 
                 if (numberOfAffectedRows == 0)
                     return NotFound("Student with such id isn't found in database");
             }
 
-            return Ok();
+            return NoContent();
         }
 
         // DELETE api/<StudentsController>/5
@@ -137,18 +173,23 @@ namespace StudyManagerWebApi.Controllers
                     return NotFound("Student with such id isn't found in database");
             }
 
-            return Ok();
+            return NoContent();
         }
 
         [HttpDelete]
-        public async Task Delete()
+        public async Task<IActionResult> Delete()
         {
             using (var connection = new SqlConnection(Configuration.GetConnectionString("DefaultConnection")))
             {
                 connection.Open();
 
-                await StudentsRepository.DeleteAllStudentsAsync(connection);
+                var numberOfAffectedRows = await StudentsRepository.DeleteAllStudentsAsync(connection);
+
+                if (numberOfAffectedRows == 0)
+                    return NotFound("There aren't any students in database");
             }
+
+            return NoContent();
         }
     }
 }

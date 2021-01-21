@@ -88,13 +88,14 @@ namespace StudyManagerWebApi
             {
                 if (fields[i] == null)
                     return true;
+
                 if (fields[i].GetType().Equals(typeof(int)))
                 {
-                    if((int)fields[i] == 0)
+                    if ((int)fields[i] == 0)
                         return true;
                 }
-                else if ((string)fields[i] == string.Empty)
-                {
+                else if (((string)fields[i]).Trim() == string.Empty) {
+
                     return true;
                 }
             }

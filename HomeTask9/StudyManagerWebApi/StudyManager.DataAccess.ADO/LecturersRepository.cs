@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace StudyManager.DataAccess.ADO
 {
-    class LecturersRepository
+    public class LecturersRepository
     {
         private static Lecturer GetLecturer(SqlDataReader reader)
         {

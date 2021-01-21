@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace StudyManager.DataAccess.ADO
 {
-    class StudentsCoursesRepository
+    public class StudentsCoursesRepository
     {
         public static async Task CreateStudentCourseAsync(SqlConnection connection, (int studentID, int courseID) studentCourse)
         {
