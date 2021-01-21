@@ -144,7 +144,14 @@
                         <tr>
                             <td>@grade.GradeID</td>
                             <td>@grade.GradeDate.Date.ToString("d", new CultureInfo("fr-FR"))</td>
-                            <td>@grade.IsComplete</td>
+                            @if (grade.IsComplete)
+			    {
+			    	<td>yes</td>
+			    }
+			    else
+			    {
+				<td>no</td>
+			    }
                             <td>@grade.HomeTaskID</td>
                             <td>@grade.StudentID</td>
                         </tr>
