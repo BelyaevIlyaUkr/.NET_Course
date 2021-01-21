@@ -24,7 +24,7 @@ namespace StudyManagerWebApi.Controllers
 
         // GET: api/<CoursesController>
         [HttpGet]
-        public async Task<IEnumerable<Course>> Get()
+        public async Task<List<Course>> GetAllCourses()
         {
             using (var connection = new SqlConnection(Configuration.GetConnectionString("DefaultConnection")))
             {
@@ -35,17 +35,17 @@ namespace StudyManagerWebApi.Controllers
         }
 
         // GET api/<CoursesController>/5
-        [HttpGet("{id}")]
-        public async Task<ActionResult<Course>> Get(int id)
+        [HttpGet("{courseID}")]
+        public async Task<ActionResult<Course>> GetCourseWithID(int courseID)
         {
-            if (Validation.IsAnyInputObjectDataNotSpecified(new List<object> { id }))
+            if (Validation.IsAnyInputObjectDataNotSpecified(new List<object> { courseID }))
                 return BadRequest("Error: course ID must be specified (with non-zero value)");
 
             using (var connection = new SqlConnection(Configuration.GetConnectionString("DefaultConnection")))
             {
                 connection.Open();
 
-                var course = await CoursesRepository.GetDefiniteCourse(connection, id);
+                var course = await CoursesRepository.GetDefiniteCourse(connection, courseID);
 
                 if (course == null)
                     return NotFound("There isn't course with such ID in database");
@@ -98,10 +98,10 @@ namespace StudyManagerWebApi.Controllers
         }
 
         // PUT api/<CoursesController>/5
-        [HttpPut("{id}")]
-        public async Task<IActionResult> Put(int id, [FromBody] Dictionary<string, string> course)
+        [HttpPut("{courseID}")]
+        public async Task<IActionResult> Put(int courseID, [FromBody] Dictionary<string, string> course)
         {
-            if (Validation.IsAnyInputObjectDataNotSpecified(new List<object> { id, course.ContainsKey("Name") ? course["Name"] : null,
+            if (Validation.IsAnyInputObjectDataNotSpecified(new List<object> { courseID, course.ContainsKey("Name") ? course["Name"] : null,
                 course.ContainsKey("StartDate") ? course["StartDate"] : null, course.ContainsKey("EndDate") ? course["EndDate"] : null,
                 course.ContainsKey("PassingScore") ? course["PassingScore"] : null}))
             {
@@ -124,7 +124,7 @@ namespace StudyManagerWebApi.Controllers
 
             var resultCourse = new Course
             {
-                CourseID = id,
+                CourseID = courseID,
                 Name = course["Name"],
                 StartDate = resultStartDate,
                 EndDate = resultEndDate,
@@ -145,17 +145,17 @@ namespace StudyManagerWebApi.Controllers
         }
 
         // DELETE api/<CoursesController>/5
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> Delete(int id)
+        [HttpDelete("{courseID}")]
+        public async Task<IActionResult> DeleteCourseWithID(int courseID)
         {
-            if (Validation.IsAnyInputObjectDataNotSpecified(new List<object> { id }))
+            if (Validation.IsAnyInputObjectDataNotSpecified(new List<object> { courseID }))
                 return BadRequest("Error: course ID must be specified (with non-zero value)");
 
             using (var connection = new SqlConnection(Configuration.GetConnectionString("DefaultConnection")))
             {
                 connection.Open();
 
-                var numberOfAffectedRows = await CoursesRepository.DeleteCourseAsync(connection, id);
+                var numberOfAffectedRows = await CoursesRepository.DeleteCourseAsync(connection, courseID);
 
                 if (numberOfAffectedRows == 0)
                     return NotFound("Course with such id isn't found in database");
@@ -167,7 +167,7 @@ namespace StudyManagerWebApi.Controllers
 
         // DELETE api/<CoursesController>
         [HttpDelete]
-        public async Task<IActionResult> Delete()
+        public async Task<IActionResult> DeleteAllCourses()
         {
             using (var connection = new SqlConnection(Configuration.GetConnectionString("DefaultConnection")))
             {

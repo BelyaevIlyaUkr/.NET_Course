@@ -1,7 +1,10 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
+using StudyManager.Models;
+using StudyManager.DataAccess.ADO;
 using System;
 using System.Collections.Generic;
-using System.Linq;
+using System.Data.SqlClient;
 using System.Threading.Tasks;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
@@ -12,36 +15,139 @@ namespace StudyManagerWebApi.Controllers
     [ApiController]
     public class StudentsCoursesController : ControllerBase
     {
-        // GET: api/<StudentsCoursesController>
-        [HttpGet]
-        public IEnumerable<string> Get()
+        IConfiguration Configuration { get; }
+
+        public StudentsCoursesController(IConfiguration configuration)
         {
-            return new string[] { "value1", "value2" };
+            Configuration = configuration;
         }
 
-        // GET api/<StudentsCoursesController>/5
-        [HttpGet("{id}")]
-        public string Get(int id)
+        // GET: api/<StudentsCoursesController>/getAllCoursesForStudent?studentID=5
+        [HttpGet]
+        [Route("getAllCoursesForStudent")]
+        public async Task<ActionResult<List<Course>>> GetAllCoursesForStudent(int studentID)
         {
-            return "value";
+            if (Validation.IsAnyInputObjectDataNotSpecified(new List<object> { studentID }))
+                return BadRequest("Error: student ID must be specified (with non-zero value)");
+
+            using (var connection = new SqlConnection(Configuration.GetConnectionString("DefaultConnection")))
+            {
+                connection.Open();
+
+                var coursesForStudent = await StudentsCoursesRepository.GetAllCoursesForStudentAsync(connection, studentID);
+
+                if (coursesForStudent.Count == 0)
+                    return NotFound("This student doesn't study any course");
+
+                return new ObjectResult(coursesForStudent);
+            }
+        }
+
+        // GET: api/<StudentsCoursesController>/getAllStudentsOnCourse?courseID=8
+        [HttpGet]
+        [Route("getAllStudentsOnCourse")]
+        public async Task<ActionResult<List<Course>>> GetAllStudentsOnCourse(int courseID)
+        {
+            if (Validation.IsAnyInputObjectDataNotSpecified(new List<object> { courseID }))
+                return BadRequest("Error: course ID must be specified (with non-zero value)");
+
+            using (var connection = new SqlConnection(Configuration.GetConnectionString("DefaultConnection")))
+            {
+                connection.Open();
+
+                var studentsOnCourse = await StudentsCoursesRepository.GetAllStudentsInCourseAsync(connection, courseID);
+
+                if (studentsOnCourse.Count == 0)
+                    return NotFound("There aren't any students on this course");
+
+                return new ObjectResult(studentsOnCourse);
+            }
+        }
+
+        // GET: api/<StudentsCoursesController>
+        [HttpGet]
+        public async Task<List<List<int>>> GetAllStudentsCourses()
+        {
+            using (var connection = new SqlConnection(Configuration.GetConnectionString("DefaultConnection")))
+            {
+                connection.Open();
+
+                return await StudentsCoursesRepository.GetAllStudentsCoursesAsync(connection);
+            }
         }
 
         // POST api/<StudentsCoursesController>
         [HttpPost]
-        public void Post([FromBody] string value)
+        public async Task<IActionResult> Post([FromBody] Dictionary<string, int> studentCourse)
         {
+            if (Validation.IsAnyInputObjectDataNotSpecified(new List<object> { studentCourse.ContainsKey("StudentID") ? 
+                studentCourse["StudentID"] : 0, studentCourse.ContainsKey("CourseID") ? studentCourse["CourseID"] : 0}))
+            {
+                return BadRequest("Error: both student and course IDs must be specified (with non-zero value)");
+            }
+
+            using (var connection = new SqlConnection(Configuration.GetConnectionString("DefaultConnection")))
+            {
+                connection.Open();
+
+                try
+                {
+                    await StudentsCoursesRepository.CreateStudentCourseAsync(connection, (studentCourse["StudentID"], studentCourse["CourseID"]));
+                }
+                catch(SqlException)
+                {
+                    return BadRequest("Error: there isn't student or/and course with such ID or " +
+                        "this student have already been connected to this course");
+                }
+                catch (Exception)
+                {
+                    return BadRequest("Error: something went wrong");
+                }
+            }
+
+            return Ok(studentCourse);
         }
 
-        // PUT api/<StudentsCoursesController>/5
-        [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
+        // DELETE api/<StudentsCoursesController>/definiteStudentCourse
+        [HttpDelete]
+        [Route("definiteStudentCourse")]
+        public async Task<IActionResult> DeleteStudentCourse([FromBody] Dictionary<string, int> studentCourse)
         {
+            if (Validation.IsAnyInputObjectDataNotSpecified(new List<object> { studentCourse.ContainsKey("StudentID") ?
+                studentCourse["StudentID"] : 0, studentCourse.ContainsKey("CourseID") ? studentCourse["CourseID"] : 0}))
+            {
+                return BadRequest("Error: both student and course IDs must be specified (with non-zero value)");
+            }
+
+            using (var connection = new SqlConnection(Configuration.GetConnectionString("DefaultConnection")))
+            {
+                connection.Open();
+                
+                var numberOfAffectedRows = await StudentsCoursesRepository.DeleteStudentCourseAsync(connection,
+                    (studentCourse["StudentID"], studentCourse["CourseID"]));
+
+                if (numberOfAffectedRows == 0)
+                    return NotFound("Student with this student ID doesn't study on course with this course ID");
+            }
+
+            return NoContent();
         }
 
-        // DELETE api/<StudentsCoursesController>/5
-        [HttpDelete("{id}")]
-        public void Delete(int id)
+        // DELETE api/<StudentsCoursesController>
+        [HttpDelete]
+        public async Task<IActionResult> DeleteAllStudentsCourses()
         {
+            using (var connection = new SqlConnection(Configuration.GetConnectionString("DefaultConnection")))
+            {
+                connection.Open();
+
+                var numberOfAffectedRows = await StudentsCoursesRepository.DeleteAllStudentsCoursesAsync(connection);
+
+                if (numberOfAffectedRows == 0)
+                    return NotFound("There aren't any students on any courses");
+            }
+
+            return NoContent();
         }
     }
 }

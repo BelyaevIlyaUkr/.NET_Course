@@ -24,7 +24,7 @@ namespace StudyManagerWebApi.Controllers
         
         // GET: api/<StudentsController>
         [HttpGet]
-        public async Task<IEnumerable<Student>> Get()
+        public async Task<List<Student>> GetAllStudents()
         {
             using (var connection = new SqlConnection(Configuration.GetConnectionString("DefaultConnection")))
             {
@@ -35,17 +35,17 @@ namespace StudyManagerWebApi.Controllers
         }
 
         // GET api/<StudentsController>/5
-        [HttpGet("{id}")]
-        public async Task<ActionResult<Student>> Get(int id)
+        [HttpGet("{studentID}")]
+        public async Task<ActionResult<Student>> GetStudentWithID(int studentID)
         {
-            if (Validation.IsAnyInputObjectDataNotSpecified(new List<object> { id }))
+            if (Validation.IsAnyInputObjectDataNotSpecified(new List<object> { studentID }))
                 return BadRequest("Error: student ID must be specified (with non-zero value)");
 
             using (var connection = new SqlConnection(Configuration.GetConnectionString("DefaultConnection")))
             {
                 connection.Open();
 
-                var student = await StudentsRepository.GetDefiniteStudent(connection, id);
+                var student = await StudentsRepository.GetDefiniteStudent(connection, studentID);
 
                 if (student == null)
                     return NotFound("There isn't student with such id in database");
@@ -98,10 +98,10 @@ namespace StudyManagerWebApi.Controllers
         }
 
         // PUT api/<StudentsController>/5
-        [HttpPut("{id}")]
-        public async Task<IActionResult> Put(int id, [FromBody] Dictionary<string, string> student)
+        [HttpPut("{studentID}")]
+        public async Task<IActionResult> Put(int studentID, [FromBody] Dictionary<string, string> student)
         {
-            if (Validation.IsAnyInputObjectDataNotSpecified(new List<object> { id, student.ContainsKey("FirstName") ? student["FirstName"] : null,
+            if (Validation.IsAnyInputObjectDataNotSpecified(new List<object> { studentID, student.ContainsKey("FirstName") ? student["FirstName"] : null,
                 student.ContainsKey("LastName") ? student["LastName"] : null, student.ContainsKey("PhoneNumber") ?
                 student["PhoneNumber"] : null, student.ContainsKey("Email") ? student["Email"] : null,
                 student.ContainsKey("Github") ? student["Github"] : null}))
@@ -129,7 +129,7 @@ namespace StudyManagerWebApi.Controllers
 
             var resultStudent = new Student
             {
-                StudentID = id,
+                StudentID = studentID,
                 FirstName = student["FirstName"],
                 LastName = student["LastName"],
                 PhoneNumber = student["PhoneNumber"],
@@ -151,17 +151,17 @@ namespace StudyManagerWebApi.Controllers
         }
 
         // DELETE api/<StudentsController>/5
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> Delete(int id)
+        [HttpDelete("{studentID}")]
+        public async Task<IActionResult> DeleteStudentWithID(int studentID)
         {
-            if (Validation.IsAnyInputObjectDataNotSpecified(new List<object> { id }))
+            if (Validation.IsAnyInputObjectDataNotSpecified(new List<object> { studentID }))
                 return BadRequest("Error: student ID must be specified (with non-zero value)");
 
             using (var connection = new SqlConnection(Configuration.GetConnectionString("DefaultConnection")))
             {
                 connection.Open();
 
-                var numberOfAffectedRows = await StudentsRepository.DeleteStudentAsync(connection,id);
+                var numberOfAffectedRows = await StudentsRepository.DeleteStudentAsync(connection, studentID);
 
                 if (numberOfAffectedRows == 0)
                     return NotFound("Student with such id isn't found in database");
@@ -170,8 +170,9 @@ namespace StudyManagerWebApi.Controllers
             return NoContent();
         }
 
+        // DELETE api/<StudentsController>
         [HttpDelete]
-        public async Task<IActionResult> Delete()
+        public async Task<IActionResult> DeleteAllStudents()
         {
             using (var connection = new SqlConnection(Configuration.GetConnectionString("DefaultConnection")))
             {

@@ -102,5 +102,23 @@ namespace StudyManager.DataAccess.ADO
 
             return courses;
         }
+
+        public static async Task<List<(int courseID, int lecturerID)>> GetAllCoursesLecturersAsync(SqlConnection connection)
+        {
+            SqlCommand command = new SqlCommand("SELECT CourseID, LecturerID FROM Courses_Lecturers", connection);
+
+            var coursesLecturers = new List<(int courseID, int lecturerID)>();
+
+            using (var reader = await command.ExecuteReaderAsync())
+            {
+                while (reader.Read())
+                {
+                    var courseLecturer = (reader.GetInt32(0), reader.GetInt32(1));
+                    coursesLecturers.Add(courseLecturer);
+                }
+            }
+
+            return coursesLecturers;
+        }
     }
 }

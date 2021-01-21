@@ -16,15 +16,7 @@ namespace StudyManager.DataAccess.ADO
             createCommand.Parameters.AddWithValue("@studentID", studentCourse.studentID);
             createCommand.Parameters.AddWithValue("@courseID", studentCourse.courseID);
 
-            try
-            {
-                await createCommand.ExecuteNonQueryAsync();
-            }
-            catch (SqlException)
-            {
-                throw new Exception("there isn't student or/and course with such ID or " +
-                    "this student have already been connected to this course");
-            }
+            await createCommand.ExecuteNonQueryAsync();
         }
 
         public static async Task<int> DeleteStudentCourseAsync(SqlConnection connection, (int studentID, int courseID) studentCourse)
@@ -41,7 +33,7 @@ namespace StudyManager.DataAccess.ADO
         }
 
 
-        public static async Task<int> DeleteAllStudentCoursesAsync(SqlConnection connection)
+        public static async Task<int> DeleteAllStudentsCoursesAsync(SqlConnection connection)
         {
             var deleteCommand = new SqlCommand("DELETE FROM Students_Courses", connection);
 
@@ -102,6 +94,24 @@ namespace StudyManager.DataAccess.ADO
             }
 
             return students;
+        }
+
+        public static async Task<List<List<int>>> GetAllStudentsCoursesAsync(SqlConnection connection)
+        {
+            SqlCommand command = new SqlCommand("SELECT StudentID, CourseID FROM Students_Courses", connection);
+
+            var studentsCourses = new List<List<int>>();
+
+            using (var reader = await command.ExecuteReaderAsync())
+            {
+                while (reader.Read())
+                {
+                    var studentCourse = new List<int> { reader.GetInt32(0), reader.GetInt32(1) };
+                    studentsCourses.Add(studentCourse);
+                }
+            }
+
+            return studentsCourses;
         }
     }
 }

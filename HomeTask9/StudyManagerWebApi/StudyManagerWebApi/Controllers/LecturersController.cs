@@ -24,7 +24,7 @@ namespace StudyManagerWebApi.Controllers
 
         // GET: api/<LecturersController>
         [HttpGet]
-        public async Task<IEnumerable<Lecturer>> Get()
+        public async Task<List<Lecturer>> GetAllLecturers()
         {
             using (var connection = new SqlConnection(Configuration.GetConnectionString("DefaultConnection")))
             {
@@ -35,17 +35,17 @@ namespace StudyManagerWebApi.Controllers
         }
 
         // GET api/<LecturersController>/5
-        [HttpGet("{id}")]
-        public async Task<ActionResult<Lecturer>> Get(int id)
+        [HttpGet("{lecturerID}")]
+        public async Task<ActionResult<Lecturer>> GetLecturerWithID(int lecturerID)
         {
-            if (Validation.IsAnyInputObjectDataNotSpecified(new List<object> { id }))
+            if (Validation.IsAnyInputObjectDataNotSpecified(new List<object> { lecturerID }))
                 return BadRequest("Error: lecturer ID must be filled (with non-zero value)");
 
             using (var connection = new SqlConnection(Configuration.GetConnectionString("DefaultConnection")))
             {
                 connection.Open();
 
-                var lecturer = await LecturersRepository.GetDefiniteLecturer(connection, id);
+                var lecturer = await LecturersRepository.GetDefiniteLecturer(connection, lecturerID);
 
                 if (lecturer == null)
                     return NotFound("There isn't lecturer with such ID in database");
@@ -90,10 +90,10 @@ namespace StudyManagerWebApi.Controllers
         }
 
         // PUT api/<LecturersController>/5
-        [HttpPut("{id}")]
-        public async Task<IActionResult> Put(int id, [FromBody] Dictionary<string, string> lecturer)
+        [HttpPut("{lecturerID}")]
+        public async Task<IActionResult> Put(int lecturerID, [FromBody] Dictionary<string, string> lecturer)
         {
-            if (Validation.IsAnyInputObjectDataNotSpecified(new List<object> { id, lecturer.ContainsKey("Name") ? lecturer["Name"] : null,
+            if (Validation.IsAnyInputObjectDataNotSpecified(new List<object> { lecturerID, lecturer.ContainsKey("Name") ? lecturer["Name"] : null,
                 lecturer.ContainsKey("BirthDate") ? lecturer["BirthDate"] : null}))
             {
                 return BadRequest("Error: all lecturer input data must be specified");
@@ -110,7 +110,7 @@ namespace StudyManagerWebApi.Controllers
 
             var resultLecturer = new Lecturer
             {
-                LecturerID = id,
+                LecturerID = lecturerID,
                 Name = lecturer["Name"],
                 BirthDate = resultBirthDate
             };
@@ -126,17 +126,17 @@ namespace StudyManagerWebApi.Controllers
         }
 
         // DELETE api/<LecturersController>/5
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> Delete(int id)
+        [HttpDelete("{lecturerID}")]
+        public async Task<IActionResult> DeleteLecturerWithID(int lecturerID)
         {
-            if (Validation.IsAnyInputObjectDataNotSpecified(new List<object> { id }))
+            if (Validation.IsAnyInputObjectDataNotSpecified(new List<object> { lecturerID }))
                 return BadRequest("Error: lecturer ID must be specified (with non-zero value)");
 
             using (var connection = new SqlConnection(Configuration.GetConnectionString("DefaultConnection")))
             {
                 connection.Open();
 
-                var numberOfAffectedRows = await LecturersRepository.DeleteLecturerAsync(connection, id);
+                var numberOfAffectedRows = await LecturersRepository.DeleteLecturerAsync(connection, lecturerID);
 
                 if (numberOfAffectedRows == 0)
                     return NotFound("Lecturer with such id isn't found in database");
@@ -147,7 +147,7 @@ namespace StudyManagerWebApi.Controllers
 
         // DELETE api/<LecturersController>
         [HttpDelete]
-        public async Task<IActionResult> Delete()
+        public async Task<IActionResult> DeleteAllLecturers()
         {
             using (var connection = new SqlConnection(Configuration.GetConnectionString("DefaultConnection")))
             {
