@@ -141,20 +141,20 @@
                 <tbody>
                     @foreach (StudyManager.Models.Grade grade in Model.Objects)
                     {
-                        <tr>
-                            <td>@grade.GradeID</td>
-                            <td>@grade.GradeDate.Date.ToString("d", new CultureInfo("fr-FR"))</td>
-                            @if (grade.IsComplete)
-			    {
-			    	<td>yes</td>
-			    }
-			    else
-			    {
-				<td>no</td>
-			    }
-                            <td>@grade.HomeTaskID</td>
-                            <td>@grade.StudentID</td>
-                        </tr>
+                    <tr>
+                        <td>@grade.GradeID</td>
+                        <td>@grade.GradeDate.Date.ToString("d", new CultureInfo("fr-FR"))</td>
+                        @if (grade.IsComplete)
+                        {
+                            <td>yes</td>
+                        }
+                        else
+                        {
+                            <td>no</td>
+                        }
+                        <td>@grade.HomeTaskID</td>
+                        <td>@grade.StudentID</td>
+                    </tr>
                     }
                 </tbody>
                 break;

@@ -303,6 +303,10 @@ namespace StudyManager.DataAccess.ADO
             {
                 throw new Exception("there isn't course with such ID in database");
             }
+            catch (Exception)
+            {
+                throw new Exception("something went wrong");
+            }
         }
 
         public static async Task<int> UpdateHomeTaskAsync(SqlConnection connection, HomeTask hometask)
@@ -326,7 +330,11 @@ namespace StudyManager.DataAccess.ADO
             }
             catch (SqlException)
             {
-                throw new Exception("There isn't course with such ID in database");
+                throw new Exception("there isn't course with such ID in database");
+            }
+            catch (Exception)
+            {
+                throw new Exception("something went wrong");
             }
         }
 
@@ -403,7 +411,11 @@ namespace StudyManager.DataAccess.ADO
             }
             catch (SqlException)
             {
-                throw new Exception("There isn't hometask with such ID or/and student with such ID in database");
+                throw new Exception("there isn't hometask with such ID or/and student with such ID in database");
+            }
+            catch (Exception)
+            {
+                throw new Exception("something went wrong");
             }
         }
 
@@ -427,7 +439,11 @@ namespace StudyManager.DataAccess.ADO
             }
             catch (SqlException)
             {
-                throw new Exception("There isn't hometask or/and student with such ID in database");
+                throw new Exception("there isn't hometask or/and student with such ID in database");
+            }
+            catch (Exception)
+            {
+                throw new Exception("something went wrong");
             }
         }
 
@@ -486,6 +502,10 @@ namespace StudyManager.DataAccess.ADO
             {
                 throw new Exception("there isn't student or/and course with such ID or " +
                     "this student have already been connected to this course");
+            }
+            catch (Exception)
+            {
+                throw new Exception("something went wrong");
             }
         }
 
@@ -620,6 +640,10 @@ namespace StudyManager.DataAccess.ADO
             {
                 throw new Exception("there isn't lecturer or/and course with such ID or " +
                     "this lecturer have already been connected to this course");
+            }
+            catch (Exception)
+            {
+                throw new Exception("something went wrong");
             }
         }
 

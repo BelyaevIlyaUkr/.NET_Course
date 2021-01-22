@@ -66,7 +66,7 @@ namespace StudyManagerWebApi.Controllers
 
         // GET: api/<StudentsCoursesController>
         [HttpGet]
-        public async Task<List<List<int>>> GetAllStudentsCourses()
+        public async Task<List<Dictionary<string, int>>> GetAllStudentsCourses()
         {
             using (var connection = new SqlConnection(Configuration.GetConnectionString("DefaultConnection")))
             {

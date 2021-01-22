@@ -103,17 +103,22 @@ namespace StudyManager.DataAccess.ADO
             return courses;
         }
 
-        public static async Task<List<(int courseID, int lecturerID)>> GetAllCoursesLecturersAsync(SqlConnection connection)
+        public static async Task<List<Dictionary<string, int>>> GetAllCoursesLecturersAsync(SqlConnection connection)
         {
             SqlCommand command = new SqlCommand("SELECT CourseID, LecturerID FROM Courses_Lecturers", connection);
 
-            var coursesLecturers = new List<(int courseID, int lecturerID)>();
+            var coursesLecturers = new List<Dictionary<string, int>>();
 
             using (var reader = await command.ExecuteReaderAsync())
             {
                 while (reader.Read())
                 {
-                    var courseLecturer = (reader.GetInt32(0), reader.GetInt32(1));
+                    var courseLecturer = new Dictionary<string, int> 
+                    { 
+                        { "CourseID", reader.GetInt32(0) }, 
+                        { "LecturerID", reader.GetInt32(1) } 
+                    };
+
                     coursesLecturers.Add(courseLecturer);
                 }
             }
