@@ -24,13 +24,20 @@ namespace StudyManagerWebApi.Controllers
 
         // GET: api/<HometasksController>
         [HttpGet]
-        public async Task<List<HomeTask>> GetAllHometasks()
+        public async Task<ActionResult<List<HomeTask>>> GetAllHometasks()
         {
             using (var connection = new SqlConnection(Configuration.GetConnectionString("DefaultConnection")))
             {
-                connection.Open();
+                try
+                {
+                    connection.Open();
 
-                return await HometasksRepository.GetAllHomeTasksAsync(connection);
+                    return await HometasksRepository.GetAllHomeTasksAsync(connection);
+                }
+                catch (Exception ex)
+                {
+                    return BadRequest(ex.Message);
+                }
             }
         }
 
@@ -43,14 +50,21 @@ namespace StudyManagerWebApi.Controllers
 
             using (var connection = new SqlConnection(Configuration.GetConnectionString("DefaultConnection")))
             {
-                connection.Open();
+                try
+                {
+                    connection.Open();
 
-                var homeTask = await HometasksRepository.GetDefiniteHometask(connection, hometaskID);
+                    var homeTask = await HometasksRepository.GetDefiniteHometask(connection, hometaskID);
 
-                if (homeTask == null)
-                    return NotFound("There isn't hometask with such ID in database");
+                    if (homeTask == null)
+                        return NotFound("There isn't hometask with such ID in database");
 
-                return new ObjectResult(homeTask);
+                    return homeTask;
+                }
+                catch(Exception ex)
+                {
+                    return BadRequest(ex.Message);
+                }
             }
         }
 
@@ -92,9 +106,16 @@ namespace StudyManagerWebApi.Controllers
 
             using (var connection = new SqlConnection(Configuration.GetConnectionString("DefaultConnection")))
             {
-                connection.Open();
+                try
+                {
+                    connection.Open();
 
-                await HometasksRepository.CreateHomeTaskAsync(connection, resultHometask);
+                    await HometasksRepository.CreateHomeTaskAsync(connection, resultHometask);
+                }
+                catch(Exception ex)
+                {
+                    return BadRequest(ex.Message);
+                }
             }
 
             return Ok(resultHometask);
@@ -167,7 +188,7 @@ namespace StudyManagerWebApi.Controllers
                 {
                     connection.Open();
 
-                    var numberOfAffectedRows = await HometasksRepository.DeleteHomeTaskAsync(connection, hometaskID);
+                    var numberOfAffectedRows = await HometasksRepository.DeleteGradeAsync(connection, hometaskID);
 
                     if (numberOfAffectedRows == 0)
                         return NotFound("Hometask with such id isn't found in database");

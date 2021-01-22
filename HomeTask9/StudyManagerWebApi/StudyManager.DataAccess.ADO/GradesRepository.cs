@@ -137,5 +137,26 @@ namespace StudyManager.DataAccess.ADO
                 throw new Exception("Error: something wen wrong");
             }
         }
+
+        public static async Task<Grade> GetDefiniteGrade(SqlConnection connection, int gradeID)
+        {
+            SqlCommand getGradeCommand = new SqlCommand("SELECT GradeID, GradeDate, IsComplete, HomeTaskID," +
+                $"StudentID FROM Grades WHERE GradeID = {gradeID}", connection);
+
+            try
+            {
+                using (var reader = await getGradeCommand.ExecuteReaderAsync())
+                {
+                    if (reader.Read())
+                        return GetGrade(reader);
+                }
+            }
+            catch (Exception)
+            {
+                throw new Exception("Error: something went wrong");
+            }
+
+            return null;
+        }
     }
 }

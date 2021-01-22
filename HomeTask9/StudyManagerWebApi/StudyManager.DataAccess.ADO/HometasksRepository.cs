@@ -108,7 +108,7 @@ namespace StudyManager.DataAccess.ADO
             }
         }
 
-        public static async Task<int> DeleteHomeTaskAsync(SqlConnection connection, int hometaskID)
+        public static async Task<int> DeleteGradeAsync(SqlConnection connection, int hometaskID)
         {
             var deleteCommand = new SqlCommand("DELETE FROM HomeTasks WHERE HomeTaskID = @hometaskID", connection);
 
@@ -144,12 +144,12 @@ namespace StudyManager.DataAccess.ADO
 
         public static async Task<HomeTask> GetDefiniteHometask(SqlConnection connection, int hometaskID)
         {
-            SqlCommand getCourseCommand = new SqlCommand("SELECT HomeTaskID, Name, Description, TaskDate, " +
+            SqlCommand getHometaskCommand = new SqlCommand("SELECT HomeTaskID, Name, Description, TaskDate, " +
                 $"SerialNumber, CourseID FROM HomeTasks WHERE HomeTaskID = {hometaskID}", connection);
 
             try
             {
-                using (var reader = await getCourseCommand.ExecuteReaderAsync())
+                using (var reader = await getHometaskCommand.ExecuteReaderAsync())
                 {
                     if (reader.Read())
                         return GetHomeTask(reader);

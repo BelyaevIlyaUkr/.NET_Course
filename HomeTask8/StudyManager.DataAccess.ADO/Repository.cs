@@ -500,7 +500,7 @@ namespace StudyManager.DataAccess.ADO
             }
             catch (SqlException)
             {
-                throw new Exception("there isn't student or/and course with such ID or " +
+                throw new Exception("there isn't student or/and course with specified ID or " +
                     "this student have already been connected to this course");
             }
             catch (Exception)
