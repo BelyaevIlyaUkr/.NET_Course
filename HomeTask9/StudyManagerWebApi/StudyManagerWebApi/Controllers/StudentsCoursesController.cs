@@ -32,14 +32,21 @@ namespace StudyManagerWebApi.Controllers
 
             using (var connection = new SqlConnection(Configuration.GetConnectionString("DefaultConnection")))
             {
-                connection.Open();
+                try
+                {
+                    connection.Open();
 
-                var coursesForStudent = await StudentsCoursesRepository.GetAllCoursesForStudentAsync(connection, studentID);
+                    var coursesForStudent = await StudentsCoursesRepository.GetAllCoursesForStudentAsync(connection, studentID);
 
-                if (coursesForStudent.Count == 0)
-                    return NotFound("This student doesn't study any course");
+                    if (coursesForStudent.Count == 0)
+                        return NotFound("This student doesn't study any course");
 
-                return new ObjectResult(coursesForStudent);
+                    return new ObjectResult(coursesForStudent);
+                }
+                catch (Exception ex)
+                {
+                    return BadRequest(ex.Message);
+                }
             }
         }
 
@@ -53,26 +60,40 @@ namespace StudyManagerWebApi.Controllers
 
             using (var connection = new SqlConnection(Configuration.GetConnectionString("DefaultConnection")))
             {
-                connection.Open();
+                try
+                {
+                    connection.Open();
 
-                var studentsOnCourse = await StudentsCoursesRepository.GetAllStudentsInCourseAsync(connection, courseID);
+                    var studentsOnCourse = await StudentsCoursesRepository.GetAllStudentsInCourseAsync(connection, courseID);
 
-                if (studentsOnCourse.Count == 0)
-                    return NotFound("There aren't any students on this course");
+                    if (studentsOnCourse.Count == 0)
+                        return NotFound("There aren't any students on this course");
 
-                return new ObjectResult(studentsOnCourse);
+                    return new ObjectResult(studentsOnCourse);
+                }
+                catch(Exception ex)
+                {
+                    return BadRequest(ex.Message);
+                }
             }
         }
 
         // GET: api/<StudentsCoursesController>
         [HttpGet]
-        public async Task<List<Dictionary<string, int>>> GetAllStudentsCourses()
+        public async Task<ActionResult<List<Dictionary<string, int>>>> GetAllStudentsCourses()
         {
             using (var connection = new SqlConnection(Configuration.GetConnectionString("DefaultConnection")))
             {
-                connection.Open();
+                try
+                {
+                    connection.Open();
 
-                return await StudentsCoursesRepository.GetAllStudentsCoursesAsync(connection);
+                    return await StudentsCoursesRepository.GetAllStudentsCoursesAsync(connection);
+                }
+                catch (Exception ex)
+                {
+                    return BadRequest(ex.Message);
+                }
             }
         }
 
@@ -88,10 +109,10 @@ namespace StudyManagerWebApi.Controllers
 
             using (var connection = new SqlConnection(Configuration.GetConnectionString("DefaultConnection")))
             {
-                connection.Open();
-
                 try
                 {
+                    connection.Open();
+
                     await StudentsCoursesRepository.CreateStudentCourseAsync(connection, (studentCourse["StudentID"], studentCourse["CourseID"]));
                 }
                 catch(SqlException)
@@ -121,13 +142,20 @@ namespace StudyManagerWebApi.Controllers
 
             using (var connection = new SqlConnection(Configuration.GetConnectionString("DefaultConnection")))
             {
-                connection.Open();
-                
-                var numberOfAffectedRows = await StudentsCoursesRepository.DeleteStudentCourseAsync(connection,
-                    (studentCourse["StudentID"], studentCourse["CourseID"]));
+                try
+                {
+                    connection.Open();
 
-                if (numberOfAffectedRows == 0)
-                    return NotFound("Student with this student ID doesn't study on course with this course ID");
+                    var numberOfAffectedRows = await StudentsCoursesRepository.DeleteStudentCourseAsync(connection,
+                        (studentCourse["StudentID"], studentCourse["CourseID"]));
+
+                    if (numberOfAffectedRows == 0)
+                        return NotFound("Student with this student ID doesn't study on course with this course ID");
+                }
+                catch(Exception ex)
+                {
+                    return BadRequest(ex.Message);
+                }
             }
 
             return NoContent();
@@ -139,12 +167,19 @@ namespace StudyManagerWebApi.Controllers
         {
             using (var connection = new SqlConnection(Configuration.GetConnectionString("DefaultConnection")))
             {
-                connection.Open();
+                try
+                {
+                    connection.Open();
 
-                var numberOfAffectedRows = await StudentsCoursesRepository.DeleteAllStudentsCoursesAsync(connection);
+                    var numberOfAffectedRows = await StudentsCoursesRepository.DeleteAllStudentsCoursesAsync(connection);
 
-                if (numberOfAffectedRows == 0)
-                    return NotFound("There aren't any students on any courses");
+                    if (numberOfAffectedRows == 0)
+                        return NotFound("There aren't any students on any courses");
+                }
+                catch (Exception ex)
+                {
+                    return BadRequest(ex.Message);
+                }
             }
 
             return NoContent();

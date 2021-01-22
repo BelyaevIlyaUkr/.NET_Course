@@ -27,13 +27,20 @@ namespace StudyManager.DataAccess.ADO
 
             var students = new List<Student>();
 
-            using (var reader = await command.ExecuteReaderAsync())
+            try
             {
-                while (reader.Read())
+                using (var reader = await command.ExecuteReaderAsync())
                 {
-                    var student = GetStudent(reader);
-                    students.Add(student);
+                    while (reader.Read())
+                    {
+                        var student = GetStudent(reader);
+                        students.Add(student);
+                    }
                 }
+            }
+            catch (Exception)
+            {
+                throw new Exception("Error: something went wrong");
             }
 
             return students;
@@ -44,10 +51,17 @@ namespace StudyManager.DataAccess.ADO
             SqlCommand getStudentCommand = new SqlCommand("SELECT StudentID, FirstName, LastName, " +
                 $"PhoneNumber, Email, Github FROM Students WHERE StudentID = {studentID}", connection);
 
-            using (var reader = await getStudentCommand.ExecuteReaderAsync())
+            try
             {
-                if (reader.Read())
-                    return GetStudent(reader);
+                using (var reader = await getStudentCommand.ExecuteReaderAsync())
+                {
+                    if (reader.Read())
+                        return GetStudent(reader);
+                }
+            }
+            catch (Exception)
+            {
+                throw new Exception("Error: something went wrong");
             }
 
             return null;
@@ -64,7 +78,14 @@ namespace StudyManager.DataAccess.ADO
             createCommand.Parameters.AddWithValue("@email", student.Email);
             createCommand.Parameters.AddWithValue("@github", student.Github);
 
-            await createCommand.ExecuteNonQueryAsync();
+            try
+            {
+                await createCommand.ExecuteNonQueryAsync();
+            }
+            catch (Exception)
+            {
+                throw new Exception("Error: something went wrong");
+            }
         }
 
 
@@ -73,19 +94,33 @@ namespace StudyManager.DataAccess.ADO
             var deleteCommand = new SqlCommand("DELETE FROM Students WHERE StudentID = @studentID", connection);
 
             deleteCommand.Parameters.AddWithValue("@studentID", studentID);
-            
-            var numberOfAffectedRows = await deleteCommand.ExecuteNonQueryAsync();
 
-            return numberOfAffectedRows;
+            try
+            {
+                var numberOfAffectedRows = await deleteCommand.ExecuteNonQueryAsync();
+
+                return numberOfAffectedRows;
+            }
+            catch (Exception)
+            {
+                throw new Exception("Error: something went wrong");
+            }
         }
 
         public static async Task<int> DeleteAllStudentsAsync(SqlConnection connection)
         {
             var deleteCommand = new SqlCommand("DELETE FROM Students", connection);
 
-            var numberOfAffectedRows = await deleteCommand.ExecuteNonQueryAsync();
+            try
+            {
+                var numberOfAffectedRows = await deleteCommand.ExecuteNonQueryAsync();
 
-            return numberOfAffectedRows;
+                return numberOfAffectedRows;
+            }
+            catch (Exception)
+            {
+                throw new Exception("Error: something went wrong");
+            }
         }
 
         public static async Task<int> UpdateStudentAsync(SqlConnection connection, Student student)
@@ -101,9 +136,16 @@ namespace StudyManager.DataAccess.ADO
             updateCommand.Parameters.AddWithValue("@email", student.Email);
             updateCommand.Parameters.AddWithValue("@github", student.Github);
 
-            var numberOfAffectedRows = await updateCommand.ExecuteNonQueryAsync();
+            try
+            {
+                var numberOfAffectedRows = await updateCommand.ExecuteNonQueryAsync();
 
-            return numberOfAffectedRows;
+                return numberOfAffectedRows;
+            }
+            catch (Exception)
+            {
+                throw new Exception("Error: something went wrong");
+            }
         }
     }
 }

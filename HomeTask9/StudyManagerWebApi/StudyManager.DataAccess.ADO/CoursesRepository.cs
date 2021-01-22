@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Threading.Tasks;
 using StudyManager.Models;
@@ -25,13 +26,20 @@ namespace StudyManager.DataAccess.ADO
 
             var courses = new List<Course>();
 
-            using (var reader = await command.ExecuteReaderAsync())
+            try
             {
-                while (reader.Read())
+                using (var reader = await command.ExecuteReaderAsync())
                 {
-                    var course = GetCourse(reader);
-                    courses.Add(course);
+                    while (reader.Read())
+                    {
+                        var course = GetCourse(reader);
+                        courses.Add(course);
+                    }
                 }
+            }
+            catch (Exception)
+            {
+                throw new Exception("Something went wrong");
             }
 
             return courses;
@@ -42,10 +50,17 @@ namespace StudyManager.DataAccess.ADO
             SqlCommand getCourseCommand = new SqlCommand($"SELECT CourseID, Name, StartDate, EndDate, " +
                     $"PassingScore FROM Courses WHERE CourseID = {courseID}", connection);
 
-            using (var reader = await getCourseCommand.ExecuteReaderAsync())
+            try
             {
-                if (reader.Read())
-                    return GetCourse(reader);
+                using (var reader = await getCourseCommand.ExecuteReaderAsync())
+                {
+                    if (reader.Read())
+                        return GetCourse(reader);
+                }
+            }
+            catch (Exception)
+            {
+                throw new Exception("Something went wrong");
             }
 
             return null;
@@ -61,7 +76,14 @@ namespace StudyManager.DataAccess.ADO
             createCommand.Parameters.AddWithValue("@endDate", course.EndDate);
             createCommand.Parameters.AddWithValue("@passingScore", course.PassingScore);
 
-            await createCommand.ExecuteNonQueryAsync();
+            try
+            {
+                await createCommand.ExecuteNonQueryAsync();
+            }
+            catch (Exception)
+            {
+                throw new Exception("Something went wrong");
+            }
         }
 
         public static async Task<int> UpdateCourseAsync(SqlConnection connection, Course course)
@@ -76,9 +98,16 @@ namespace StudyManager.DataAccess.ADO
             updateCommand.Parameters.AddWithValue("@endDate", course.EndDate);
             updateCommand.Parameters.AddWithValue("@passingScore", course.PassingScore);
 
-            var numberOfAffectedRows = await updateCommand.ExecuteNonQueryAsync();
+            try
+            {
+                var numberOfAffectedRows = await updateCommand.ExecuteNonQueryAsync();
 
-            return numberOfAffectedRows;
+                return numberOfAffectedRows;
+            }
+            catch (Exception)
+            {
+                throw new Exception("Something went wrong");
+            }
         }
 
         public static async Task<int> DeleteCourseAsync(SqlConnection connection, int courseID)
@@ -87,18 +116,32 @@ namespace StudyManager.DataAccess.ADO
 
             deleteCommand.Parameters.AddWithValue("@courseID", courseID);
 
-            var numberOfAffectedRows = await deleteCommand.ExecuteNonQueryAsync();
+            try
+            {
+                var numberOfAffectedRows = await deleteCommand.ExecuteNonQueryAsync();
 
-            return numberOfAffectedRows;
+                return numberOfAffectedRows;
+            }
+            catch (Exception)
+            {
+                throw new Exception("Something went wrong");
+            }
         }
 
         public static async Task<int> DeleteAllCoursesAsync(SqlConnection connection)
         {
             var deleteCommand = new SqlCommand("DELETE FROM Courses", connection);
 
-            var numberOfAffectedRows = await deleteCommand.ExecuteNonQueryAsync();
+            try
+            {
+                var numberOfAffectedRows = await deleteCommand.ExecuteNonQueryAsync();
 
-            return numberOfAffectedRows;
+                return numberOfAffectedRows;
+            }
+            catch (Exception)
+            {
+                throw new Exception("Something went wrong");
+            }
         }
     }
 }

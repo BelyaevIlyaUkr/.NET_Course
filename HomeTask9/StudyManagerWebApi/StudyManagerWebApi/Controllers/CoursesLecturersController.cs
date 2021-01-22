@@ -24,34 +24,48 @@ namespace StudyManagerWebApi.Controllers
 
         // GET: api/<CoursesLecturersController>
         [HttpGet]
-        public async Task<List<Dictionary<string, int>>> GetAllCoursesLecturers()
+        public async Task<ActionResult<List<Dictionary<string, int>>>> GetAllCoursesLecturers()
         {
             using (var connection = new SqlConnection(Configuration.GetConnectionString("DefaultConnection")))
             {
-                connection.Open();
+                try
+                {
+                    connection.Open();
 
-                return await CoursesLecturersRepository.GetAllCoursesLecturersAsync(connection);
+                    return await CoursesLecturersRepository.GetAllCoursesLecturersAsync(connection);
+                }
+                catch (Exception ex)
+                {
+                    return BadRequest(ex.Message);
+                }
             }
         }
 
         // GET: api/<CoursesLecturersController>/getAllLecturersForCourse?courseID=5
         [HttpGet]
         [Route("getAllLecturersForCourse")]
-        public async Task<ActionResult<List<Course>>> GetAllLecturersForCourse(int courseID)
+        public async Task<ActionResult<List<Lecturer>>> GetAllLecturersForCourse(int courseID)
         {
             if (Validation.IsAnyInputObjectDataNotSpecified(new List<object> { courseID }))
                 return BadRequest("Error: course ID must be specified (with non-zero value)");
 
             using (var connection = new SqlConnection(Configuration.GetConnectionString("DefaultConnection")))
             {
-                connection.Open();
+                try
+                {
+                    connection.Open();
 
-                var lecturersForCourse = await CoursesLecturersRepository.GetAllLecturersForCourseAsync(connection, courseID);
+                    var lecturersForCourse = await CoursesLecturersRepository.GetAllLecturersForCourseAsync(connection, courseID);
 
-                if (lecturersForCourse.Count == 0)
-                    return NotFound("There aren't any lecturers on this course");
+                    if (lecturersForCourse.Count == 0)
+                        return NotFound("There aren't any lecturers on this course");
 
-                return new ObjectResult(lecturersForCourse);
+                    return lecturersForCourse;
+                }
+                catch (Exception ex)
+                {
+                    return BadRequest(ex.Message);
+                }
             }
         }
 
@@ -66,14 +80,21 @@ namespace StudyManagerWebApi.Controllers
 
             using (var connection = new SqlConnection(Configuration.GetConnectionString("DefaultConnection")))
             {
-                connection.Open();
+                try
+                {
+                    connection.Open();
 
-                var coursesWithDefiniteLecturer = await CoursesLecturersRepository.GetAllCoursesWithDefiniteLecturerAsync(connection, lecturerID);
+                    var coursesWithDefiniteLecturer = await CoursesLecturersRepository.GetAllCoursesWithDefiniteLecturerAsync(connection, lecturerID);
 
-                if (coursesWithDefiniteLecturer.Count == 0)
-                    return NotFound("There aren't any courses with this lecturer");
+                    if (coursesWithDefiniteLecturer.Count == 0)
+                        return NotFound("There aren't any courses with this lecturer");
 
-                return new ObjectResult(coursesWithDefiniteLecturer);
+                    return coursesWithDefiniteLecturer;
+                }
+                catch(Exception ex)
+                {
+                    return BadRequest(ex.Message);
+                }
             }
         }
 
@@ -124,13 +145,19 @@ namespace StudyManagerWebApi.Controllers
 
             using (var connection = new SqlConnection(Configuration.GetConnectionString("DefaultConnection")))
             {
-                connection.Open();
+                try {
+                    connection.Open();
 
-                var numberOfAffectedRows = await CoursesLecturersRepository.DeleteCourseLecturerAsync(connection,
-                    (courseLecturer["CourseID"], courseLecturer["LecturerID"]));
+                    var numberOfAffectedRows = await CoursesLecturersRepository.DeleteCourseLecturerAsync(connection,
+                        (courseLecturer["CourseID"], courseLecturer["LecturerID"]));
 
-                if (numberOfAffectedRows == 0)
-                    return NotFound("Lecturer with this lecturer ID doesn't teach on course with this course ID");
+                    if (numberOfAffectedRows == 0)
+                        return NotFound("Lecturer with this lecturer ID doesn't teach on course with this course ID");
+                }
+                catch (Exception ex)
+                {
+                    return BadRequest(ex.Message);
+                }
             }
 
             return NoContent();
@@ -142,12 +169,19 @@ namespace StudyManagerWebApi.Controllers
         {
             using (var connection = new SqlConnection(Configuration.GetConnectionString("DefaultConnection")))
             {
-                connection.Open();
+                try
+                {
+                    connection.Open();
 
-                var numberOfAffectedRows = await CoursesLecturersRepository.DeleteAllCoursesLecturersAsync(connection);
+                    var numberOfAffectedRows = await CoursesLecturersRepository.DeleteAllCoursesLecturersAsync(connection);
 
-                if (numberOfAffectedRows == 0)
-                    return NotFound("There aren't any lecturers on any courses");
+                    if (numberOfAffectedRows == 0)
+                        return NotFound("There aren't any lecturers on any courses");
+                }
+                catch(Exception e)
+                {
+                    return BadRequest(e.Message);
+                }
             }
 
             return NoContent();

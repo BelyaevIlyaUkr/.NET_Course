@@ -24,13 +24,20 @@ namespace StudyManagerWebApi.Controllers
 
         // GET: api/<CoursesController>
         [HttpGet]
-        public async Task<List<Course>> GetAllCourses()
+        public async Task<ActionResult<List<Course>>> GetAllCourses()
         {
             using (var connection = new SqlConnection(Configuration.GetConnectionString("DefaultConnection")))
             {
-                connection.Open();
+                try
+                {
+                    connection.Open();
 
-                return await CoursesRepository.GetAllCoursesAsync(connection);
+                    return await CoursesRepository.GetAllCoursesAsync(connection);
+                }
+                catch(Exception ex)
+                {
+                    return BadRequest(ex.Message);
+                }
             }
         }
 
@@ -43,14 +50,21 @@ namespace StudyManagerWebApi.Controllers
 
             using (var connection = new SqlConnection(Configuration.GetConnectionString("DefaultConnection")))
             {
-                connection.Open();
+                try
+                {
+                    connection.Open();
 
-                var course = await CoursesRepository.GetDefiniteCourse(connection, courseID);
+                    var course = await CoursesRepository.GetDefiniteCourse(connection, courseID);
 
-                if (course == null)
-                    return NotFound("There isn't course with such ID in database");
+                    if (course == null)
+                        return NotFound("There isn't course with such ID in database");
 
-                return new ObjectResult(course);
+                    return course;
+                }
+                catch(Exception ex)
+                {
+                    return BadRequest(ex.Message);
+                }
             }
         }
 
@@ -89,9 +103,16 @@ namespace StudyManagerWebApi.Controllers
 
             using (var connection = new SqlConnection(Configuration.GetConnectionString("DefaultConnection")))
             {
-                connection.Open();
+                try
+                {
+                    connection.Open();
 
-                await CoursesRepository.CreateCourseAsync(connection, resultCourse);
+                    await CoursesRepository.CreateCourseAsync(connection, resultCourse);
+                }
+                catch (Exception ex)
+                {
+                    return BadRequest(ex.Message);
+                }
             }
 
             return Ok(resultCourse);
@@ -133,12 +154,19 @@ namespace StudyManagerWebApi.Controllers
 
             using (var connection = new SqlConnection(Configuration.GetConnectionString("DefaultConnection")))
             {
-                connection.Open();
+                try
+                {
+                    connection.Open();
 
-                var numberOfAffectedRows = await CoursesRepository.UpdateCourseAsync(connection, resultCourse);
+                    var numberOfAffectedRows = await CoursesRepository.UpdateCourseAsync(connection, resultCourse);
 
-                if (numberOfAffectedRows == 0)
-                    return NotFound("Course with such id isn't found in database");
+                    if (numberOfAffectedRows == 0)
+                        return NotFound("Course with such id isn't found in database");
+                }
+                catch (Exception ex)
+                {
+                    return BadRequest(ex.Message);
+                }
             }
 
             return NoContent();
@@ -153,12 +181,19 @@ namespace StudyManagerWebApi.Controllers
 
             using (var connection = new SqlConnection(Configuration.GetConnectionString("DefaultConnection")))
             {
-                connection.Open();
+                try
+                {
+                    connection.Open();
 
-                var numberOfAffectedRows = await CoursesRepository.DeleteCourseAsync(connection, courseID);
+                    var numberOfAffectedRows = await CoursesRepository.DeleteCourseAsync(connection, courseID);
 
-                if (numberOfAffectedRows == 0)
-                    return NotFound("Course with such id isn't found in database");
+                    if (numberOfAffectedRows == 0)
+                        return NotFound("Course with such id isn't found in database");
+                }
+                catch(Exception ex)
+                {
+                    return BadRequest(ex.Message);
+                }
             }
 
             return NoContent();
@@ -171,12 +206,19 @@ namespace StudyManagerWebApi.Controllers
         {
             using (var connection = new SqlConnection(Configuration.GetConnectionString("DefaultConnection")))
             {
-                connection.Open();
+                try
+                {
+                    connection.Open();
 
-                var numberOfAffectedRows = await CoursesRepository.DeleteAllCoursesAsync(connection);
+                    var numberOfAffectedRows = await CoursesRepository.DeleteAllCoursesAsync(connection);
 
-                if (numberOfAffectedRows == 0)
-                    return NotFound("There aren't any courses in database");
+                    if (numberOfAffectedRows == 0)
+                        return NotFound("There aren't any courses in database");
+                }
+                catch (Exception ex)
+                {
+                    return BadRequest(ex.Message);
+                }
             }
 
             return NoContent();

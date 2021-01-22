@@ -15,8 +15,15 @@ namespace StudyManager.DataAccess.ADO
 
             createCommand.Parameters.AddWithValue("@studentID", studentCourse.studentID);
             createCommand.Parameters.AddWithValue("@courseID", studentCourse.courseID);
-
-            await createCommand.ExecuteNonQueryAsync();
+            try
+            {
+                await createCommand.ExecuteNonQueryAsync();
+            }
+            catch (SqlException)
+            {
+                throw new Exception("There isn't student with this student ID or/and course with this course ID or this " +
+                    "student is already connected to course");
+            }
         }
 
         public static async Task<int> DeleteStudentCourseAsync(SqlConnection connection, (int studentID, int courseID) studentCourse)
@@ -27,9 +34,16 @@ namespace StudyManager.DataAccess.ADO
             deleteCommand.Parameters.AddWithValue("@studentID", studentCourse.studentID);
             deleteCommand.Parameters.AddWithValue("@courseID", studentCourse.courseID);
 
-            var numberOfAffectedRows = await deleteCommand.ExecuteNonQueryAsync();
+            try
+            {
+                var numberOfAffectedRows = await deleteCommand.ExecuteNonQueryAsync();
 
-            return numberOfAffectedRows;
+                return numberOfAffectedRows;
+            }
+            catch (Exception)
+            {
+                throw new Exception("Error: something went wrong");
+            }
         }
 
 
@@ -37,9 +51,16 @@ namespace StudyManager.DataAccess.ADO
         {
             var deleteCommand = new SqlCommand("DELETE FROM Students_Courses", connection);
 
-            var numberOfAffectedRows = await deleteCommand.ExecuteNonQueryAsync();
+            try
+            {
+                var numberOfAffectedRows = await deleteCommand.ExecuteNonQueryAsync();
 
-            return numberOfAffectedRows;
+                return numberOfAffectedRows;
+            }
+            catch (Exception)
+            {
+                throw new Exception("Error: something went wrong");
+            }
         }
 
         public static async Task<List<Course>> GetAllCoursesForStudentAsync(SqlConnection connection, int studentID)
@@ -49,14 +70,21 @@ namespace StudyManager.DataAccess.ADO
 
             var coursesIDs = new List<int>();
 
-            using (var reader = await getCoursesIDCommand.ExecuteReaderAsync())
+            try
             {
-                while (reader.Read())
+                using (var reader = await getCoursesIDCommand.ExecuteReaderAsync())
                 {
-                    var courseID = reader.GetInt32(0);
+                    while (reader.Read())
+                    {
+                        var courseID = reader.GetInt32(0);
 
-                    coursesIDs.Add(courseID);
+                        coursesIDs.Add(courseID);
+                    }
                 }
+            }
+            catch (Exception)
+            {
+                throw new Exception("Error: something went wrong");
             }
 
             var courses = new List<Course>();
@@ -76,14 +104,21 @@ namespace StudyManager.DataAccess.ADO
 
             var studentsIDs = new List<int>();
 
-            using (var reader = await getStudentsIDCommand.ExecuteReaderAsync())
+            try
             {
-                while (reader.Read())
+                using (var reader = await getStudentsIDCommand.ExecuteReaderAsync())
                 {
-                    var studentID = reader.GetInt32(0);
+                    while (reader.Read())
+                    {
+                        var studentID = reader.GetInt32(0);
 
-                    studentsIDs.Add(studentID);
+                        studentsIDs.Add(studentID);
+                    }
                 }
+            }
+            catch (Exception)
+            {
+                throw new Exception("Error: something went wrong");
             }
 
             var students = new List<Student>();
@@ -102,21 +137,28 @@ namespace StudyManager.DataAccess.ADO
 
             var studentsCourses = new List<Dictionary<string, int>>();
 
-            using (var reader = await command.ExecuteReaderAsync())
+            try
             {
-                while (reader.Read())
+                using (var reader = await command.ExecuteReaderAsync())
                 {
-                    var studentCourse = new Dictionary<string, int> 
-                    { 
-                        {"StudentID", reader.GetInt32(0) }, 
+                    while (reader.Read())
+                    {
+                        var studentCourse = new Dictionary<string, int>
+                    {
+                        {"StudentID", reader.GetInt32(0) },
                         {"CourseID", reader.GetInt32(1) }
                     };
 
-                    studentsCourses.Add(studentCourse);
+                        studentsCourses.Add(studentCourse);
+                    }
                 }
-            }
 
-            return studentsCourses;
+                return studentsCourses;
+            }
+            catch (Exception)
+            {
+                throw new Exception("Something went wrong");
+            }
         }
     }
 }

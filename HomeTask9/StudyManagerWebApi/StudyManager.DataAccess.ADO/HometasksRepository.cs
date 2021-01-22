@@ -35,16 +35,23 @@ namespace StudyManager.DataAccess.ADO
 
             var homeTasks = new List<HomeTask>();
 
-            using (var reader = await command.ExecuteReaderAsync())
+            try
             {
-                while (reader.Read())
+                using (var reader = await command.ExecuteReaderAsync())
                 {
-                    var homeTask = GetHomeTask(reader);
-                    homeTasks.Add(homeTask);
+                    while (reader.Read())
+                    {
+                        var homeTask = GetHomeTask(reader);
+                        homeTasks.Add(homeTask);
+                    }
                 }
-            }
 
-            return homeTasks;
+                return homeTasks;
+            }
+            catch (Exception)
+            {
+                throw new Exception("Error: something went wrong");
+            }
         }
 
         public static async Task CreateHomeTaskAsync(SqlConnection connection, HomeTask hometask)
@@ -65,6 +72,10 @@ namespace StudyManager.DataAccess.ADO
             catch (SqlException)
             {
                 throw new Exception("there isn't course with such ID in database");
+            }
+            catch (Exception)
+            {
+                throw new Exception("Error: something went wrong");
             }
         }
 
@@ -89,7 +100,11 @@ namespace StudyManager.DataAccess.ADO
             }
             catch (SqlException)
             {
-                throw new Exception("There isn't course with such ID in database");
+                throw new Exception("There isn't course with such course ID in database ");
+            }
+            catch (Exception)
+            {
+                throw new Exception("Error: something went wrong");
             }
         }
 
@@ -99,18 +114,53 @@ namespace StudyManager.DataAccess.ADO
 
             deleteCommand.Parameters.AddWithValue("@hometaskID", hometaskID);
 
-            var numberOfAffectedRows = await deleteCommand.ExecuteNonQueryAsync();
+            try
+            {
+                var numberOfAffectedRows = await deleteCommand.ExecuteNonQueryAsync();
 
-            return numberOfAffectedRows;
+                return numberOfAffectedRows;
+            }
+            catch (Exception)
+            {
+                throw new Exception("Error: something went wrong");
+            }
         }
 
         public static async Task<int> DeleteAllHomeTasksAsync(SqlConnection connection)
         {
             var deleteCommand = new SqlCommand("DELETE FROM HomeTasks", connection);
 
-            var numberOfAffectedRows = await deleteCommand.ExecuteNonQueryAsync();
+            try
+            {
+                var numberOfAffectedRows = await deleteCommand.ExecuteNonQueryAsync();
 
-            return numberOfAffectedRows;
+                return numberOfAffectedRows;
+            }
+            catch (Exception)
+            {
+                throw new Exception("Error: something went wrong");
+            }
+        }
+
+        public static async Task<HomeTask> GetDefiniteHometask(SqlConnection connection, int hometaskID)
+        {
+            SqlCommand getCourseCommand = new SqlCommand("SELECT HomeTaskID, Name, Description, TaskDate, " +
+                $"SerialNumber, CourseID FROM HomeTasks WHERE HomeTaskID = {hometaskID}", connection);
+
+            try
+            {
+                using (var reader = await getCourseCommand.ExecuteReaderAsync())
+                {
+                    if (reader.Read())
+                        return GetHomeTask(reader);
+                }
+            }
+            catch (Exception)
+            {
+                throw new Exception("Error: something went wrong");
+            }
+
+            return null;
         }
     }
 }

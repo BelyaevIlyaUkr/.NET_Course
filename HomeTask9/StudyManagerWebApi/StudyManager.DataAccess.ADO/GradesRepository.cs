@@ -32,17 +32,23 @@ namespace StudyManager.DataAccess.ADO
                 "StudentID FROM Grades", connection);
 
             var grades = new List<Grade>();
-
-            using (var reader = await command.ExecuteReaderAsync())
+            try
             {
-                while (reader.Read())
+                using (var reader = await command.ExecuteReaderAsync())
                 {
-                    var grade = GetGrade(reader);
-                    grades.Add(grade);
+                    while (reader.Read())
+                    {
+                        var grade = GetGrade(reader);
+                        grades.Add(grade);
+                    }
                 }
-            }
 
-            return grades;
+                return grades;
+            }
+            catch (Exception)
+            {
+                throw new Exception("Error: something went wrong");
+            }
         }
 
         public static async Task CreateGradeAsync(SqlConnection connection, Grade grade)
@@ -61,7 +67,11 @@ namespace StudyManager.DataAccess.ADO
             }
             catch (SqlException)
             {
-                throw new Exception("There isn't hometask with such ID or/and student with such ID in database");
+                throw new Exception("Error: there isn't hometask with such ID or/and student with such ID in database");
+            }
+            catch (Exception)
+            {
+                throw new Exception("Error: something went wrong");
             }
         }
 
@@ -85,7 +95,11 @@ namespace StudyManager.DataAccess.ADO
             }
             catch (SqlException)
             {
-                throw new Exception("There isn't hometask or/and student with such ID in database");
+                throw new Exception("Error: there isn't hometask or/and student with such ID in database");
+            }
+            catch (Exception)
+            {
+                throw new Exception("Error: something went wrong");
             }
         }
 
@@ -95,9 +109,16 @@ namespace StudyManager.DataAccess.ADO
 
             deleteCommand.Parameters.AddWithValue("@gradeID", gradeID);
 
-            var numberOfAffectedRows = await deleteCommand.ExecuteNonQueryAsync();
+            try
+            {
+                var numberOfAffectedRows = await deleteCommand.ExecuteNonQueryAsync();
 
-            return numberOfAffectedRows;
+                return numberOfAffectedRows;
+            }
+            catch (Exception)
+            {
+                throw new Exception("Error: something went wrong");
+            }
         }
 
 
@@ -105,9 +126,16 @@ namespace StudyManager.DataAccess.ADO
         {
             var deleteCommand = new SqlCommand("DELETE FROM Grades", connection);
 
-            var numberOfAffectedRows = await deleteCommand.ExecuteNonQueryAsync();
+            try
+            {
+                var numberOfAffectedRows = await deleteCommand.ExecuteNonQueryAsync();
 
-            return numberOfAffectedRows;
+                return numberOfAffectedRows;
+            }
+            catch (Exception)
+            {
+                throw new Exception("Error: something wen wrong");
+            }
         }
     }
 }

@@ -24,13 +24,20 @@ namespace StudyManagerWebApi.Controllers
 
         // GET: api/<LecturersController>
         [HttpGet]
-        public async Task<List<Lecturer>> GetAllLecturers()
+        public async Task<ActionResult<List<Lecturer>>> GetAllLecturers()
         {
             using (var connection = new SqlConnection(Configuration.GetConnectionString("DefaultConnection")))
             {
-                connection.Open();
+                try
+                {
+                    connection.Open();
 
-                return await LecturersRepository.GetAllLecturersAsync(connection);
+                    return await LecturersRepository.GetAllLecturersAsync(connection);
+                }
+                catch(Exception ex)
+                {
+                    return BadRequest(ex.Message);
+                }
             }
         }
 
@@ -43,14 +50,21 @@ namespace StudyManagerWebApi.Controllers
 
             using (var connection = new SqlConnection(Configuration.GetConnectionString("DefaultConnection")))
             {
-                connection.Open();
+                try
+                {
+                    connection.Open();
 
-                var lecturer = await LecturersRepository.GetDefiniteLecturer(connection, lecturerID);
+                    var lecturer = await LecturersRepository.GetDefiniteLecturer(connection, lecturerID);
 
-                if (lecturer == null)
-                    return NotFound("There isn't lecturer with such ID in database");
+                    if (lecturer == null)
+                        return NotFound("There isn't lecturer with such ID in database");
 
-                return new ObjectResult(lecturer);
+                    return lecturer;
+                }
+                catch (Exception ex)
+                {
+                    return BadRequest(ex.Message);
+                }
             }
         }
 
@@ -81,9 +95,16 @@ namespace StudyManagerWebApi.Controllers
 
             using (var connection = new SqlConnection(Configuration.GetConnectionString("DefaultConnection")))
             {
-                connection.Open();
+                try
+                {
+                    connection.Open();
 
-                await LecturersRepository.CreateLecturerAsync(connection, resultLecturer);
+                    await LecturersRepository.CreateLecturerAsync(connection, resultLecturer);
+                }
+                catch (Exception ex)
+                {
+                    return BadRequest(ex.Message);
+                }
             }
 
             return Ok(resultLecturer);
@@ -117,9 +138,16 @@ namespace StudyManagerWebApi.Controllers
 
             using (var connection = new SqlConnection(Configuration.GetConnectionString("DefaultConnection")))
             {
-                connection.Open();
+                try
+                {
+                    connection.Open();
 
-                await LecturersRepository.UpdateLecturerAsync(connection, resultLecturer);
+                    await LecturersRepository.UpdateLecturerAsync(connection, resultLecturer);
+                }
+                catch (Exception ex)
+                {
+                    return BadRequest(ex.Message);
+                }
             }
 
             return NoContent();
@@ -134,12 +162,19 @@ namespace StudyManagerWebApi.Controllers
 
             using (var connection = new SqlConnection(Configuration.GetConnectionString("DefaultConnection")))
             {
-                connection.Open();
+                try
+                {
+                    connection.Open();
 
-                var numberOfAffectedRows = await LecturersRepository.DeleteLecturerAsync(connection, lecturerID);
+                    var numberOfAffectedRows = await LecturersRepository.DeleteLecturerAsync(connection, lecturerID);
 
-                if (numberOfAffectedRows == 0)
-                    return NotFound("Lecturer with such id isn't found in database");
+                    if (numberOfAffectedRows == 0)
+                        return NotFound("Lecturer with such id isn't found in database");
+                }
+                catch (Exception ex)
+                {
+                    return BadRequest(ex.Message);
+                }
             }
 
             return NoContent();
@@ -151,12 +186,19 @@ namespace StudyManagerWebApi.Controllers
         {
             using (var connection = new SqlConnection(Configuration.GetConnectionString("DefaultConnection")))
             {
-                connection.Open();
+                try
+                {
+                    connection.Open();
 
-                var numberOfAffectedRows = await LecturersRepository.DeleteAllLecturersAsync(connection);
+                    var numberOfAffectedRows = await LecturersRepository.DeleteAllLecturersAsync(connection);
 
-                if (numberOfAffectedRows == 0)
-                    return NotFound("There aren't any lecturers in database");
+                    if (numberOfAffectedRows == 0)
+                        return NotFound("There aren't any lecturers in database");
+                }
+                catch (Exception ex)
+                {
+                    return BadRequest(ex.Message);
+                }
             }
 
             return NoContent();

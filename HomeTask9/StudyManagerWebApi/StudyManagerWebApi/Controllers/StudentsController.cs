@@ -5,6 +5,7 @@ using StudyManager.DataAccess.ADO;
 using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Threading.Tasks;
+using System;
 
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
@@ -24,13 +25,20 @@ namespace StudyManagerWebApi.Controllers
         
         // GET: api/<StudentsController>
         [HttpGet]
-        public async Task<List<Student>> GetAllStudents()
+        public async Task<ActionResult<List<Student>>> GetAllStudents()
         {
             using (var connection = new SqlConnection(Configuration.GetConnectionString("DefaultConnection")))
             {
-                connection.Open();
+                try
+                {
+                    connection.Open();
 
-                return await StudentsRepository.GetAllStudentsAsync(connection);
+                    return await StudentsRepository.GetAllStudentsAsync(connection);
+                }
+                catch(Exception ex)
+                {
+                    return BadRequest(ex.Message);
+                }
             } 
         }
 
@@ -43,14 +51,21 @@ namespace StudyManagerWebApi.Controllers
 
             using (var connection = new SqlConnection(Configuration.GetConnectionString("DefaultConnection")))
             {
-                connection.Open();
+                try
+                {
+                    connection.Open();
 
-                var student = await StudentsRepository.GetDefiniteStudent(connection, studentID);
+                    var student = await StudentsRepository.GetDefiniteStudent(connection, studentID);
 
-                if (student == null)
-                    return NotFound("There isn't student with such id in database");
+                    if (student == null)
+                        return NotFound("There isn't student with such id in database");
 
-                return new ObjectResult(student);
+                    return student;
+                }
+                catch (Exception ex)
+                {
+                    return BadRequest(ex.Message);
+                }
             }
         }
 
@@ -89,9 +104,16 @@ namespace StudyManagerWebApi.Controllers
 
             using (var connection = new SqlConnection(Configuration.GetConnectionString("DefaultConnection")))
             {
-                connection.Open();
+                try
+                {
+                    connection.Open();
 
-                await StudentsRepository.CreateStudentAsync(connection, resultStudent); 
+                    await StudentsRepository.CreateStudentAsync(connection, resultStudent);
+                }
+                catch (Exception ex)
+                {
+                    return BadRequest(ex.Message);
+                }
             }
 
             return Ok(resultStudent);
@@ -139,12 +161,19 @@ namespace StudyManagerWebApi.Controllers
 
             using (var connection = new SqlConnection(Configuration.GetConnectionString("DefaultConnection")))
             {
-                connection.Open();
+                try
+                {
+                    connection.Open();
 
-                var numberOfAffectedRows = await StudentsRepository.UpdateStudentAsync(connection, resultStudent);
+                    var numberOfAffectedRows = await StudentsRepository.UpdateStudentAsync(connection, resultStudent);
 
-                if (numberOfAffectedRows == 0)
-                    return NotFound("Student with such id isn't found in database");
+                    if (numberOfAffectedRows == 0)
+                        return NotFound("Student with such id isn't found in database");
+                }
+                catch (Exception ex)
+                {
+                    return BadRequest(ex.Message);
+                }
             }
 
             return NoContent();
@@ -159,12 +188,20 @@ namespace StudyManagerWebApi.Controllers
 
             using (var connection = new SqlConnection(Configuration.GetConnectionString("DefaultConnection")))
             {
-                connection.Open();
 
-                var numberOfAffectedRows = await StudentsRepository.DeleteStudentAsync(connection, studentID);
+                try
+                {
+                    connection.Open();
 
-                if (numberOfAffectedRows == 0)
-                    return NotFound("Student with such id isn't found in database");
+                    var numberOfAffectedRows = await StudentsRepository.DeleteStudentAsync(connection, studentID);
+
+                    if (numberOfAffectedRows == 0)
+                        return NotFound("Student with such id isn't found in database");
+                }
+                catch (Exception ex)
+                {
+                    return BadRequest(ex.Message);
+                }
             }
 
             return NoContent();
@@ -176,12 +213,19 @@ namespace StudyManagerWebApi.Controllers
         {
             using (var connection = new SqlConnection(Configuration.GetConnectionString("DefaultConnection")))
             {
-                connection.Open();
+                try
+                {
+                    connection.Open();
 
-                var numberOfAffectedRows = await StudentsRepository.DeleteAllStudentsAsync(connection);
+                    var numberOfAffectedRows = await StudentsRepository.DeleteAllStudentsAsync(connection);
 
-                if (numberOfAffectedRows == 0)
-                    return NotFound("There aren't any students in database");
+                    if (numberOfAffectedRows == 0)
+                        return NotFound("There aren't any students in database");
+                }
+                catch(Exception ex)
+                {
+                    return BadRequest(ex.Message);
+                }
             }
 
             return NoContent();

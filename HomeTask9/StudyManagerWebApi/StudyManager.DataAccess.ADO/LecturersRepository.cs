@@ -1,4 +1,5 @@
 ﻿using StudyManager.Models;
+using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Threading.Tasks;
@@ -22,16 +23,23 @@ namespace StudyManager.DataAccess.ADO
 
             var lecturers = new List<Lecturer>();
 
-            using (var reader = await command.ExecuteReaderAsync())
+            try
             {
-                while (reader.Read())
+                using (var reader = await command.ExecuteReaderAsync())
                 {
-                    var lecturer = GetLecturer(reader);
-                    lecturers.Add(lecturer);
+                    while (reader.Read())
+                    {
+                        var lecturer = GetLecturer(reader);
+                        lecturers.Add(lecturer);
+                    }
                 }
-            }
 
-            return lecturers;
+                return lecturers;
+            }
+            catch (Exception)
+            {
+                throw new Exception("Error: something went wrong");
+            }
         }
 
         public static async Task<Lecturer> GetDefiniteLecturer(SqlConnection connection, int lecturerID)
@@ -39,13 +47,20 @@ namespace StudyManager.DataAccess.ADO
             SqlCommand getLecturerCommand = new SqlCommand($"SELECT LecturerID, Name, BirthDate " +
                         $"FROM Lecturers WHERE LecturerID = {lecturerID}", connection);
 
-            using (var reader = await getLecturerCommand.ExecuteReaderAsync())
+            try
             {
-                if(reader.Read())
-                    return GetLecturer(reader);
-            }
+                using (var reader = await getLecturerCommand.ExecuteReaderAsync())
+                {
+                    if (reader.Read())
+                        return GetLecturer(reader);
+                }
 
-            return null;
+                return null;
+            }
+            catch (Exception)
+            {
+                throw new Exception("Error: something went wrong");
+            }
         }
 
         public static async Task CreateLecturerAsync(SqlConnection connection, Lecturer lecturer)
@@ -56,7 +71,14 @@ namespace StudyManager.DataAccess.ADO
             createCommand.Parameters.AddWithValue("@name", lecturer.Name);
             createCommand.Parameters.AddWithValue("@birthDate", lecturer.BirthDate);
 
-            await createCommand.ExecuteNonQueryAsync();
+            try
+            {
+                await createCommand.ExecuteNonQueryAsync();
+            }
+            catch (Exception)
+            {
+                throw new Exception("Error: something went wrong");
+            }
         }
 
         public static async Task<int> UpdateLecturerAsync(SqlConnection connection, Lecturer lecturer)
@@ -68,9 +90,16 @@ namespace StudyManager.DataAccess.ADO
             updateCommand.Parameters.AddWithValue("@name", lecturer.Name);
             updateCommand.Parameters.AddWithValue("@birthDate", lecturer.BirthDate);
 
-            var numberOfAffectedRows = await updateCommand.ExecuteNonQueryAsync();
+            try
+            {
+                var numberOfAffectedRows = await updateCommand.ExecuteNonQueryAsync();
 
-            return numberOfAffectedRows;
+                return numberOfAffectedRows;
+            }
+            catch (Exception)
+            {
+                throw new Exception("Error: something went wrong");
+            }
         }
 
         public static async Task<int> DeleteLecturerAsync(SqlConnection connection, int lecturerID)
@@ -79,18 +108,32 @@ namespace StudyManager.DataAccess.ADO
 
             deleteCommand.Parameters.AddWithValue("@lecturerID", lecturerID);
 
-            var numberOfAffectedRows = await deleteCommand.ExecuteNonQueryAsync();
+            try
+            {
+                var numberOfAffectedRows = await deleteCommand.ExecuteNonQueryAsync();
 
-            return numberOfAffectedRows;
+                return numberOfAffectedRows;
+            }
+            catch (Exception)
+            {
+                throw new Exception("Error: something went wrong");
+            }
         }
 
         public static async Task<int> DeleteAllLecturersAsync(SqlConnection connection)
         {
             var deleteCommand = new SqlCommand("DELETE FROM Lecturers", connection);
 
-            var numberOfAffectedRows = await deleteCommand.ExecuteNonQueryAsync();
+            try
+            {
+                var numberOfAffectedRows = await deleteCommand.ExecuteNonQueryAsync();
 
-            return numberOfAffectedRows;
+                return numberOfAffectedRows;
+            }
+            catch (Exception)
+            {
+                throw new Exception("Error: something went wrong");
+            }
         }
     }
 }
