@@ -3,6 +3,7 @@ using System.Data.SqlClient;
 using System.Globalization;
 using StudyManager.Models;
 using StudyManager.DataAccess.ADO;
+using System.Data;
 
 namespace HomeTask5
 {
@@ -12,27 +13,38 @@ namespace HomeTask5
         {
             //string sCreateDatabase = "CREATE DATABASE StudyManager";
 
+            /*string sCreateTable = "CREATE TABLE Students(StudentID INTEGER PRIMARY KEY IDENTITY," +
+            "FirstName VARCHAR(80) NOT NULL, LastName VARCHAR(80) NOT NULL, PhoneNumber VARCHAR(17) NOT NULL," +
+            "Email VARCHAR(80) NOT NULL, Github VARCHAR(80) NOT NULL)";*/
+
+            /*string sCreateTable = "CREATE TABLE Courses(CourseID INTEGER PRIMARY KEY IDENTITY," +
+            "Name VARCHAR(80) NOT NULL, StartDate DATE NOT NULL, EndDate DATE NOT NULL," +
+            "PassingScore INT NOT NULL)";*/
+
+            /*string sCreateTable = "CREATE TABLE HomeTasks(HomeTaskID INTEGER PRIMARY KEY IDENTITY, Name VARCHAR(80) NOT NULL," +
+            "Description TEXT NOT NULL,TaskDate DATE NOT NULL,SerialNumber INT NOT NULL,CourseID INT NOT NULL FOREIGN KEY REFERENCES Courses(CourseID) ON DELETE CASCADE)";*/
+
+            /*string sCreateTable = "CREATE TABLE Lecturers(LecturerID INTEGER PRIMARY KEY IDENTITY, Name VARCHAR(160) NOT NULL," +
+            "BirthDate DATE NOT NULL)";*/
+
             /*string sCreateTable = "CREATE TABLE Grades(GradeID INTEGER PRIMARY KEY IDENTITY," +
             "GradeDate DATE NOT NULL, IsComplete BIT NOT NULL," +
             "HomeTaskID INT NOT NULL FOREIGN KEY REFERENCES HomeTasks(HomeTaskID) ON DELETE CASCADE," +
             "StudentID INT NOT NULL FOREIGN KEY REFERENCES Students(StudentID) ON DELETE CASCADE)";*/
 
-            /*string sCreateTable = "CREATE TABLE HomeTasks(HomeTaskID INTEGER PRIMARY KEY IDENTITY, Name VARCHAR(80) NOT NULL," +
-            "Description TEXT,TaskDate DATE NOT NULL,SerialNumber INT NOT NULL,CourseID INT NOT NULL FOREIGN KEY REFERENCES Courses(CourseID) ON DELETE CASCADE)";*/
-
             /*string sCreateTable = "CREATE TABLE Students_Courses (StudentID INT NOT NULL FOREIGN KEY " +
             "REFERENCES Students(StudentID) ON DELETE CASCADE," +
             "CourseID INT NOT NULL FOREIGN KEY REFERENCES Courses(CourseID) ON DELETE CASCADE," +
-            "PRIMARY KEY (StudentID,CourseID), UNIQUE(StudentID,CourseID))";*/
+            "PRIMARY KEY (StudentID,CourseID))";*/
 
-            /*string sCreateTable = "CREATE TABLE Courses_Lecturers (CourseID INT NOT NULL FOREIGN KEY " +
+            string sCreateTable = "CREATE TABLE Courses_Lecturers (CourseID INT NOT NULL FOREIGN KEY " +
             "REFERENCES Courses(CourseID) ON DELETE CASCADE," +
             "LecturerID INT NOT NULL FOREIGN KEY REFERENCES Lecturers(LecturerID) ON DELETE CASCADE," +
-            "PRIMARY KEY (CourseID,LecturerID), UNIQUE(CourseID,LecturerID))";
+            "PRIMARY KEY (CourseID,LecturerID))";
 
 
             SqlConnection mycon = new SqlConnection();
-            mycon.ConnectionString = "Data Source=ILYABELYAEV2A78; Initial Catalog = StudyManager; Integrated Security = True; Connect Timeout = 30; Encrypt = False; TrustServerCertificate = False; ApplicationIntent = ReadWrite; MultiSubnetFailover = False";
+            mycon.ConnectionString = "Data Source=ILYABELYAEV7B3F;Initial Catalog=StudyManager;Integrated Security=True;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False";
 
             SqlCommand mycomm = new SqlCommand();
             mycomm.CommandType = CommandType.Text;
@@ -51,8 +63,8 @@ namespace HomeTask5
             finally
             {
                 mycon.Close();
-            }*/
-
+            }
+            /*
             using (var connection = new SqlConnection("Data Source=ILYABELYAEV2A78; Initial Catalog = StudyManager; Integrated Security = True; Connect Timeout = 30; Encrypt = False; TrustServerCertificate = False; ApplicationIntent = ReadWrite; MultiSubnetFailover = False"))
             {
                 connection.Open();
@@ -100,7 +112,7 @@ namespace HomeTask5
 
                 /*Repository.CreateGrade(connection, grade1);
                 Repository.CreateGrade(connection, grade2);
-                Repository.CreateGrade(connection, grade3);*/
+                Repository.CreateGrade(connection, grade3);
 
 
                 var courses = Repository.GetAllCourses(connection);
@@ -148,7 +160,7 @@ namespace HomeTask5
                 Repository.CreateStudentCourse(connection, (8, 8));
                 Repository.CreateStudentCourse(connection, (9, 9));
                 Repository.CreateStudentCourse(connection, (10,8));
-                Repository.CreateStudentCourse(connection, (10, 9));*/
+                Repository.CreateStudentCourse(connection, (10, 9));
 
                 var coursesForStudent = Repository.GetAllCoursesForStudent(connection, 8);
 
@@ -172,7 +184,7 @@ namespace HomeTask5
                 Repository.CreateCourseLecturer(connection, (7, 9));
                 Repository.CreateCourseLecturer(connection, (8, 8));
                 Repository.CreateCourseLecturer(connection, (9, 7));
-                Repository.CreateCourseLecturer(connection, (9, 9));*/
+                Repository.CreateCourseLecturer(connection, (9, 9));
 
                 Console.WriteLine("\nAll courses with lecturer with ID = 7\n");
 
@@ -292,7 +304,7 @@ namespace HomeTask5
                     Console.WriteLine(courseLecturer);
                 }
 
-            }
+            }*/
 
             Console.ReadKey();
         }
